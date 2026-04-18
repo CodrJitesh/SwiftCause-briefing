@@ -1,1 +1,576 @@
-placeholder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SwiftCause — Licensing Playbook (Open vs Closed vs Open Core)</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #555;
+    --line: #e2e2e2;
+    --bg: #fafaf7;
+    --open: #1f6f43;
+    --closed: #8a2b2b;
+    --core: #2a4d7a;
+    --accent: #c87d2d;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 40px 28px 80px; }
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 14px; margin-bottom: 28px; }
+  header h1 { font-size: 28px; margin: 0 0 4px; }
+  header .meta { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 20px; margin: 36px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin: 20px 0 8px; }
+  h4 { font-size: 14px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  p { margin: 0 0 10px; }
+  ul, ol { margin: 4px 0 12px; padding-left: 22px; }
+  li { margin-bottom: 4px; }
+  .tldr {
+    background: #fff8ec;
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    border-radius: 4px;
+  }
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .grid3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+  .card.open { border-top: 4px solid var(--open); }
+  .card.closed { border-top: 4px solid var(--closed); }
+  .card.core { border-top: 4px solid var(--core); }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+  .tag.open { background: #e6f2ec; color: var(--open); }
+  .tag.closed { background: #f4e3e3; color: var(--closed); }
+  .tag.core { background: #e5ecf5; color: var(--core); }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 13px; }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #f2f2ec; font-weight: 600; }
+  .yes { color: var(--open); font-weight: 600; }
+  .no  { color: var(--closed); font-weight: 600; }
+  .mid { color: var(--accent); font-weight: 600; }
+  .timeline {
+    border-left: 2px solid var(--line);
+    margin: 10px 0 10px 6px;
+    padding-left: 16px;
+  }
+  .timeline .stage { margin-bottom: 14px; }
+  .timeline .stage h5 { margin: 0 0 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 22px; position: relative; margin-bottom: 5px; }
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  .score-table td.input { background: #fffbe8; font-style: italic; color: var(--muted); }
+  .callout {
+    background: #f1f5f1;
+    border-left: 4px solid var(--open);
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .callout.warn { background: #faf1f1; border-left-color: var(--closed); }
+  .callout.note { background: #eef2f7; border-left-color: var(--core); }
+  .footnote { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  @media (max-width: 780px) {
+    .grid2, .grid3 { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #fff; }
+    .card { break-inside: avoid; }
+    h2 { break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>SwiftCause Licensing Playbook</h1>
+  <div class="meta">Open Source vs Closed Source vs Open Core · Prepared for Qamar · 18 April 2026 · Pre-launch (GTM 9 May 2026)</div>
+</header>
+
+<div class="tldr">
+  <strong>TL;DR.</strong> You have three viable paths. Open source maximises trust and differentiation in the charity/religious sector but needs guardrails to stop commercial free-riding. Closed source protects the commercial moat but forces you to earn trust the hard way against incumbents who already own it. Open core is the pragmatic middle: open the compliance-critical code (Gift Aid / GASDS engine, donor flow) and close the commercial control plane (Super Admin, billing, analytics, CRM integrations). Whatever you choose, <strong>decide before 9 May</strong>. Licence reversal after live customers is painful — legally and reputationally.
+</div>
+
+<h2>1. How to use this playbook</h2>
+<p>Three paths below. Each has the same structure so you can compare like for like: strategic thesis, what you're really selling, pre-launch playbook (now → 9 May), 12-month playbook, licence mechanics, moat protection, what you give up, reversibility, and the KPIs to watch. Section 5 is a decision scorecard you can fill in.</p>
+
+<h2>2. The three paths at a glance</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%"></th>
+      <th style="width:26%">Path A — Open Source</th>
+      <th style="width:26%">Path B — Closed Source</th>
+      <th style="width:26%">Path C — Open Core</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>Core thesis</th>
+      <td>Transparency is the wedge. Trustees audit the code; HMRC-critical logic is provably correct.</td>
+      <td>Code is the asset. Protect it, monetise every deploy, move fast without community overhead.</td>
+      <td>Open what builds trust; close what builds revenue. Best of both, more to maintain.</td>
+    </tr>
+    <tr><th>What's open</th>
+      <td>Everything in <code>SwiftCause_Web</code> (donor app, compliance engine, SDKs).</td>
+      <td class="no">Nothing.</td>
+      <td>Donor app, Gift Aid/GASDS engine, campaign config schema, webhook SDKs.</td>
+    </tr>
+    <tr><th>What's closed</th>
+      <td class="no">Nothing (but "Enterprise" features live behind auth, not behind licence).</td>
+      <td>Everything.</td>
+      <td>Super Admin, Stripe Connect orchestration, analytics, CRM/Xero connectors, multi-tenant ops.</td>
+    </tr>
+    <tr><th>Licence</th>
+      <td>AGPL-3.0 or <strong>BSL 1.1</strong> (change to Apache after 4 yrs)</td>
+      <td>All Rights Reserved + commercial EULA</td>
+      <td>Open part under Apache-2.0 or BSL; closed part under EULA</td>
+    </tr>
+    <tr><th>Trust signal</th>
+      <td class="yes">Strongest — unique in sector</td>
+      <td class="no">Weakest — same as incumbents</td>
+      <td class="mid">Strong — "compliance code is public"</td>
+    </tr>
+    <tr><th>Fork risk</th>
+      <td class="mid">Real but mitigated by licence + ops moat</td>
+      <td class="yes">None</td>
+      <td class="yes">Low — fork gets donor app, not control plane</td>
+    </tr>
+    <tr><th>Dev velocity (small team)</th>
+      <td class="mid">Slower — PR triage, public issues</td>
+      <td class="yes">Fastest</td>
+      <td class="yes">Fast — only engine repo needs community management</td>
+    </tr>
+    <tr><th>Investor story</th>
+      <td class="mid">Mixed — some love it, some fear dilution</td>
+      <td class="yes">Cleanest</td>
+      <td class="yes">Familiar (GitLab, Sentry, Posthog pattern)</td>
+    </tr>
+    <tr><th>Reversibility</th>
+      <td class="no">Hard — can't un-publish code already released</td>
+      <td class="yes">Easy — can always open later</td>
+      <td class="mid">Can tighten open part; opening more is easy</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout note">
+  The decision isn't binary on day one. You can ship the MVP closed on 9 May and open specific modules in July once you have 5 live charities. What you <em>can't</em> do is ship open on 9 May and pull it back in July — that's a trust blow-up.
+</div>
+
+<h2>3. Path A — Stay Open Source</h2>
+
+<div class="card open">
+<span class="tag open">PATH A · OPEN</span>
+<h3>Strategic thesis</h3>
+<p>In a trust-first vertical (mosques, churches, small regulated charities), verifiability beats features. No competitor — Dona, GoodBox, CAF Donate, CollecTin, GiveALittle — publishes their compliance code. You own that positioning for free. You're not selling code; you're selling a compliant, branded, operated service with an auditable core.</p>
+
+<h4>What you're actually selling</h4>
+<ul>
+  <li>Stripe-connected, KYC'd merchant account provisioning</li>
+  <li>Hosted, monitored, backed-up donation endpoints</li>
+  <li>HMRC R68 monthly batching + Charity Commission compliance ops</li>
+  <li>Hardware + branded accessories (card readers, QR plates)</li>
+  <li>Support, training, sector-specific playbooks (religious two-pile, events)</li>
+  <li>CRM/Xero connectors + Super Admin dashboards (behind auth, not behind licence)</li>
+</ul>
+
+<h4>Pre-launch playbook (now → 9 May 2026)</h4>
+<div class="timeline">
+  <div class="stage">
+    <h5>Week 1 (19–25 Apr)</h5>
+    <ul class="checklist">
+      <li>Confirm licence: <strong>BSL 1.1</strong> (recommended) or AGPL-3.0. BSL lets you restrict commercial hosting for 4 yrs, then auto-converts to Apache.</li>
+      <li>Legal review of licence with a UK IP solicitor (~£500–£1,500). Flag: YNVSolutions org ownership, contributor assignment.</li>
+      <li>Draft Contributor Licence Agreement (CLA) via cla-assistant.io — free.</li>
+      <li>Audit all code for hard-coded secrets, PII, internal URLs. <code>git-secrets</code> + manual pass.</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 2 (26 Apr – 2 May)</h5>
+    <ul class="checklist">
+      <li>Publish <code>LICENSE</code>, <code>CONTRIBUTING.md</code>, <code>SECURITY.md</code>, <code>CODE_OF_CONDUCT.md</code> across SwiftCause_Web and sibling repos.</li>
+      <li>Write a <code>TRUST.md</code> — explains what's in the engine, links to Gift Aid rules, shows how to verify a reclaim locally.</li>
+      <li>Set up GitHub issue templates (bug, compliance question, feature request) and pinned "we're a small team" note.</li>
+      <li>Decide policy on external PRs: "accept bug fixes and docs; defer feature PRs until post-launch." State it publicly.</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 3 (3–9 May) — launch week</h5>
+    <ul class="checklist">
+      <li>Public launch post: "Why our Gift Aid engine is open source." Position it as a sector first.</li>
+      <li>Pitch to sector press: Third Sector, Civil Society, Church Times, Muslim News.</li>
+      <li>Seed conversation in charity tech forums (CharityDigital, Tech for Good UK).</li>
+    </ul>
+  </div>
+</div>
+
+<h4>12-month playbook (May 2026 → May 2027)</h4>
+<ul>
+  <li><strong>Months 1–3.</strong> Trust-capital phase. Publish a public changelog, security.txt, and a "trustee's guide to reviewing our code." One signed release per month.</li>
+  <li><strong>Months 4–6.</strong> Community phase. Run a "verify your reclaim" workshop with 2–3 tech-literate trustees from pilot charities. Write it up. Their quotes become your best sales asset.</li>
+  <li><strong>Months 7–9.</strong> Ecosystem phase. Publish integration SDKs (Xero, ChurchSuite, ChMS, Mosque Management Systems). Each becomes a co-marketing moment.</li>
+  <li><strong>Months 10–12.</strong> Moat-deepening. By now you have customer data, Stripe relationship, HMRC batching track record. The code is open; the operation isn't replicable.</li>
+</ul>
+
+<h4>Moat protection (non-code)</h4>
+<ul>
+  <li><strong>Stripe Connect platform relationship.</strong> Rate + approval — not forkable.</li>
+  <li><strong>HMRC track record.</strong> Clean R68 filings build credibility that can't be copied overnight.</li>
+  <li><strong>Data network effects.</strong> Benchmarking ("your mosque is top-quartile for Ramadan uplift") needs aggregated data.</li>
+  <li><strong>Sector playbooks.</strong> Two-pile logic, roaming stewards, madrasah carousel — operational IP, not code IP.</li>
+  <li><strong>Trademark "SwiftCause"</strong> registration (~£170 for one UK class). Fork can't use the name.</li>
+  <li><strong>485-prospect pipeline.</strong> The hardest asset to replicate.</li>
+</ul>
+
+<h4>What you give up</h4>
+<ul>
+  <li>Some enterprise buyers treat open source as amateur (less of an issue in charity sector; very much an issue if you ever sell to councils).</li>
+  <li>Competitors can study your compliance logic and match it faster.</li>
+  <li>Dev velocity tax — even with a "no feature PRs" policy, issue triage eats ~2–4 hrs/week.</li>
+  <li>Future proprietary ML/analytics features need clean IP boundaries.</li>
+</ul>
+
+<h4>KPIs to watch</h4>
+<ul>
+  <li>GitHub stars on SwiftCause_Web (vanity but signals sector awareness)</li>
+  <li>Inbound leads citing "I reviewed the code" — track as CRM field</li>
+  <li>External contributors (target: 3 by month 12; 0 is fine if trust narrative working)</li>
+  <li>% sales calls where transparency is explicitly mentioned as a reason to choose (target: ≥30%)</li>
+</ul>
+
+<div class="callout">
+  <strong>Red line.</strong> If a competitor forks and deploys against your customers within 12 months, you switch to Path C (open core) immediately — that's the BSL "change date" lever in action.
+</div>
+</div>
+
+<h2>4. Path B — Go Closed Source</h2>
+
+<div class="card closed">
+<span class="tag closed">PATH B · CLOSED</span>
+<h3>Strategic thesis</h3>
+<p>Your asset is the whole stack: compliance engine, Super Admin, Stripe orchestration, CRM connectors. Protect it, monetise every deployment, move at small-team speed without community overhead. You out-execute incumbents on UX, sector fit, and Gift Aid accuracy — not on transparency.</p>
+
+<h4>What you're actually selling</h4>
+<ul>
+  <li>A complete, branded, hosted donation platform</li>
+  <li>Proprietary Gift Aid + GASDS engine with HMRC-grade accuracy</li>
+  <li>Unique religious-sector features (two-pile, madrasah carousel, roaming steward mode)</li>
+  <li>Hardware + accessories bundle</li>
+  <li>Dedicated support + compliance ops</li>
+</ul>
+
+<h4>Pre-launch playbook (now → 9 May 2026)</h4>
+<div class="timeline">
+  <div class="stage">
+    <h5>Week 1 (19–25 Apr)</h5>
+    <ul class="checklist">
+      <li>Make all YNVSolutions SwiftCause repos <strong>private</strong>. Audit who has access. Remove anyone who shouldn't.</li>
+      <li>Put contractor/offshore dev contracts through a solicitor — confirm IP assignment clauses are watertight (work-for-hire under UK law).</li>
+      <li>Add proprietary header to every source file: <code>© 2026 YNV Solutions Ltd. All rights reserved. Confidential.</code></li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 2 (26 Apr – 2 May)</h5>
+    <ul class="checklist">
+      <li>Draft a <strong>Customer Software Licence Agreement</strong> (EULA) — grants right to use via SaaS, no redistribution, no reverse engineering.</li>
+      <li>Draft a <strong>Master Services Agreement</strong> for charity contracts — data processing, SLA, IP ownership, termination.</li>
+      <li>Trademark "SwiftCause" with UKIPO (~£170 one class; £70 each additional).</li>
+      <li>Document internal coding standards so you can defend against "we reverse-engineered a concept" claims later.</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 3 (3–9 May)</h5>
+    <ul class="checklist">
+      <li>Prepare a "trust without transparency" story: SOC 2 readiness, HMRC liaison, Charity Commission engagement, public incident reporting.</li>
+      <li>Launch messaging: focus on outcomes, not architecture ("the highest Gift Aid reclaim rate in the sector").</li>
+      <li>Line up 2–3 third-party security testers for a penetration test post-launch — external attestation replaces code transparency.</li>
+    </ul>
+  </div>
+</div>
+
+<h4>12-month playbook (May 2026 → May 2027)</h4>
+<ul>
+  <li><strong>Months 1–3.</strong> Prove compliance through output, not code. Publish monthly stats: "£X reclaimed, 0 HMRC rejections across Y charities." Every clean month compounds.</li>
+  <li><strong>Months 4–6.</strong> Earn the SOC 2 Type I attestation (~£8–15k). It's the closed-source equivalent of "you can inspect our code."</li>
+  <li><strong>Months 7–9.</strong> Publish case studies with named charities. Third-party trust beats self-asserted trust.</li>
+  <li><strong>Months 10–12.</strong> Build the <strong>moat the code can't see</strong>: Stripe preferred-rate relationship, HMRC liaison programme, exclusive partnerships with Muslim Scout Fellowship, Diocese of Bristol, etc.</li>
+</ul>
+
+<h4>Moat protection</h4>
+<ul>
+  <li>Code is confidential information under every employee/contractor NDA</li>
+  <li>Deploy obfuscation on client-side bundles</li>
+  <li>Rate-limit and fingerprint API access to detect scraping</li>
+  <li>Monitor GitHub/GitLab for leaked repositories</li>
+  <li>Full IP ownership (important for future acquisition)</li>
+</ul>
+
+<h4>What you give up</h4>
+<ul>
+  <li>Biggest differentiator vs Dona/GoodBox/CAF evaporates. You compete on execution alone — and they have scale you don't.</li>
+  <li>Trustees who want to audit code can't. For a minority (maybe 5–10% of buyers in the religious sector) this is a non-starter.</li>
+  <li>Sector PR opportunity lost — "UK's first open-source charity donation platform" is a headline only available once.</li>
+  <li>Developer recruitment harder — top juniors want to build a public portfolio.</li>
+</ul>
+
+<h4>KPIs to watch</h4>
+<ul>
+  <li>SOC 2 / ISO 27001 certification timeline</li>
+  <li>External pen-test findings and remediation cadence</li>
+  <li>Case studies published (target: 5 by month 12)</li>
+  <li>Sales cycle length — watch for lengthening due to trust-building friction</li>
+  <li>Gross margin vs Path A (should be 3–5 pts higher if this path is working)</li>
+</ul>
+
+<div class="callout warn">
+  <strong>Watch-out.</strong> In the religious sector specifically, committees sometimes want their IT volunteer to "have a look" before adopting. Closed source doesn't block the sale, but it adds a round trip. Have a standard answer: "We publish a technical white paper and SOC 2 report; happy to NDA your volunteer for a code walkthrough."
+</div>
+</div>
+
+<h2>5. Path C — Open Core (pragmatic middle)</h2>
+
+<div class="card core">
+<span class="tag core">PATH C · OPEN CORE</span>
+<h3>Strategic thesis</h3>
+<p>Open the code that builds trust. Close the code that builds revenue. This is the GitLab / Sentry / PostHog / Supabase pattern — proven at scale in B2B SaaS. For SwiftCause the natural split is: donor-facing + compliance engine = open; platform ops + Super Admin + integrations = closed.</p>
+
+<h4>The split</h4>
+<div class="grid2">
+  <div class="card open" style="border-top-width:3px;">
+    <strong>Open (Apache-2.0 or BSL)</strong>
+    <ul>
+      <li>Donor web app (card-tap / QR flows)</li>
+      <li>Magic-link flow + consent ledger</li>
+      <li>Gift Aid / GASDS rules engine</li>
+      <li>Campaign compliance lock logic</li>
+      <li>R68 batching + HMRC CSV generator</li>
+      <li>Two-pile / madrasah carousel rules</li>
+      <li>Webhook SDK + public API client libs</li>
+      <li>Reference documentation</li>
+    </ul>
+  </div>
+  <div class="card closed" style="border-top-width:3px;">
+    <strong>Closed (proprietary EULA)</strong>
+    <ul>
+      <li>Super Admin console + charity onboarding</li>
+      <li>Stripe Connect orchestration + KYC gate</li>
+      <li>Multi-tenant infrastructure + data isolation</li>
+      <li>Analytics, benchmarking, donor CRM</li>
+      <li>Xero / ChurchSuite / ChMS integrations</li>
+      <li>Billing, metering, tiered-fee logic</li>
+      <li>ML scoring for prospect discovery</li>
+      <li>White-label and agency tooling</li>
+    </ul>
+  </div>
+</div>
+
+<h4>Pre-launch playbook (now → 9 May 2026)</h4>
+<div class="timeline">
+  <div class="stage">
+    <h5>Week 1 (19–25 Apr) — repo split</h5>
+    <ul class="checklist">
+      <li>Inventory current SwiftCause_Web and sibling repos. Tag every module as OPEN or CLOSED.</li>
+      <li>Migrate CLOSED modules to new private repos: <code>swiftcause-admin</code>, <code>swiftcause-platform</code>, <code>swiftcause-integrations</code>.</li>
+      <li>Leave OPEN modules in <code>swiftcause-engine</code>, <code>swiftcause-donor-app</code>, <code>swiftcause-sdk</code>.</li>
+      <li>Set up a private monorepo or internal-only meta-repo that imports both.</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 2 (26 Apr – 2 May) — licence + hygiene</h5>
+    <ul class="checklist">
+      <li>Apply Apache-2.0 (simpler) or BSL 1.1 (more protective) to open repos.</li>
+      <li>Apply proprietary EULA header to closed repos.</li>
+      <li>Set up CLA-assistant on open repos.</li>
+      <li>Write the public README for <code>swiftcause-engine</code>: "This is the compliance engine that powers SwiftCause, the UK charity donation platform. It is maintained by YNV Solutions Ltd. Commercial hosting of charity donations requires a SwiftCause account."</li>
+    </ul>
+  </div>
+  <div class="stage">
+    <h5>Week 3 (3–9 May)</h5>
+    <ul class="checklist">
+      <li>Launch with a sector post: "Our compliance engine is public. Here's why." Link directly to the Gift Aid logic file.</li>
+      <li>Brief the first 5 pilot charities — this is a proof point, not a risk.</li>
+    </ul>
+  </div>
+</div>
+
+<h4>12-month playbook</h4>
+<ul>
+  <li><strong>Q1 (May–Jul).</strong> Keep closed repos closed, ship fast. Stabilise the engine API so external eyes feel welcome without destabilising you.</li>
+  <li><strong>Q2 (Aug–Oct).</strong> Open a second module — probably <code>swiftcause-sdk</code> — once it has a stable surface. Each open module is a PR moment.</li>
+  <li><strong>Q3 (Nov–Jan).</strong> Consider an open reference charity (a real mosque or church that runs SwiftCause) publishing their reclaim audit trail. Sector-altering.</li>
+  <li><strong>Q4 (Feb–Apr 2027).</strong> Investor conversations. Open-core is a familiar story — cite GitLab ($16bn), Sentry ($3bn), PostHog ($3bn) as comps.</li>
+</ul>
+
+<h4>Overhead costs (small team reality)</h4>
+<ul>
+  <li>~2 hrs/week issue triage on open repos (you, initially)</li>
+  <li>~£500–£1,500 one-off licence/legal review</li>
+  <li>Discipline tax: every PR needs an "is this open or closed?" decision. Write it down once.</li>
+  <li>Two CI pipelines (public repo + private repo) — ~4 hrs one-off setup</li>
+</ul>
+
+<h4>What you give up</h4>
+<ul>
+  <li>Some engineering elegance — you can't just shove everything in one repo</li>
+  <li>"Fully open" purists won't love it (tiny audience in charity sector, so low cost)</li>
+  <li>Complexity for future engineers onboarding ("why are there two repos for this feature?")</li>
+</ul>
+</div>
+
+<h2>6. Decision criteria — what should tip you which way</h2>
+<table>
+  <thead>
+    <tr>
+      <th>If this is true for you…</th>
+      <th>Lean towards</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>You want the fastest GTM story and religious sector is priority 1–3</td><td>A or C</td></tr>
+    <tr><td>You expect investor conversations in the next 18 months</td><td>C or B</td></tr>
+    <tr><td>You're worried about a well-funded competitor cloning you</td><td>C or B</td></tr>
+    <tr><td>Team is &lt; 4 engineers and feature velocity is already fragile</td><td>B or C</td></tr>
+    <tr><td>You want to differentiate on trust, not price or features</td><td>A or C</td></tr>
+    <tr><td>You might sell to councils / government bodies later</td><td>C or B</td></tr>
+    <tr><td>You want maximum optionality — can tighten or loosen later</td><td>C</td></tr>
+    <tr><td>You want one headline the sector remembers</td><td>A</td></tr>
+  </tbody>
+</table>
+
+<h2>7. Scorecard — fill in and compare</h2>
+<p>Rate each path 1–5 on the weighted criteria below. Multiply by the weight (which you can adjust) and compare totals.</p>
+<table class="score-table">
+  <thead>
+    <tr>
+      <th style="width:34%">Criterion</th>
+      <th style="width:10%">Weight</th>
+      <th style="width:18%">Path A (Open)</th>
+      <th style="width:18%">Path B (Closed)</th>
+      <th style="width:18%">Path C (Open Core)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trust / sector credibility</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Moat protection against fork</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Dev velocity at small team size</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Investor / exit story</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Reversibility / optionality</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Sales cycle impact</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Ops / maintenance overhead (higher = worse, score inversely)</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <td>Future proprietary features headroom</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+    <tr>
+      <th>TOTAL (weighted)</th>
+      <td class="input">—</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+      <td class="input">__</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>8. One-week decision sprint</h2>
+<ol>
+  <li><strong>Day 1 — self-scoring.</strong> Fill in section 7 yourself. Don't overthink.</li>
+  <li><strong>Day 2 — friction test.</strong> Call 2 pilot charities. Ask: "If I told you our code was public, would that make you more or less likely to buy?" Don't lead.</li>
+  <li><strong>Day 3 — competitive read.</strong> Check Dona, GoodBox, CAF Donate, GiveALittle — has any moved on openness recently? If so, the window is closing.</li>
+  <li><strong>Day 4 — legal.</strong> 30-min call with a UK IP solicitor. Cost ~£150. Confirm there's no contractor IP risk either way.</li>
+  <li><strong>Day 5 — finance.</strong> Revisit the 6-year projection under each path. Path A may have +5–10% win rate and −1–2 pt price ceiling. Path B may have +1–2 pt gross margin but −10% religious-sector win rate. Model it.</li>
+  <li><strong>Day 6 — decision.</strong> Write a one-page memo with the call + the trigger that would make you switch.</li>
+  <li><strong>Day 7 — execution kick-off.</strong> Whichever path: start week 1 of the relevant playbook above.</li>
+</ol>
+
+<h2>9. Two irreversible mistakes to avoid</h2>
+<ol>
+  <li><strong>Shipping open then pulling back.</strong> You can never un-publish. Do not go open unless you have sat with it for a week and are willing to live with it for 3 years.</li>
+  <li><strong>Going closed without registering the trademark and locking contractor IP.</strong> Your entire moat rests on this paperwork. £170 + £500 in solicitor time is the cheapest insurance you'll ever buy.</li>
+</ol>
+
+<div class="footnote">
+  <p>Prepared 18 April 2026 · Context: SwiftCause MVP pre-launch, 485 prospects, religious sector first, Firestore / React stack, YNVSolutions org. Revisit at: (a) first 5 paid charities live, (b) first funding conversation, (c) first credible competitor fork.</p>
+</div>
+
+</div>
+</body>
+</html>
