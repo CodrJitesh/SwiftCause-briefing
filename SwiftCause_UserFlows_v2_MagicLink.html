@@ -1,1 +1,616 @@
-PLACEHOLDER_FILE2_CONTENT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause — User Flows v2: Magic Link Model</title>
+<style>
+:root {
+  --green: #0E8F5A; --green-light: #EEF7F2; --green-dark: #0a6b43; --green-border: #BFE2CF;
+  --red: #DC2626; --red-light: #FEF2F2; --red-border: #FECACA;
+  --amber: #D97706; --amber-light: #FFFBEB; --amber-border: #FDE68A;
+  --blue: #2563EB; --blue-light: #EFF6FF; --blue-border: #BFDBFE;
+  --purple: #7C3AED; --purple-light: #F5F3FF; --purple-border: #C4B5FD;
+  --teal: #0D9488; --teal-light: #F0FDFA; --teal-border: #99F6E4;
+  --slate-900: #0F172A; --slate-700: #334155; --slate-500: #64748B; --slate-300: #CBD5E1;
+  --slate-200: #E2E8F0; --slate-100: #F1F5F9; --slate-50: #F8FAFC; --white: #FFFFFF;
+  --rose: #E11D48; --rose-light: #FFF1F2; --rose-border: #FECDD3;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #FAFBFD; color: var(--slate-900); }
+.header { background: linear-gradient(135deg, var(--green), var(--green-dark)); color: white; padding: 28px 32px; }
+.header h1 { font-size: 24px; font-weight: 700; }
+.header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+.header .revision { display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-top: 8px; }
+.nav { display: flex; background: var(--white); border-bottom: 2px solid var(--slate-200); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+.nav-btn { padding: 12px 18px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--slate-500); border: none; background: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; }
+.nav-btn:hover { color: var(--green); background: var(--green-light); }
+.nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
+.panel { display: none; max-width: 1300px; margin: 0 auto; padding: 28px 20px; }
+.panel.active { display: block; }
+h2 { font-size: 20px; font-weight: 700; margin: 24px 0 8px; }
+h3 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; color: var(--slate-700); }
+.desc { font-size: 14px; color: var(--slate-500); margin-bottom: 16px; line-height: 1.6; }
+.callout { padding: 16px 20px; border-radius: 10px; margin: 16px 0; font-size: 13px; line-height: 1.6; }
+.callout strong { display: block; margin-bottom: 4px; }
+.callout-green { background: var(--green-light); border: 1px solid var(--green-border); color: var(--slate-700); }
+.callout-green strong { color: var(--green); }
+.callout-blue { background: var(--blue-light); border: 1px solid var(--blue-border); color: var(--slate-700); }
+.callout-blue strong { color: var(--blue); }
+.callout-amber { background: var(--amber-light); border: 1px solid var(--amber-border); color: var(--slate-700); }
+.callout-amber strong { color: var(--amber); }
+.callout-red { background: var(--red-light); border: 1px solid var(--red-border); color: var(--slate-700); }
+.callout-red strong { color: var(--red); }
+.callout-purple { background: var(--purple-light); border: 1px solid var(--purple-border); color: var(--slate-700); }
+.callout-purple strong { color: var(--purple); }
+.callout-teal { background: var(--teal-light); border: 1px solid var(--teal-border); color: var(--slate-700); }
+.callout-teal strong { color: var(--teal); }
+.flow-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+@media (max-width: 900px) { .flow-comparison { grid-template-columns: 1fr; } }
+.flow-col { background: var(--white); border-radius: 14px; border: 1px solid var(--slate-200); overflow: hidden; }
+.flow-col-header { padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--white); }
+.flow-col-header.as-is { background: var(--slate-700); }
+.flow-col-header.to-be { background: var(--green); }
+.flow-col-header.magic { background: var(--purple); }
+.flow-col-body { padding: 20px; }
+.flow-full { background: var(--white); border-radius: 14px; border: 1px solid var(--slate-200); overflow: hidden; margin: 16px 0; }
+.flow-full-header { padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--white); }
+.flow-full-body { padding: 20px; }
+.step { position: relative; padding: 14px 16px; border-radius: 10px; margin-bottom: 8px; font-size: 13px; line-height: 1.5; border: 1px solid var(--slate-200); background: var(--white); }
+.step.active { border-color: var(--green); background: var(--green-light); }
+.step.new { border-color: var(--blue); background: var(--blue-light); }
+.step.changed { border-color: var(--amber); background: var(--amber-light); }
+.step.magic { border-color: var(--purple); background: var(--purple-light); }
+.step.removed { border-color: var(--red); background: var(--red-light); opacity: 0.7; text-decoration: line-through; }
+.step.gap { border: 2px dashed var(--red); background: var(--red-light); }
+.step.teal { border-color: var(--teal); background: var(--teal-light); }
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; color: var(--white); margin-right: 8px; flex-shrink: 0; }
+.step-num.green { background: var(--green); }
+.step-num.blue { background: var(--blue); }
+.step-num.amber { background: var(--amber); }
+.step-num.red { background: var(--red); }
+.step-num.slate { background: var(--slate-500); }
+.step-num.purple { background: var(--purple); }
+.step-num.teal { background: var(--teal); }
+.step-title { font-weight: 600; color: var(--slate-900); }
+.step-detail { font-size: 12px; color: var(--slate-500); margin-top: 4px; }
+.step-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+.badge-exists { background: var(--green-light); color: var(--green); }
+.badge-new { background: var(--blue-light); color: var(--blue); }
+.badge-changed { background: var(--amber-light); color: var(--amber); }
+.badge-gap { background: var(--red-light); color: var(--red); }
+.badge-magic { background: var(--purple-light); color: var(--purple); }
+.badge-removed { background: var(--red-light); color: var(--red); }
+.badge-teal { background: var(--teal-light); color: var(--teal); }
+.arrow { text-align: center; color: var(--slate-300); font-size: 18px; margin: 2px 0; }
+.decision { position: relative; padding: 14px 16px; border-radius: 10px; margin-bottom: 8px; font-size: 13px; background: var(--purple-light); border: 1px solid var(--purple-border); }
+.decision .step-title { color: var(--purple); }
+.branch-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
+.branch { padding: 10px 12px; border-radius: 8px; font-size: 12px; border: 1px solid var(--slate-200); background: var(--slate-50); }
+.branch-label { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.branch-label.yes { color: var(--green); }
+.branch-label.no { color: var(--red); }
+.branch-label.option { color: var(--purple); }
+.branch-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
+@media (max-width: 700px) { .branch-3 { grid-template-columns: 1fr; } }
+.outcome { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+.outcome-tag { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+.outcome-tag.gift-aid { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+.outcome-tag.gasds { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-border); }
+.outcome-tag.anon { background: var(--slate-100); color: var(--slate-500); border: 1px solid var(--slate-300); }
+.outcome-tag.recurring { background: var(--purple-light); color: var(--purple); border: 1px solid var(--purple-border); }
+.outcome-tag.magic { background: var(--teal-light); color: var(--teal); border: 1px solid var(--teal-border); }
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 16px 0; }
+.summary-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 18px; }
+.summary-card h4 { font-size: 13px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.summary-card .value { font-size: 26px; font-weight: 800; }
+.summary-card .detail { font-size: 12px; color: var(--slate-500); margin-top: 4px; line-height: 1.5; }
+.matrix { width: 100%; border-collapse: collapse; font-size: 12px; margin: 16px 0 24px; }
+.matrix th { background: var(--slate-700); color: var(--white); padding: 10px 12px; text-align: left; font-weight: 600; }
+.matrix td { padding: 8px 12px; border-bottom: 1px solid var(--slate-200); }
+.matrix tr:nth-child(even) { background: var(--slate-50); }
+.matrix .yes-cell { color: var(--green); font-weight: 700; }
+.matrix .no-cell { color: var(--red); font-weight: 700; }
+.matrix .partial-cell { color: var(--amber); font-weight: 700; }
+.matrix .na-cell { color: var(--slate-300); }
+.compare-strip { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: center; margin: 20px 0; padding: 20px; background: var(--white); border-radius: 12px; border: 1px solid var(--slate-200); }
+.compare-strip .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.compare-strip .old { color: var(--red); }
+.compare-strip .new { color: var(--green); }
+.compare-strip .vs { font-size: 20px; font-weight: 800; color: var(--slate-300); }
+.compare-strip p { font-size: 13px; color: var(--slate-700); line-height: 1.5; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; margin-bottom: 20px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--slate-700); }
+.legend-swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid; }
+.issue-ref { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; background: var(--rose-light); color: var(--rose); border: 1px solid var(--rose-border); margin-left: 4px; vertical-align: middle; text-decoration: none; cursor: pointer; transition: all 0.15s; }
+.issue-ref:hover { background: var(--rose); color: white; }
+.issue-ref.pr { background: #ECFDF5; color: #059669; border-color: #A7F3D0; }
+.issue-ref.pr:hover { background: #059669; color: white; }
+.issue-ref.p0 { background: var(--red-light); color: var(--red); border-color: var(--red-border); animation: pulse-border 2s infinite; }
+@keyframes pulse-border { 0%,100% { border-color: var(--red-border); } 50% { border-color: var(--red); } }
+.step-issues { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+.dev-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 12px 16px; background: var(--rose-light); border: 1px solid var(--rose-border); border-radius: 10px; margin-bottom: 20px; font-size: 12px; color: var(--slate-700); }
+.dev-legend strong { color: var(--rose); margin-right: 8px; }
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 4px; }
+.tag-p0 { background: var(--red-light); color: var(--red); border: 1px solid var(--red-border); }
+.tag-p1 { background: var(--amber-light); color: var(--amber); border: 1px solid var(--amber-border); }
+.tag-new { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue-border); }
+.tag-infra { background: var(--purple-light); color: var(--purple); border: 1px solid var(--purple-border); }
+.tag-phase { background: var(--slate-100); color: var(--slate-700); border: 1px solid var(--slate-300); }
+.dep-chain { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 12px 0; padding: 14px; background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; }
+.dep-node { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.dep-arrow { color: var(--slate-300); font-size: 16px; }
+.section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+@media (max-width: 800px) { .section-grid { grid-template-columns: 1fr; } }
+.briefing-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px; }
+.briefing-card h4 { font-size: 13px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.briefing-card .value { font-size: 22px; font-weight: 800; }
+.rule { font-size: 13px; padding: 10px 14px; border-radius: 8px; margin: 6px 0; border-left: 4px solid; background: var(--slate-50); }
+.rule-red { border-color: var(--red); }
+.rule-green { border-color: var(--green); }
+.rule-blue { border-color: var(--blue); }
+.briefing-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0 20px; }
+.briefing-table th { background: var(--slate-700); color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+.briefing-table td { padding: 8px 12px; border-bottom: 1px solid var(--slate-200); }
+.briefing-table tr:nth-child(even) { background: var(--slate-50); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SwiftCause User Flows v2: Magic Link Model</h1>
+  <p>Revised architecture &mdash; no persistent web portal, all off-kiosk interactions via one-time magic links</p>
+  <div class="revision">v2.1 &mdash; 30 March 2026 &mdash; Magic link architecture + Developer Briefing (merged)</div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="show('overview')">Architecture Change</button>
+  <button class="nav-btn" onclick="show('flow1')">Flow 1: Kiosk Tap-to-Pay</button>
+  <button class="nav-btn" onclick="show('flow2')">Flow 2: Magic Link (Gift Aid)</button>
+  <button class="nav-btn" onclick="show('flow3')">Flow 3: Magic Link (Recurring)</button>
+  <button class="nav-btn" onclick="show('flow4')">Flow 4: Returning Donor</button>
+  <button class="nav-btn" onclick="show('combined')">Combined Journey Map</button>
+  <button class="nav-btn" onclick="show('matrix')">Data Capture Matrix</button>
+  <button class="nav-btn" onclick="show('sprint')" style="color:var(--purple);font-weight:700;">Sprint Plan</button>
+  <button class="nav-btn" onclick="show('briefing')" style="color:var(--red);font-weight:700;">Developer Briefing</button>
+</div>
+
+<!-- ���══════════ ARCHITECTURE CHANGE ═══════════ -->
+<div id="overview" class="panel active">
+  <h2>What Changed: Web Portal &rarr; Magic Link</h2>
+  <p class="desc">Developer comments: rather than building and maintaining a permanent public donation portal, all off-kiosk donor interactions happen through <strong>one-time magic links</strong>. This is a simpler, more secure architecture that solves the same problems.</p>
+  <div class="compare-strip">
+    <div><div class="label old">Previous Model (v1)</div><p><strong>3 separate flows:</strong> Kiosk Tap-to-Pay, QR Follow-Up page, and a permanent Web Portal at /donate/[campaignId]. The web portal was a standalone responsive checkout page that anyone could visit directly.</p></div>
+    <div class="vs">vs</div>
+    <div><div class="label new">Revised Model (v2)</div><p><strong>2 flows, 1 link pattern:</strong> Kiosk Tap-to-Pay (same), plus a Magic Link that serves every off-kiosk need &mdash; Gift Aid capture, recurring setup, donor information updates. No persistent public URL. Every link is tokenised, one-time use, and expires.</p></div>
+  </div>
+  <h3>Why This Is Better</h3>
+  <div class="summary-row">
+    <div class="summary-card"><h4>Simpler to Build</h4><div class="value" style="color:var(--green);">1 route</div><div class="detail">One dynamic page at <code>/link/[token]</code> serves all purposes. The token payload determines what the page shows: Gift Aid form, recurring setup, information update, or a combination.</div></div>
+    <div class="summary-card"><h4>More Secure</h4><div class="value" style="color:var(--green);">Tokenised</div><div class="detail">No open public checkout URL. Every link is cryptographically unique, single-use, and expires (30 days). Can&rsquo;t be guessed, crawled, or abused.</div></div>
+    <div class="summary-card"><h4>Context-Aware</h4><div class="value" style="color:var(--green);">Pre-loaded</div><div class="detail">The link already knows: which donation it relates to, the amount, the campaign, and what action is needed. No need for the donor to re-enter anything the system already has.</div></div>
+    <div class="summary-card"><h4>Less to Maintain</h4><div class="value" style="color:var(--green);">&ndash;1 flow</div><div class="detail">No campaign discovery, no amount selection, no public routing on the web page. The kiosk handles all of that. The magic link just collects what&rsquo;s missing.</div></div>
+  </div>
+  <h3>How the Magic Link Works</h3>
+  <div class="flow-full"><div class="flow-full-header" style="background:var(--purple);">Magic Link Lifecycle</div><div class="flow-full-body">
+    <div class="step magic"><span class="step-num purple">1</span><span class="step-title">Token Created</span><div class="step-detail">When: on payment completion (webhook) if Gift Aid wasn&rsquo;t captured on-screen, OR when admin/kiosk operator triggers a follow-up. Stored in <code>magicLinkTokens</code> collection with: donationId, amount, campaignId, purpose (gift_aid | recurring | info_update | gift_aid_and_recurring), expiresAt, status: pending.</div></div>
+    <div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">2</span><span class="step-title">Link Delivered to Donor</span><div class="step-detail">Delivery methods (one or more): QR code on kiosk Thank You screen, NFC push (if supported), printed on receipt, or emailed if donor email was captured at any point. URL format: <code>https://app.swiftcause.com/link/[token]</code></div></div>
+    <div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">3</span><span class="step-title">Donor Opens Link on Their Phone</span><div class="step-detail">Public page, no login needed. Validates token (exists, not expired, not already used). Shows context: &ldquo;Thank you for your &pound;X donation to [Campaign].&rdquo;</div></div>
+    <div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">4</span><span class="step-title">Dynamic Content Based on Purpose</span><div class="step-detail">The token&rsquo;s <code>purpose</code> field determines what the page renders. See individual flows below for each scenario.</div></div>
+    <div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">5</span><span class="step-title">Donor Completes Action</span><div class="step-detail">Submits form. Token marked as &ldquo;completed&rdquo;. Link becomes single-use &mdash; revisiting shows a &ldquo;You&rsquo;ve already completed this&rdquo; confirmation page with a summary.</div></div>
+    <div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">6</span><span class="step-title">Confirmation + Email</span><div class="step-detail">Thank you page on phone. Confirmation email with Gift Aid declaration summary and/or recurring schedule. Token status: completed.</div></div>
+  </div></div>
+  <h3>Token Purpose Types</h3>
+  <table class="matrix">
+    <tr><th>Purpose</th><th>What It Shows</th><th>When Created</th><th>Donor Action</th></tr>
+    <tr><td><strong>gift_aid</strong></td><td>Gift Aid declaration form only (name, address, postcode, HMRC consent)</td><td>After kiosk tap-to-pay when donor didn&rsquo;t complete Option A</td><td>Fill in details, tick declaration, submit</td></tr>
+    <tr><td><strong>recurring</strong></td><td>Recurring setup: frequency selector + Payment Element to store payment method</td><td>Donor expressed interest in recurring on kiosk, or admin sends invitation</td><td>Choose frequency, enter card/wallet, confirm</td></tr>
+    <tr><td><strong>gift_aid_and_recurring</strong></td><td>Combined: Gift Aid form + recurring setup + Payment Element</td><td>Kiosk flow where both are needed (most common for engaged donors)</td><td>Fill Gift Aid, choose frequency, pay, submit all</td></tr>
+    <tr><td><strong>info_update</strong></td><td>Pre-filled donor details with edit capability</td><td>Admin sends update request, or donor requests via earlier link</td><td>Review, edit if needed, confirm</td></tr>
+  </table>
+  <div class="callout callout-purple"><strong>Key Architectural Decision</strong>One route (<code>/link/[token]</code>), one page component, one backend validator. The token payload drives what renders. No separate pages for Gift Aid vs recurring vs updates. This replaces both the old &ldquo;QR Follow-Up&rdquo; flow AND the &ldquo;Web Portal&rdquo; flow with a single, simpler system.</div>
+</div>
+
+<!-- ═══════════ FLOW 1: KIOSK TAP-TO-PAY ═══════════ -->
+<div id="flow1" class="panel">
+  <h2>Flow 1: Kiosk Tap-to-Pay</h2>
+  <p class="desc">The primary high-footfall flow. Donor at a kiosk (Android handset or fixed device). The kiosk flow itself is largely unchanged &mdash; the key difference is what happens <em>after</em> payment when the donor hasn&rsquo;t completed Gift Aid on-screen.</p>
+  <div class="dev-legend"><strong>Dev Work:</strong> <a class="issue-ref" href="#">#issue</a> = GitHub issue to build &nbsp;|&nbsp; <a class="issue-ref p0" href="#">P0</a> = Security/compliance blocker &nbsp;|&nbsp; <a class="issue-ref pr" href="#">PR</a> = Pull request</div>
+  <div class="flow-comparison">
+    <div class="flow-col"><div class="flow-col-header as-is">AS-IS &mdash; Today</div><div class="flow-col-body">
+      <div class="step active"><span class="step-num green">1</span><span class="step-title">Campaign List</span><span class="step-badge badge-exists">BUILT</span></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">2</span><span class="step-title">Campaign Detail + Amount</span><span class="step-badge badge-exists">BUILT</span></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">3</span><span class="step-title">Gift Aid Boost Panel</span><span class="step-badge badge-exists">BUILT</span><div class="step-detail">&ldquo;Boost your donation&rdquo; &mdash; Yes/No.</div></div><div class="arrow">&darr;</div>
+      <div class="decision"><span class="step-title">Donor taps &ldquo;Yes, Boost&rdquo;?</span></div>
+      <div class="branch-container"><div class="branch"><div class="branch-label yes">Yes &rarr; Option A</div>Email gate &rarr; Gift Aid form &rarr; declaration saved.</div><div class="branch"><div class="branch-label no">No &rarr; Skip</div>Straight to payment. No Gift Aid. No follow-up.</div></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">4</span><span class="step-title">Stripe Terminal Payment</span><span class="step-badge badge-exists">BUILT</span></div><div class="arrow">&darr;</div>
+      <div class="step"><span class="step-num slate">5</span><span class="step-title">Basic Result Screen</span><div class="step-detail">Success/fail only. No QR. No options. Flow ends.</div></div>
+      <div class="callout callout-red" style="margin-top:16px;"><strong>Problem</strong>If the donor skips Gift Aid (or the admin has Option B+ configured), there is no way to capture it after payment. The donation is anonymous forever. Money left on the table.</div>
+    </div></div>
+    <div class="flow-col"><div class="flow-col-header to-be">TO-BE &mdash; With Magic Link</div><div class="flow-col-body">
+      <div class="step active"><span class="step-num green">1</span><span class="step-title">Campaign List</span><span class="step-badge badge-exists">NO CHANGE</span></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">2</span><span class="step-title">Campaign Detail + Amount</span><span class="step-badge badge-exists">NO CHANGE</span></div><div class="arrow">&darr;</div>
+      <div class="step changed"><span class="step-num amber">3</span><span class="step-title">Flow Router</span><span class="step-badge badge-changed">UPDATED</span><div class="step-detail">Reads <code>donationFlowConfig</code> from campaign. Routes to Option A (on-screen GA), Option B+ (pay first, magic link after), or Hybrid (donor chooses).</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586 Flow Router</a></div></div><div class="arrow">&darr;</div>
+      <div class="decision"><span class="step-title">Flow type?</span></div>
+      <div class="branch-container"><div class="branch"><div class="branch-label yes">Option A</div>Same: email gate &rarr; Gift Aid form (with new fields) &rarr; declaration saved before payment.<div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590 Gift Aid Form</a> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585" target="_blank">#585 Data Gaps</a></div></div><div class="branch"><div class="branch-label no">Option B+</div>Skip form. Straight to Terminal. Gift Aid via magic link after.</div></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">4</span><span class="step-title">Stripe Terminal Payment</span><span class="step-badge badge-exists">NO CHANGE</span><div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525" target="_blank">P0 #525 Webhook Idempotency</a> <a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/524" target="_blank">P0 #524 Abuse Protection</a></div></div><div class="arrow">&darr;</div>
+      <div class="step changed"><span class="step-num amber">5</span><span class="step-title">Webhook + Magic Link Token</span><span class="step-badge badge-changed">UPDATED</span><div class="step-detail">On payment success: if Gift Aid NOT captured on-screen, create magic link token with purpose <code>gift_aid</code> (or <code>gift_aid_and_recurring</code> if recurring was selected).</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587 Token System</a> <a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525" target="_blank">P0 #525 Idempotency</a></div></div><div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">6</span><span class="step-title">Thank You Screen + Magic Link</span><span class="step-badge badge-new">NEW</span><div class="step-detail">4-region kiosk layout: celebration message, QR code (encodes magic link URL), &ldquo;Done&rdquo; button, countdown timer. QR sized 200&times;200px minimum for easy scanning.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/588" target="_blank">#588 QR Thank You</a></div></div><div class="arrow">&darr;</div>
+      <div class="step magic"><span class="step-num purple">7</span><span class="step-title">Donor Scans &rarr; Magic Link Flow</span><span class="step-badge badge-magic">MAGIC LINK</span><div class="step-detail">Opens on donor&rsquo;s phone. See Flow 2 or Flow 3 depending on token purpose.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589 /link/[token] Page</a></div></div>
+      <div class="callout callout-green" style="margin-top:16px;"><strong>Result</strong>Every kiosk donation now has a path to Gift Aid capture &mdash; either on-screen (Option A) or via magic link (Option B+). The magic link also enables recurring setup, which was impossible on Terminal alone.</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══════════ FLOW 2: MAGIC LINK (GIFT AID) ═══════════ -->
+<div id="flow2" class="panel">
+  <h2>Flow 2: Magic Link &mdash; Gift Aid Capture</h2>
+  <p class="desc">Donor scans QR on kiosk Thank You screen (or receives link via NFC/email/receipt). Opens a one-time page on their phone to provide Gift Aid details for the donation they just made. This is the most common magic link use case.</p>
+  <div class="dev-legend"><strong>Dev Work:</strong> <a class="issue-ref" href="#">#issue</a> = GitHub issue to build &nbsp;|&nbsp; <a class="issue-ref p0" href="#">P0</a> = Security/compliance blocker &nbsp;|&nbsp; <a class="issue-ref pr" href="#">PR</a> = Pull request</div>
+  <div class="callout callout-blue"><strong>Key Constraint</strong>This is a <em>post-payment</em> flow. The donor has already paid on the kiosk via Stripe Terminal. No second payment happens here. The magic link page collects HMRC-required donor identity and declaration only.</div>
+  <div class="flow-full"><div class="flow-full-header" style="background:var(--purple);">Magic Link: Gift Aid Capture (purpose: gift_aid)</div><div class="flow-full-body">
+    <div class="step magic"><span class="step-num purple">1</span><span class="step-title">Donor Opens Magic Link</span><div class="step-detail">URL: <code>https://app.swiftcause.com/link/[token]</code>. Opens in phone browser (Safari/Chrome). No app needed. No login.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589 /link/[token] Page</a></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">2</span><span class="step-title">Token Validation</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Backend checks: token exists, status is &ldquo;pending&rdquo;, not expired. Returns donation context: amount, campaign name, charity name. If invalid: friendly error (&ldquo;This link has expired or already been used&rdquo;).</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587 Token Validation API</a> <a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/524" target="_blank">P0 #524 Abuse Protection</a></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">3</span><span class="step-title">Context Screen</span><span class="step-badge badge-new">NEW</span><div class="step-detail">&ldquo;Thank you for your &pound;25.00 donation to [Campaign]! You can boost your donation by 25% at no cost to you through Gift Aid.&rdquo; Shows Gift Aid value: &pound;6.25. CTA: &ldquo;Add Gift Aid&rdquo;.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589 Context Screen</a></div></div><div class="arrow">&darr;</div>
+    <div class="decision"><span class="step-title">Is this a returning donor? (email lookup)</span></div>
+    <div class="branch-container"><div class="branch"><div class="branch-label yes">Yes &mdash; Profile Found</div><div class="step teal" style="margin:6px 0"><span class="step-num teal">4a</span><span class="step-title">Confirmation Screen</span><span class="step-badge badge-teal">RETURNING</span><div class="step-detail">&ldquo;We have your Gift Aid details from [date]. Still correct?&rdquo; Shows name + address summary. Two options: &ldquo;Yes, use these&rdquo; or &ldquo;Update my details&rdquo;.</div><div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">P0 #591 Consent Fix</a></div></div></div><div class="branch"><div class="branch-label no">No &mdash; New Donor</div><div class="step new" style="margin:6px 0"><span class="step-num blue">4b</span><span class="step-title">Gift Aid Form</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Full HMRC-compliant form: name, email, house number, address, town, postcode (with lookup), HMRC declaration text, consent checkbox, GDPR checkbox, declarationType selector.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590 Gift Aid Form</a> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585" target="_blank">#585 Data Gaps</a></div></div></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">5</span><span class="step-title">Declaration Created + Token Completed</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Creates Gift Aid declaration in Firestore linked to original donationId. Sets captureMethod: POST_DONATION_MAGIC_LINK. Marks token as &ldquo;completed&rdquo;. Updates donation doc: isGiftAidCaptured: true.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587 Token Completion</a></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">6</span><span class="step-title">Thank You + Confirmation Email</span><span class="step-badge badge-new">NEW</span><div class="step-detail">&ldquo;Your &pound;25.00 donation now qualifies for &pound;6.25 Gift Aid!&rdquo; Confirmation email with declaration text, charity name, HMRC responsibility notice (GA-04).</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/593" target="_blank">#593 Confirmation Emails</a></div></div>
+  </div></div>
+  <div class="callout callout-amber"><strong>If the Donor Doesn&rsquo;t Scan</strong>The token stays &ldquo;pending&rdquo; for 30 days. If the charity captured the donor&rsquo;s email during any prior interaction, an automated follow-up email can be sent after 24/48 hours with the same magic link. If the token expires unused, the donation remains GASDS-eligible (if &le;&pound;30) but not Gift Aid-eligible.<div class="step-issues" style="margin-top:8px;"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/595" target="_blank">#595 Auto Follow-up</a> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/594" target="_blank">#594 Admin Re-send</a></div></div>
+</div>
+
+<!-- ═══════════ FLOW 3: MAGIC LINK (RECURRING) ═══════════ -->
+<div id="flow3" class="panel">
+  <h2>Flow 3: Magic Link &mdash; Recurring Setup</h2>
+  <p class="desc">Stripe Terminal cannot store payment methods for future charges, so recurring donations are impossible on-kiosk. The magic link solves this: the donor taps once on the kiosk (one-time payment), then opens the magic link on their phone to set up recurring via Payment Element (which <em>can</em> store payment methods).</p>
+  <div class="dev-legend"><span><span class="issue-ref">issue</span> = GitHub issue (to build)</span><span><span class="issue-ref pr">PR</span> = Pull request (in progress / merged)</span><span><span class="issue-ref p0">P0</span> = Security / compliance blocker</span></div>
+  <div class="callout callout-purple"><strong>This is the only way to get recurring from a kiosk flow.</strong>Terminal = card-present = no stored payment method. Payment Element = card-not-present = stored payment method = recurring possible.</div>
+  <div class="flow-full"><div class="flow-full-header" style="background:var(--purple);">Magic Link: Gift Aid + Recurring (purpose: gift_aid_and_recurring)</div><div class="flow-full-body">
+    <div class="step magic"><span class="step-num purple">1</span><span class="step-title">Donor Opens Magic Link</span><div class="step-detail">Same URL pattern. Token has purpose: <code>gift_aid_and_recurring</code> (or just <code>recurring</code> if Gift Aid was already captured on-screen).</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589</a> <span style="font-size:10px;color:var(--slate-500);">/link/[token] page &mdash; routes by token purpose</span></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">2</span><span class="step-title">Context + Recurring Pitch</span><span class="step-badge badge-new">NEW</span><div class="step-detail">&ldquo;Thank you for your &pound;25.00 donation! Would you like to make this a regular gift? Monthly donors help [Campaign] plan ahead and have twice the impact.&rdquo;</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589</a> <span style="font-size:10px;color:var(--slate-500);">Context screen inside /link/[token]</span></div></div><div class="arrow">&darr;</div>
+    <div class="decision"><span class="step-title">Token purpose includes Gift Aid?</span></div>
+    <div class="branch-container"><div class="branch"><div class="branch-label yes">Yes &mdash; gift_aid_and_recurring</div>Gift Aid form shown first (same as Flow 2 step 4). declarationType defaults to &ldquo;past_and_future&rdquo; since this is a recurring setup.<div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590</a> <span style="font-size:10px;color:var(--slate-500);">Gift Aid form component</span> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585" target="_blank">#585</a> <span style="font-size:10px;color:var(--slate-500);">declarationType radio</span></div></div><div class="branch"><div class="branch-label no">No &mdash; recurring only</div>Skip Gift Aid form. Existing declaration already covers future donations.</div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">3</span><span class="step-title">Recurring Frequency Selector</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Monthly (default), Quarterly, Yearly. Amount pre-filled from original donation. Donor can adjust.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Recurring via magic link &mdash; frequency UI</span></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">4</span><span class="step-title">Stripe Payment Element</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Payment Element on donor&rsquo;s phone. Apple Pay / Google Pay / card entry. Stores payment method for future charges. Creates Stripe Customer + Subscription.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Payment Element + subscription creation</span> <a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/521" target="_blank">#521</a><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/522" target="_blank">#522</a> <span style="font-size:10px;color:var(--slate-500);">Subscription auth (P0 blocker)</span></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">5</span><span class="step-title">Subscription Created + Token Completed</span><span class="step-badge badge-new">NEW</span><div class="step-detail">Backend creates Stripe subscription. Gift Aid declaration (if created) has declarationType: &ldquo;past_and_future&rdquo; &mdash; covers all future invoices. Token marked completed.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Backend subscription + token completion</span> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587</a> <span style="font-size:10px;color:var(--slate-500);">Token lifecycle management</span></div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">6</span><span class="step-title">Confirmation</span><span class="step-badge badge-new">NEW</span><div class="step-detail">&ldquo;You&rsquo;re now giving &pound;25/month to [Campaign]. With Gift Aid, that&rsquo;s &pound;31.25/month of impact!&rdquo; Email with schedule, next charge date, cancellation info.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/593" target="_blank">#593</a> <span style="font-size:10px;color:var(--slate-500);">Confirmation emails</span></div></div>
+  </div></div>
+  <h3>How Future Invoices Are Handled</h3>
+  <div class="flow-full"><div class="flow-full-header" style="background:var(--teal);">Recurring Invoice Processing (Automatic)</div><div class="flow-full-body">
+    <div class="step teal"><span class="step-num teal">1</span><span class="step-title">Stripe Charges Next Invoice</span><div class="step-detail">Automatic monthly/quarterly/yearly charge on stored payment method.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Stripe subscription config</span></div></div><div class="arrow">&darr;</div>
+    <div class="step teal"><span class="step-num teal">2</span><span class="step-title">handleInvoicePaid Webhook</span><div class="step-detail">Creates donation doc for this invoice. Checks for existing Gift Aid declaration with declarationType: &ldquo;past_and_future&rdquo;.</div><div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525" target="_blank">#525</a> <span style="font-size:10px;color:var(--slate-500);">Webhook idempotency (P0 blocker)</span></div></div><div class="arrow">&darr;</div>
+    <div class="step teal"><span class="step-num teal">3</span><span class="step-title">Link Donation to Existing Declaration</span><div class="step-detail">Sets giftAidDeclarationId on new donation doc pointing to original declaration. No new declaration created. One declaration, many donations.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Declaration linking logic</span></div></div><div class="arrow">&darr;</div>
+    <div class="step teal"><span class="step-num teal">4</span><span class="step-title">CSV Export Includes All Linked Donations</span><div class="step-detail">When treasurer generates R68 CSV, all donations linked to the declaration appear as separate rows with the same donor details.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">R68 export update for recurring</span></div></div>
+  </div></div>
+</div>
+
+<!-- ═══════════ FLOW 4: RETURNING DONOR ═══════════ -->
+<div id="flow4" class="panel">
+  <h2>Flow 4: Returning Donor Recognition</h2>
+  <p class="desc">When a donor who has previously given through SwiftCause returns &mdash; either on the kiosk or via a magic link &mdash; the system recognises them by email and can pre-fill or auto-apply their existing Gift Aid consent.</p>
+  <div class="dev-legend"><span><span class="issue-ref">issue</span> = GitHub issue (to build)</span><span><span class="issue-ref pr">PR</span> = Pull request (in progress / merged)</span><span><span class="issue-ref p0">P0</span> = Security / compliance blocker</span></div>
+  <div class="flow-comparison">
+    <div class="flow-col"><div class="flow-col-header as-is">AS-IS &mdash; Today</div><div class="flow-col-body">
+      <div class="step active"><span class="step-num green">1</span><span class="step-title">Email Gate (Kiosk)</span><span class="step-badge badge-exists">BUILT</span><div class="step-detail">After &ldquo;Yes, Boost&rdquo; &mdash; asks for email.</div></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">2</span><span class="step-title">Profile Lookup</span><span class="step-badge badge-exists">BUILT</span><div class="step-detail">getReusableGiftAidProfileByEmail() queries declarations by normalised email. Returns most recent with valid consent + address.</div></div><div class="arrow">&darr;</div>
+      <div class="step" style="border-color:var(--red); background:var(--red-light);"><span class="step-num red">!</span><span class="step-title">Auto-Submit Without Confirmation</span><span class="step-badge badge-gap">LEGAL RISK</span><div class="step-detail">GiftAidPage.tsx auto-creates GiftAidDetails and calls onAcceptGiftAid() directly. Hardcodes dataProcessingConsent: true, homeAddressConfirmed: true. <strong>No &ldquo;still correct?&rdquo; screen.</strong> If donor has moved house or changed tax status, this creates an invalid HMRC declaration.</div><div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">#591</a> <span style="font-size:10px;color:var(--slate-500);">Returning donor consent fix (P0 &mdash; HMRC compliance)</span></div></div>
+    </div></div>
+    <div class="flow-col"><div class="flow-col-header to-be">TO-BE &mdash; With OTP Verification + Confirmation</div><div class="flow-col-body">
+      <div class="step active"><span class="step-num green">1</span><span class="step-title">Email Entry</span><span class="step-badge badge-exists">NO CHANGE</span><div class="step-detail">On kiosk (email gate) or on magic link page (email field).</div></div><div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">2</span><span class="step-title">Email OTP Verification</span><span class="step-badge badge-new">NEW — 13 Apr Decision</span><div class="step-detail"><strong>CRITICAL (13 Apr standup decision):</strong> 6-digit OTP sent to entered email. Donor enters OTP on same page (no context switch). Firebase Auth native support. 10-minute expiry.<br><br><strong>If verified:</strong> proceed to profile lookup + confirmation screen.<br><strong>If skipped/failed:</strong> treat as new donor — blank form only. Gift Aid still claimable (HMRC doesn't require email verification). No profile update, no returning donor recognition.<br><br><strong>Why OTP:</strong> Current magic link page exposes stored donor data to anyone who enters an email — GDPR/data-protection risk. OTP gates access to stored data without adding friction to new donors.</div></div><div class="arrow">&darr;</div>
+      <div class="step active"><span class="step-num green">3</span><span class="step-title">Profile Lookup (verified only)</span><span class="step-badge badge-exists">UPDATED</span><div class="step-detail">Only runs if email verified via OTP. Unverified emails always see blank form.</div></div><div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">4</span><span class="step-title">Confirmation Screen (verified returning donors)</span><span class="step-badge badge-new">NEW</span><div class="step-detail">&ldquo;Welcome back! We have your Gift Aid details from [date]:&rdquo;<br><strong>John Smith</strong><br>123 Main Street, London, SW1A 1AA<br><br>Two buttons: <strong>&ldquo;Yes, these are correct&rdquo;</strong> (submits with re-confirmed consent) and <strong>&ldquo;Update my details&rdquo;</strong> (opens pre-filled editable form).</div><div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">#591</a> <span style="font-size:10px;color:var(--slate-500);">New confirmation screen &mdash; replaces auto-submit</span></div></div><div class="arrow">&darr;</div>
+      <div class="decision"><span class="step-title">Donor response?</span></div>
+      <div class="branch-container"><div class="branch"><div class="branch-label yes">Confirmed</div>Declaration created with fresh timestamp and explicit re-consent. Old details reused. Fast path &mdash; 2 taps total.<div class="step-issues"><a class="issue-ref p0" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">#591</a> <span style="font-size:10px;color:var(--slate-500);">Re-consent with fresh timestamp</span></div></div><div class="branch"><div class="branch-label no">Update</div>Pre-filled form opens. Donor edits address/name. Old declaration stays valid for old donations. New declaration created for this donation.<div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590</a> <span style="font-size:10px;color:var(--slate-500);">Gift Aid form (pre-filled edit mode)</span></div></div></div>
+    </div></div>
+  </div>
+  <div class="callout callout-green"><strong>Works on Both Surfaces</strong>The returning donor confirmation screen is the same component whether rendered on the kiosk (Option A flow) or on the donor&rsquo;s phone (magic link flow). Build once, use everywhere.</div>
+</div>
+
+<!-- ═══════════ COMBINED JOURNEY MAP ═══════════ -->
+<div id="combined" class="panel">
+  <h2>Combined Journey Map</h2>
+  <p class="desc">The complete picture: every donor path from kiosk to outcome, showing how the magic link model connects them.</p>
+  <div class="dev-legend"><span><span class="issue-ref">issue</span> = GitHub issue (to build)</span><span><span class="issue-ref pr">PR</span> = Pull request (in progress / merged)</span><span><span class="issue-ref p0">P0</span> = Security / compliance blocker</span></div>
+  <div class="flow-full"><div class="flow-full-header" style="background:var(--slate-700);">Full Donor Journey &mdash; All Paths</div><div class="flow-full-body">
+    <div class="step active"><span class="step-num green">1</span><span class="step-title">Donor arrives at kiosk</span></div><div class="arrow">&darr;</div>
+    <div class="step active"><span class="step-num green">2</span><span class="step-title">Selects campaign + amount</span><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586</a> <span style="font-size:10px;color:var(--slate-500);">Campaign-level Option B toggle (admin)</span></div></div><div class="arrow">&darr;</div>
+    <div class="decision"><span class="step-title">Admin-configured flow type for this campaign?</span><div class="step-issues" style="margin-top:6px;"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586</a> <span style="font-size:10px;color:var(--slate-500);">Admin toggle determines which path</span></div></div>
+    <div class="branch-3">
+      <div class="branch"><div class="branch-label option">Option A: On-Screen Gift Aid</div><div class="step active" style="margin:8px 0;font-size:12px;"><span class="step-num green">3a</span><span class="step-title">Gift Aid boost &rarr; form &rarr; declaration saved</span><div class="step-detail">Full on-screen capture before payment. Works for patient donors. High footfall = fewer completions.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585" target="_blank">#585</a> <span style="font-size:10px;color:var(--slate-500);">declarationType radio (missing from kiosk)</span></div></div><div class="arrow">&darr;</div><div class="step active" style="margin:8px 0;font-size:12px;"><span class="step-num green">4a</span><span class="step-title">Terminal payment</span></div><div class="arrow">&darr;</div><div class="step active" style="margin:8px 0;font-size:12px;"><span class="step-num green">5a</span><span class="step-title">Done. Gift Aid captured.</span></div><div class="outcome" style="margin-top:8px;"><span class="outcome-tag gift-aid">Gift Aid: Yes</span></div></div>
+      <div class="branch"><div class="branch-label option">Option B+: Pay First, Link After</div><div class="step" style="margin:8px 0;font-size:12px;border-color:var(--blue);background:var(--blue-light);"><span class="step-num blue">3b</span><span class="step-title">Skip Gift Aid form</span><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586</a> <span style="font-size:10px;color:var(--slate-500);">Option B flow bypass</span></div></div><div class="arrow">&darr;</div><div class="step active" style="margin:8px 0;font-size:12px;"><span class="step-num green">4b</span><span class="step-title">Terminal payment (fast)</span></div><div class="arrow">&darr;</div><div class="step magic" style="margin:8px 0;font-size:12px;"><span class="step-num purple">5b</span><span class="step-title">Thank You screen + QR magic link</span><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/588" target="_blank">#588</a> <span style="font-size:10px;color:var(--slate-500);">QR code on Thank You screen</span> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587</a> <span style="font-size:10px;color:var(--slate-500);">Token generation backend</span></div></div><div class="arrow">&darr;</div><div class="step magic" style="margin:8px 0;font-size:12px;"><span class="step-num purple">6b</span><span class="step-title">Donor scans &rarr; phone page</span><div class="step-detail">Gift Aid form + optional recurring setup on donor&rsquo;s own device. No queue pressure.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589</a> <span style="font-size:10px;color:var(--slate-500);">/link/[token] page</span> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590</a> <span style="font-size:10px;color:var(--slate-500);">Gift Aid form</span> <a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> <span style="font-size:10px;color:var(--slate-500);">Recurring setup</span></div></div><div class="outcome" style="margin-top:8px;"><span class="outcome-tag gift-aid">Gift Aid: Via link</span><span class="outcome-tag recurring">Recurring: Via link</span></div></div>
+      <div class="branch"><div class="branch-label option">Hybrid: Donor Chooses</div><div class="step changed" style="margin:8px 0;font-size:12px;"><span class="step-num amber">3c</span><span class="step-title">&ldquo;Add Gift Aid now or on your phone?&rdquo;</span><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586</a> <span style="font-size:10px;color:var(--slate-500);">Hybrid mode config</span></div></div><div class="arrow">&darr;</div><div style="font-size:11px;color:var(--slate-500);padding:4px 0;">If &ldquo;Now&rdquo;: follows Option A path.<br>If &ldquo;On my phone&rdquo;: follows Option B+ path.<br>Best of both worlds but slightly more complex UI.</div><div class="outcome" style="margin-top:8px;"><span class="outcome-tag gift-aid">Gift Aid: Either way</span><span class="outcome-tag recurring">Recurring: Via link only</span></div></div>
+    </div>
+    <div style="margin-top:20px; padding-top:20px; border-top:2px dashed var(--slate-200);">
+      <h3 style="margin-top:0;">What Happens If Donor Doesn&rsquo;t Scan the QR?</h3>
+      <div class="step" style="margin:8px 0;"><span class="step-num slate">A</span><span class="step-title">Token stays pending (30 days)</span><div class="step-detail">The donation is recorded. If &le;&pound;30, it&rsquo;s automatically GASDS-eligible.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587</a> <span style="font-size:10px;color:var(--slate-500);">Token lifecycle &mdash; 30-day expiry</span></div></div><div class="arrow">&darr;</div>
+      <div class="step" style="margin:8px 0;"><span class="step-num slate">B</span><span class="step-title">Optional: Email follow-up (if email known)</span><div class="step-detail">If the charity has the donor&rsquo;s email from any prior interaction, an automated email can be sent 24&ndash;48 hours later containing the same magic link.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/595" target="_blank">#595</a> <span style="font-size:10px;color:var(--slate-500);">Automated email follow-up (Phase 4)</span></div></div><div class="arrow">&darr;</div>
+      <div class="step" style="margin:8px 0;"><span class="step-num slate">C</span><span class="step-title">Optional: Admin retroactive invite</span><div class="step-detail">Treasurer can see &ldquo;unclaimed&rdquo; donations in admin and manually trigger magic link emails if they later obtain the donor&rsquo;s contact details.</div><div class="step-issues"><a class="issue-ref" href="https://github.com/YNVSolutions/SwiftCause_Web/issues/594" target="_blank">#594</a> <span style="font-size:10px;color:var(--slate-500);">Admin unclaimed tokens view (Phase 4)</span></div></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ═══════════ DATA CAPTURE MATRIX ═══════════ -->
+<div id="matrix" class="panel">
+  <h2>Data Capture Matrix (Revised)</h2>
+  <p class="desc">Updated to reflect the magic link model. The old &ldquo;Web Portal&rdquo; column is removed. Magic link columns replace it.</p>
+  <table class="matrix">
+    <tr><th>Data Field</th><th>HMRC Required?</th><th>Kiosk Option A<br>(on-screen)</th><th>Kiosk Option B+<br>(at kiosk)</th><th>Magic Link:<br>Gift Aid</th><th>Magic Link:<br>Recurring</th><th>Magic Link:<br>GA + Recurring</th></tr>
+    <tr><td><strong>First Name</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="no-cell">No</td><td class="yes-cell">Form</td><td class="na-cell">Not needed</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Surname</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="no-cell">No</td><td class="yes-cell">Form</td><td class="na-cell">Not needed</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Email</strong></td><td class="partial-cell">Recommended</td><td class="yes-cell">Form</td><td class="no-cell">No</td><td class="yes-cell">Form</td><td class="yes-cell">For subscription</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Home Address</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="no-cell">No</td><td class="yes-cell">Form + Lookup</td><td class="na-cell">Not needed</td><td class="yes-cell">Form + Lookup</td></tr>
+    <tr><td><strong>Postcode</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="no-cell">No</td><td class="yes-cell">Form + PAF</td><td class="na-cell">Not needed</td><td class="yes-cell">Form + PAF</td></tr>
+    <tr><td><strong>Gift Aid Consent</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Checkbox</td><td class="no-cell">No</td><td class="yes-cell">Checkbox</td><td class="na-cell">N/A</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>UK Taxpayer Confirm</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Combined</td><td class="no-cell">No</td><td class="yes-cell">Checkbox</td><td class="na-cell">N/A</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>HMRC Declaration Text</strong></td><td class="yes-cell">Ch.3</td><td class="yes-cell">Shown</td><td class="no-cell">No</td><td class="yes-cell">Shown</td><td class="na-cell">N/A</td><td class="yes-cell">Shown</td></tr>
+    <tr><td><strong>Declaration Type</strong></td><td class="yes-cell">Yes</td><td class="no-cell">Missing (fix)</td><td class="no-cell">No</td><td class="yes-cell">Radio</td><td class="na-cell">N/A</td><td class="yes-cell">Auto: past_and_future</td></tr>
+    <tr><td><strong>GDPR Consent</strong></td><td class="yes-cell">GDPR</td><td class="no-cell">Missing (fix)</td><td class="no-cell">No</td><td class="yes-cell">Checkbox</td><td class="yes-cell">Checkbox</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>Future Consent</strong></td><td class="na-cell">Optional</td><td class="no-cell">Missing (fix)</td><td class="no-cell">No</td><td class="yes-cell">Checkbox</td><td class="na-cell">N/A</td><td class="yes-cell">Auto: true</td></tr>
+    <tr><td><strong>Payment Method</strong></td><td class="na-cell">No</td><td class="yes-cell">Terminal</td><td class="yes-cell">Terminal</td><td class="no-cell">Already paid</td><td class="yes-cell">Payment Element</td><td class="yes-cell">Payment Element</td></tr>
+    <tr><td><strong>Stored PM (recurring)</strong></td><td class="na-cell">No</td><td class="no-cell">Impossible</td><td class="no-cell">Impossible</td><td class="no-cell">N/A</td><td class="yes-cell">Yes</td><td class="yes-cell">Yes</td></tr>
+    <tr><td><strong>Recurring Frequency</strong></td><td class="na-cell">No</td><td class="no-cell">N/A</td><td class="no-cell">N/A</td><td class="no-cell">N/A</td><td class="yes-cell">Selector</td><td class="yes-cell">Selector</td></tr>
+    <tr><td><strong>IP Address</strong></td><td class="yes-cell">Audit</td><td class="no-cell">Missing (fix)</td><td class="no-cell">No</td><td class="yes-cell">Server-side</td><td class="yes-cell">Server-side</td><td class="yes-cell">Server-side</td></tr>
+    <tr><td><strong>Capture Method</strong></td><td class="partial-cell">Audit</td><td class="no-cell">Missing (fix)</td><td class="na-cell">N/A</td><td class="yes-cell">POST_DONATION_MAGIC_LINK</td><td class="na-cell">N/A</td><td class="yes-cell">POST_DONATION_MAGIC_LINK</td></tr>
+    <tr><td><strong>Donation Amount</strong></td><td class="yes-cell">Yes (pence)</td><td class="yes-cell">Auto</td><td class="yes-cell">Auto</td><td class="yes-cell">From token</td><td class="yes-cell">Pre-filled</td><td class="yes-cell">From token</td></tr>
+    <tr><td><strong>Tax Year</strong></td><td class="yes-cell">Yes</td><td class="partial-cell">Bug (GA-01)</td><td class="partial-cell">Bug</td><td class="yes-cell">Fixed helper</td><td class="yes-cell">Fixed helper</td><td class="yes-cell">Fixed helper</td></tr>
+  </table>
+  <div class="callout callout-green"><strong>Simplification Win</strong>The magic link model means we only need one off-kiosk page that dynamically shows the right combination of forms. The data capture is context-driven by the token&rsquo;s purpose field, not by which URL the donor landed on.</div>
+  <h3>What Changed from v1</h3>
+  <table class="matrix">
+    <tr><th>Item</th><th>v1 (Previous)</th><th>v2 (Magic Link Model)</th></tr>
+    <tr><td><strong>Off-kiosk flows</strong></td><td>2 separate: QR Follow-Up + Web Portal</td><td>1 unified: Magic Link</td></tr>
+    <tr><td><strong>Routes to build</strong></td><td>/gift-aid/token/[id] + /donate/[campaignId]</td><td>/link/[token] only</td></tr>
+    <tr><td><strong>Public campaign checkout</strong></td><td>Yes &mdash; anyone can visit</td><td>No &mdash; token required (more secure)</td></tr>
+    <tr><td><strong>Recurring setup</strong></td><td>Separate from Gift Aid capture</td><td>Combined in one magic link if needed</td></tr>
+    <tr><td><strong>Token purposes</strong></td><td>1 (gift_aid only)</td><td>4 (gift_aid, recurring, gift_aid_and_recurring, info_update)</td></tr>
+    <tr><td><strong>Backend handlers</strong></td><td>2 (createWebPaymentIntent + token validator)</td><td>1 (magic link resolver that handles all purposes)</td></tr>
+    <tr><td><strong>Wallet pre-fill (name/email)</strong></td><td>Web portal only</td><td>Magic link recurring flow (Payment Element)</td></tr>
+    <tr><td><strong>Campaign discovery on web</strong></td><td>Yes (via /donate/[campaignId])</td><td>No &mdash; all discovery happens on kiosk or via charity&rsquo;s own website</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════ SPRINT PLAN ═══════════ -->
+<div id="sprint" class="panel">
+  <h2>Critical-Path Sprint Plan &mdash; Go-Live: Kiosk + Magic Link</h2>
+  <p class="desc">Phased plan to ship SwiftCause v1 with full kiosk-to-magic-link flow. Each phase unlocks the next. Issues and PRs are mapped to the specific v2 flow steps they resolve. <strong>Repo: YNVSolutions/SwiftCause_Web</strong></p>
+  <div class="callout callout-purple"><strong>Go-Live Definition (Option B)</strong>Kiosk Tap-to-Pay &rarr; Payment &rarr; QR Magic Link &rarr; Donor opens on phone &rarr; Gift Aid captured (and optionally recurring setup). Every kiosk donation has a second-chance path to Gift Aid. Donor portal is a separate later phase.</div>
+  <div class="flow-full" style="margin-top:24px;"><div class="flow-full-header" style="background:var(--red);">Phase 0: Security &amp; Compliance Foundation</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">Must-fix before taking real money. These are pre-existing P0/P1 issues that block every subsequent phase. No feature work until these land.</p>
+    <div class="step gap"><span class="step-num red">P0</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525" target="_blank">#525</a> &mdash; Make Stripe webhook idempotency atomic</span><span class="step-badge badge-gap">BLOCKER</span><div class="step-detail"><strong>Blocks:</strong> Magic link token creation (if webhook fires twice, duplicate tokens). Blocks #587 and all of Phase 2.</div></div>
+    <div class="step gap"><span class="step-num red">P0</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/524" target="_blank">#524</a> &mdash; Add abuse protection to public payment endpoints</span><span class="step-badge badge-gap">BLOCKER</span><div class="step-detail"><strong>Blocks:</strong> The magic link page is a public endpoint. Without rate limiting, it&rsquo;s vulnerable.</div></div>
+    <div class="step gap"><span class="step-num red">P0</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/521" target="_blank">#521/#522</a> &mdash; Enforce AuthN/AuthZ on recurring subscription endpoints</span><span class="step-badge badge-gap">BLOCKER</span><div class="step-detail"><strong>Blocks:</strong> Recurring via magic link (#592). Without auth, anyone could create subscriptions.</div></div>
+    <div class="step gap"><span class="step-num red">P0</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">#591</a> &mdash; Fix returning donor auto-consent (LEGAL RISK)</span><span class="step-badge badge-gap">COMPLIANCE</span><div class="step-detail"><strong>Resolves:</strong> Flow 4, step 3. Currently auto-submits Gift Aid without donor confirmation. HMRC non-compliant.</div></div>
+    <div class="step" style="border-color:var(--red);background:var(--red-light);"><span class="step-num red">P0</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585" target="_blank">#585</a> &mdash; Fix Gift Aid data capture gaps (GDPR, declaration type, IP, capture method)</span><span class="step-badge badge-gap">COMPLIANCE</span><div class="step-detail"><strong>Resolves:</strong> Data Capture Matrix &ldquo;Missing (fix)&rdquo; cells. Required for valid HMRC declarations on both kiosk and magic link.</div></div>
+    <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--slate-200);"><p style="font-size:12px;font-weight:600;color:var(--slate-500);margin-bottom:8px;">Also in Phase 0 (P1 — parallel track):</p>
+      <div class="step"><span class="step-num slate">P1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/526" target="_blank">#526</a> &mdash; Replace permissive CORS with explicit allowlist</span></div>
+      <div class="step"><span class="step-num slate">P1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/527" target="_blank">#527</a> &mdash; Remove or redact PII from backend logs</span></div>
+      <div class="step"><span class="step-num slate">P1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/276" target="_blank">#276</a> &mdash; Implement logging utility (suppress logs in prod)</span></div>
+      <div class="step changed"><span class="step-num amber">PR</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/pull/568" target="_blank">#568</a> &mdash; Change Password flow (awaiting review &mdash; merge anytime)</span><span class="step-badge badge-changed">IN REVIEW</span></div>
+    </div>
+    <div class="outcome" style="margin-top:12px;"><span class="outcome-tag gift-aid">Exit: Webhooks idempotent</span><span class="outcome-tag gift-aid">Exit: Endpoints protected</span><span class="outcome-tag gift-aid">Exit: HMRC-compliant declarations</span></div>
+  </div></div>
+  <div class="flow-full" style="margin-top:16px;"><div class="flow-full-header" style="background:var(--purple);">Phase 1: Magic Link Infrastructure</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">Build the token system that everything else depends on. Backend-heavy. Can start frontend work in parallel once the API contract is defined.</p>
+    <div class="step magic"><span class="step-num purple">1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587" target="_blank">#587</a> &mdash; Magic Link token model, creation on webhook, validation API</span><span class="step-badge badge-magic">CORE</span><div class="step-detail"><strong>Resolves:</strong> Architecture Change &mdash; &ldquo;How the Magic Link Works&rdquo; steps 1&ndash;3, 5&ndash;6.<br><strong>Delivers:</strong> Firestore <code>magicLinkTokens</code> collection, token creation in payment webhook, public validation endpoint, token completion endpoint.<br><strong>Depends on:</strong> #525 (webhook idempotency)</div></div><div class="arrow">&darr;</div>
+    <div class="step magic"><span class="step-num purple">2</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589" target="_blank">#589</a> &mdash; Magic link /link/[token] page &mdash; route, context screen, dynamic renderer</span><span class="step-badge badge-magic">CORE</span><div class="step-detail"><strong>Resolves:</strong> Flow 2 steps 1&ndash;3, Flow 3 steps 1&ndash;2.<br><strong>Delivers:</strong> Public route <code>/link/[token]</code>, token validation on load, context screen (&ldquo;Thank you for &pound;X&rdquo;), purpose-driven content switching, error states, mobile-first design.<br><strong>Depends on:</strong> #587 (token validation API)</div></div>
+    <div class="outcome" style="margin-top:12px;"><span class="outcome-tag magic">Exit: Token lifecycle works end-to-end</span><span class="outcome-tag magic">Exit: /link/[token] page loads and validates</span></div>
+  </div></div>
+  <div class="flow-full" style="margin-top:16px;"><div class="flow-full-header" style="background:var(--blue);">Phase 2: Kiosk Flow Enhancement + Gift Aid Form</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">Connect the kiosk to the magic link. Build the shared Gift Aid form. After this phase, the core &ldquo;kiosk &rarr; QR &rarr; phone &rarr; Gift Aid&rdquo; journey works end-to-end.</p>
+    <div class="step new"><span class="step-num blue">1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586" target="_blank">#586</a> &mdash; Add donationFlowConfig and Flow Router to campaign settings</span><span class="step-badge badge-new">NEW</span><div class="step-detail"><strong>Resolves:</strong> Flow 1, step 3 (TO-BE). The decision point: Option A vs B+ vs Hybrid.<br><strong>Delivers:</strong> Admin UI to configure flow type per campaign, <code>donationFlowConfig</code> on campaign doc, kiosk Flow Router component.<br><strong>Parallel with:</strong> #590, #588</div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">2</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590" target="_blank">#590</a> &mdash; HMRC-compliant Gift Aid form component (shared: kiosk + magic link)</span><span class="step-badge badge-new">NEW</span><div class="step-detail"><strong>Resolves:</strong> Flow 2 step 4b, Data Capture Matrix gaps.<br><strong>Delivers:</strong> Reusable form with all HMRC fields, postcode lookup, declaration type selector, GDPR consent, IP capture, <code>captureMethod</code> tracking. Used on BOTH kiosk (Option A) and magic link page.<br><strong>Depends on:</strong> #585 (data capture gap fixes)</div></div><div class="arrow">&darr;</div>
+    <div class="step new"><span class="step-num blue">3</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/588" target="_blank">#588</a> &mdash; Kiosk Thank You screen with QR code</span><span class="step-badge badge-new">NEW</span><div class="step-detail"><strong>Resolves:</strong> Flow 1, step 6 (TO-BE).<br><strong>Delivers:</strong> 4-region Thank You screen (celebration, QR code 200&times;200px, instructions, Done + countdown), conditional display based on flow type.<br><strong>Depends on:</strong> #587 (token URL to encode), #586 (flow type determines variant)</div></div><div class="arrow">&darr;</div>
+    <div class="step teal"><span class="step-num teal">4</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591" target="_blank">#591</a> &mdash; Returning donor confirmation screen</span><span class="step-badge badge-teal">FIX</span><div class="step-detail"><strong>Resolves:</strong> Flow 4, step 3 (TO-BE). Fixes the legal risk.<br><strong>Delivers:</strong> &ldquo;Welcome back!&rdquo; screen with address summary, &ldquo;Yes, these are correct&rdquo; / &ldquo;Update my details&rdquo; buttons. Fresh declaration with explicit re-consent. Works on kiosk AND magic link.<br><strong>Depends on:</strong> #590 (Gift Aid form for &ldquo;Update my details&rdquo; path)</div></div>
+    <div class="callout callout-green" style="margin-top:12px;"><strong>Milestone: End of Phase 2</strong>The complete kiosk &rarr; payment &rarr; QR &rarr; phone &rarr; Gift Aid capture journey works. This is the <strong>minimum viable go-live</strong>. A charity can deploy kiosks, collect tap-to-pay donations, and capture Gift Aid via magic link for every donor who skips it on-screen.</div>
+    <div class="outcome" style="margin-top:8px;"><span class="outcome-tag gift-aid">Exit: Flow 1 complete (kiosk end-to-end)</span><span class="outcome-tag gift-aid">Exit: Flow 2 complete (magic link Gift Aid)</span><span class="outcome-tag gift-aid">Exit: Flow 4 complete (returning donor safe)</span></div>
+  </div></div>
+  <div class="flow-full" style="margin-top:16px;"><div class="flow-full-header" style="background:var(--teal);">Phase 3: Recurring via Magic Link</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">The revenue multiplier. After this phase, kiosk donors can become recurring givers through the same magic link. This is impossible with Terminal alone &mdash; the magic link unlocks it.</p>
+    <div class="step teal"><span class="step-num teal">1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592" target="_blank">#592</a> &mdash; Magic link recurring setup (frequency, Payment Element, subscription)</span><span class="step-badge badge-new">NEW</span><div class="step-detail"><strong>Resolves:</strong> Flow 3, all steps. Combined Journey Map &mdash; Option B+ path, step 6b.<br><strong>Delivers:</strong> Frequency selector (monthly/quarterly/yearly), Stripe Payment Element on phone, Apple Pay/Google Pay support, subscription creation backend, <code>handleInvoicePaid</code> webhook linking future donations to Gift Aid declaration.<br><strong>Depends on:</strong> #587 (token infra), #589 (magic link page), #521/#522 (auth on subscription endpoints), #525 (webhook idempotency)</div></div><div class="arrow">&darr;</div>
+    <div class="step teal"><span class="step-num teal">2</span><span class="step-title">Combined Gift Aid + Recurring flow integration</span><span class="step-badge badge-new">PART OF #592</span><div class="step-detail">When token purpose is <code>gift_aid_and_recurring</code>: Gift Aid form (from #590) renders first, then recurring frequency + Payment Element. Declaration type auto-set to <code>past_and_future</code>. One submission covers both.</div></div>
+    <div class="outcome" style="margin-top:12px;"><span class="outcome-tag recurring">Exit: Flow 3 complete (recurring via magic link)</span><span class="outcome-tag recurring">Exit: Combined GA + recurring works</span><span class="outcome-tag recurring">Exit: Future invoices auto-link to declarations</span></div>
+  </div></div>
+  <div class="flow-full" style="margin-top:16px;"><div class="flow-full-header" style="background:var(--slate-700);">Phase 4: Polish, Testing &amp; Go-Live Readiness</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">Harden, test, and prepare for production launch. No new features &mdash; this is about confidence and operational readiness.</p>
+    <div class="step"><span class="step-num slate">1</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/531" target="_blank">#531</a> &mdash; Add automated tests for critical auth/payment/email flows</span><div class="step-detail">End-to-end test coverage for: kiosk payment &rarr; webhook &rarr; token creation &rarr; magic link validation &rarr; Gift Aid submit &rarr; recurring setup.</div></div>
+    <div class="step"><span class="step-num slate">2</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/467" target="_blank">#467</a> &mdash; Gift Aid Classification Tracks &amp; Threshold-Based Extraction</span><div class="step-detail">R68 CSV export accuracy, GASDS vs Gift Aid classification, threshold handling.</div></div>
+    <div class="step"><span class="step-num slate">3</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/593" target="_blank">#593</a> &mdash; Confirmation emails for magic link completions</span><div class="step-detail">Gift Aid confirmation email with declaration summary (GA-04 notice). Recurring confirmation with schedule, next charge date, cancellation info.</div></div>
+    <div class="step"><span class="step-num slate">4</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/594" target="_blank">#594</a> &mdash; Admin view of unclaimed tokens + manual re-send</span><div class="step-detail">Treasurer can see donations with pending/expired magic link tokens. Can manually trigger email with the magic link.</div></div>
+    <div class="step"><span class="step-num slate">5</span><span class="step-title"><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/595" target="_blank">#595</a> &mdash; Automated email follow-up for pending tokens (24/48hr)</span><div class="step-detail">If donor email is known from prior interaction, auto-send reminder with same magic link after 24&ndash;48 hours.</div></div>
+    <div class="outcome" style="margin-top:12px;"><span class="outcome-tag gift-aid">Exit: E2E tests pass</span><span class="outcome-tag gift-aid">Exit: Emails working</span><span class="outcome-tag gift-aid">Exit: Admin tools ready</span><span class="outcome-tag gift-aid" style="background:var(--green);color:white;border:none;font-weight:700;">GO LIVE</span></div>
+  </div></div>
+  <div class="flow-full" style="margin-top:16px;opacity:0.7;"><div class="flow-full-header" style="background:var(--slate-500);">Deferred: Donor Portal (Post Go-Live)</div><div class="flow-full-body">
+    <p style="font-size:13px;color:var(--slate-500);margin-bottom:12px;">Separate phase. Some backend work overlaps with magic link infrastructure already built. Not required for go-live.</p>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#569 &mdash; Donor portal v1 epic (magic link login + Stripe subscription management)</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#570 &mdash; Donor magic link authentication flow (shared infra &mdash; partially built by #587)</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#571 &mdash; Normalize donor identity data + Stripe customer mapping</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#572 &mdash; Donor-authorized API for subscription/donation history</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#573 &mdash; Donor-authorized Stripe Customer Portal session endpoint</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#574 &mdash; Webhook reconciliation for donor portal visibility</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#575 &mdash; Standalone donor login at /donor</span></div>
+    <div class="step" style="opacity:0.6;"><span class="step-num slate">-</span><span class="step-title">#576 &mdash; Donor dashboard (subscription history, donation history)</span></div>
+    <p style="font-size:12px;color:var(--slate-500);margin-top:12px;"><em>Also deferred: #577&ndash;#583 (admin pagination, skeleton loading, dashboard performance).</em></p>
+  </div></div>
+  <h3 style="margin-top:28px;">Dependency Map</h3>
+  <table class="matrix">
+    <tr><th>Issue</th><th>Phase</th><th>Blocked By</th><th>Resolves Flow</th></tr>
+    <tr><td><strong>#525</strong> Webhook idempotency</td><td style="color:var(--red);font-weight:700;">Phase 0</td><td class="na-cell">None</td><td>Architecture (token creation safety)</td></tr>
+    <tr><td><strong>#524</strong> Abuse protection</td><td style="color:var(--red);font-weight:700;">Phase 0</td><td class="na-cell">None</td><td>All public endpoints</td></tr>
+    <tr><td><strong>#521/522</strong> Subscription auth</td><td style="color:var(--red);font-weight:700;">Phase 0</td><td class="na-cell">None</td><td>Flow 3 (recurring safety)</td></tr>
+    <tr><td><strong>#591</strong> Returning donor consent fix</td><td style="color:var(--red);font-weight:700;">Phase 0</td><td>#590</td><td>Flow 4, step 3</td></tr>
+    <tr><td><strong>#585</strong> Data capture gap fixes</td><td style="color:var(--red);font-weight:700;">Phase 0</td><td class="na-cell">None</td><td>Data Capture Matrix</td></tr>
+    <tr style="background:var(--purple-light);"><td><strong>#587</strong> Magic link token system</td><td style="color:var(--purple);font-weight:700;">Phase 1</td><td>#525</td><td>Architecture steps 1&ndash;6</td></tr>
+    <tr style="background:var(--purple-light);"><td><strong>#589</strong> /link/[token] page</td><td style="color:var(--purple);font-weight:700;">Phase 1</td><td>#587</td><td>Flow 2 steps 1&ndash;3, Flow 3 steps 1&ndash;2</td></tr>
+    <tr style="background:var(--blue-light);"><td><strong>#586</strong> Flow Router + config</td><td style="color:var(--blue);font-weight:700;">Phase 2</td><td class="na-cell">None</td><td>Flow 1, step 3</td></tr>
+    <tr style="background:var(--blue-light);"><td><strong>#590</strong> Gift Aid form component</td><td style="color:var(--blue);font-weight:700;">Phase 2</td><td>#585</td><td>Flow 2 step 4b, Matrix</td></tr>
+    <tr style="background:var(--blue-light);"><td><strong>#588</strong> QR Thank You screen</td><td style="color:var(--blue);font-weight:700;">Phase 2</td><td>#587, #586</td><td>Flow 1, step 6</td></tr>
+    <tr style="background:var(--teal-light);"><td><strong>#592</strong> Recurring via magic link</td><td style="color:var(--teal);font-weight:700;">Phase 3</td><td>#587, #589, #521/522</td><td>Flow 3, all steps</td></tr>
+    <tr><td><strong>#531</strong> Automated tests</td><td>Phase 4</td><td>All above</td><td>Go-live confidence</td></tr>
+    <tr><td><strong>#467</strong> Gift Aid classification</td><td>Phase 4</td><td>#590</td><td>R68 CSV accuracy</td></tr>
+    <tr><td><strong>#593</strong> Confirmation emails</td><td>Phase 4</td><td>#587, #590, #592</td><td>Flow 2 step 6, Flow 3 step 6</td></tr>
+    <tr><td><strong>#594</strong> Admin unclaimed tokens view</td><td>Phase 4</td><td>#587</td><td>Combined Journey &mdash; &ldquo;Donor doesn&rsquo;t scan&rdquo; step C</td></tr>
+    <tr><td><strong>#595</strong> Automated email follow-up</td><td>Phase 4</td><td>#587</td><td>Combined Journey &mdash; &ldquo;Donor doesn&rsquo;t scan&rdquo; step B</td></tr>
+  </table>
+  <h3 style="margin-top:28px;">How Each Flow Gets Resolved</h3>
+  <div class="summary-row">
+    <div class="summary-card"><h4>Flow 1: Kiosk Tap-to-Pay</h4><div class="value" style="color:var(--green);font-size:18px;">Phase 0&ndash;2</div><div class="detail">Steps 1&ndash;4: <strong>Already built</strong><br>Step 3 (Flow Router): <strong>#586</strong><br>Step 5 (webhook + token): <strong>#587</strong><br>Step 6 (QR screen): <strong>#588</strong><br>Step 7 (donor scans): <strong>#589</strong></div></div>
+    <div class="summary-card"><h4>Flow 2: Magic Link (Gift Aid)</h4><div class="value" style="color:var(--purple);font-size:18px;">Phase 1&ndash;2</div><div class="detail">Steps 1&ndash;3 (open + validate + context): <strong>#589</strong><br>Step 4a (returning donor): <strong>#591</strong><br>Step 4b (Gift Aid form): <strong>#590</strong><br>Step 5 (declaration + complete): <strong>#587</strong><br>Step 6 (confirmation email): Phase 4</div></div>
+    <div class="summary-card"><h4>Flow 3: Magic Link (Recurring)</h4><div class="value" style="color:var(--teal);font-size:18px;">Phase 3</div><div class="detail">Steps 1&ndash;2 (open + pitch): <strong>#589</strong><br>Step 3 (frequency selector): <strong>#592</strong><br>Step 4 (Payment Element): <strong>#592</strong><br>Step 5 (subscription created): <strong>#592</strong><br>Step 6 (confirmation): Phase 4</div></div>
+    <div class="summary-card"><h4>Flow 4: Returning Donor</h4><div class="value" style="color:var(--red);font-size:18px;">Phase 0</div><div class="detail">Steps 1&ndash;2 (lookup): <strong>Already built</strong><br>Step 3 (confirmation screen): <strong>#591</strong><br>&ldquo;Update my details&rdquo; path: <strong>#590</strong></div></div>
+  </div>
+  <div class="callout callout-green" style="margin-top:16px;"><strong>End of Phase 2 = Minimum Viable Go-Live</strong>At this point all 4 flows work. Phase 3 (recurring) and Phase 4 (polish) add significant value but are not required to start accepting donations and capturing Gift Aid through the magic link. If timelines are tight, you could go live after Phase 2 and ship recurring as a fast follow.</div>
+</div>
+
+<!-- ═══════════ DEVELOPER BRIEFING ═══════════ -->
+<div id="briefing" class="panel">
+  <h2>Developer Briefing &mdash; Sprint Kickoff</h2>
+  <p class="desc">What to build, in what order, and why &mdash; based on the confirmed v2 Magic Link plan. 30 March 2026 &mdash; From: Qamar (PM)</p>
+  <h3>1. Where We Are</h3>
+  <div class="section-grid">
+    <div class="briefing-card"><h4>Last Commit on Main</h4><div class="value" style="color:var(--green);">23 Mar 2026</div><p style="font-size:12px;color:var(--slate-500);margin-top:4px;">PR #567 &mdash; Kiosk sync fix</p></div>
+    <div class="briefing-card"><h4>Open PR</h4><div class="value" style="color:var(--amber);">1</div><p style="font-size:12px;color:var(--slate-500);margin-top:4px;"><a href="https://github.com/YNVSolutions/SwiftCause_Web/pull/568">#568</a> &mdash; Change Password (open 5+ days, needs review)</p></div>
+    <div class="briefing-card"><h4>Open Issues</h4><div class="value" style="color:var(--blue);">52</div><p style="font-size:12px;color:var(--slate-500);margin-top:4px;">Across Phase 0&ndash;4 + Deferred</p></div>
+    <div class="briefing-card"><h4>Critical Path Status</h4><div class="value" style="color:var(--red);">Blocked</div><p style="font-size:12px;color:var(--slate-500);margin-top:4px;">0 of 7 P0 issues have PRs or assignees</p></div>
+  </div>
+  <p style="font-size:14px;">The team confirmed the v2 Magic Link flows on 25 March. The documentation gate is closed. We are now cleared to begin development sprints. This briefing tells you exactly what to build.</p>
+  <h3>2. What Go-Live Means</h3>
+  <div class="callout callout-green"><strong>Go-Live Definition (Option B)</strong>Kiosk Tap-to-Pay &rarr; Payment &rarr; QR Magic Link &rarr; Donor opens on phone &rarr; Gift Aid captured (and optionally recurring setup). Every kiosk donation has a second-chance path to Gift Aid. Donor portal is a separate later phase.</div>
+  <p style="font-size:14px;">Go-live requires Phases 0 through 4 to be complete. Phase 2 is the <strong>minimum viable product</strong> &mdash; after Phase 2, the core kiosk-to-magic-link journey works end-to-end. Phase 3 adds recurring. Phase 4 adds email, testing, and admin tools.</p>
+  <h3>3. The Critical Path</h3>
+  <p style="font-size:14px;">This is the longest dependency chain. A delay to any issue on this chain delays go-live by the same amount.</p>
+  <div class="dep-chain"><span class="dep-node" style="background:var(--red-light);color:var(--red);">#525 Webhook Idempotency</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--purple-light);color:var(--purple);">#587 Token System</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--purple-light);color:var(--purple);">#589 /link/[token] Page</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--blue-light);color:var(--blue);">#590 Gift Aid Form</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--blue-light);color:var(--blue);">#591 Returning Donor Fix</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--slate-100);color:var(--slate-700);">#531 E2E Tests</span><span class="dep-arrow">&rarr;</span><span class="dep-node" style="background:var(--green-light);color:var(--green);font-weight:800;">GO LIVE</span></div>
+  <p style="font-size:14px;"><strong>Parallel chain (converges at Phase 3):</strong> #521/#522 (subscription auth) &rarr; #592 (recurring via magic link). This also depends on #587 and #589 from the main chain.</p>
+  <h3>4. Rules for This Sprint</h3>
+  <div class="rule rule-red"><strong>No feature work until Phase 0 P0s land.</strong> The v2 plan is explicit: security and compliance issues must be resolved before building magic link features.</div>
+  <div class="rule rule-green"><strong>Stabilisation PRs first, then new changes.</strong> Per 22 March meeting &mdash; merge existing fixes and tech debt before adding new functionality.</div>
+  <div class="rule rule-blue"><strong>Recurring stays behind feature toggle.</strong> Per 22 January meeting &mdash; recurring donation features must not be on the release branch until tested.</div>
+  <div class="rule rule-red"><strong>PR #568 must be reviewed immediately.</strong> It has been open 5+ days with no reviews. It is on the Phase 0 parallel track.</div>
+  <h3>5. Phase 0: Security &amp; Compliance Foundation</h3>
+  <div class="callout callout-red"><strong>Must-fix before taking real money.</strong>No feature work until these land. Exit criteria: webhooks idempotent, endpoints protected, HMRC-compliant declarations possible.</div>
+  <h4 style="font-size:14px;font-weight:700;margin:16px 0 8px;">P0 &mdash; Blockers (must be done first)</h4>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th><th>Blocks</th><th>Can Start Now</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525">#525</a> <span class="tag tag-p0">P0</span></td><td>Make Stripe webhook idempotency atomic</td><td>Nothing</td><td>#587, #592, all of Phase 1+</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/524">#524</a> <span class="tag tag-p0">P0</span></td><td>Add abuse protection to public payment endpoints</td><td>Nothing</td><td>Magic link page security</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/521">#521</a>/<a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/522">#522</a> <span class="tag tag-p0">P0</span></td><td>Enforce AuthN/AuthZ on recurring subscription endpoints</td><td>Nothing</td><td>#592 (recurring via magic link)</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585">#585</a> <span class="tag tag-p0">P0</span></td><td>Fix Gift Aid data capture gaps (GDPR, declaration type, IP, capture method)</td><td>Nothing</td><td>#590, #591</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/598">#598</a> <span class="tag tag-p0">P0</span> <span class="tag tag-new">NEW</span></td><td>Extend GiftAidDeclaration model + DonorRecord collection + skip logic</td><td>Nothing</td><td>#590, #591, #467</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/596">#596</a> <span class="tag tag-p0">P0</span> <span class="tag tag-new">NEW</span></td><td>Preserve donor form input on payment failure</td><td>Nothing</td><td>Go-live</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/597">#597</a> <span class="tag tag-p0">P0</span> <span class="tag tag-new">NEW</span></td><td>Campaign should not auto-stop at 100% funding</td><td>Nothing</td><td>Go-live</td><td><strong style="color:var(--green);">YES</strong></td></tr>
+  </table>
+  <h4 style="font-size:14px;font-weight:700;margin:16px 0 8px;">Phase 2: P0 (depends on Phase 1)</h4>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th><th>Blocks</th><th>Can Start Now</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590">#590</a> <span class="tag tag-p0">P0</span></td><td>HMRC-compliant Gift Aid form component (shared: kiosk + magic link)</td><td>#585, #598</td><td>#591, Flow 2/4</td><td>No &mdash; needs #585, #598 first</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591">#591</a> <span class="tag tag-p0">P0</span></td><td>Fix returning donor auto-consent (LEGAL RISK)</td><td>#590</td><td>Flow 4</td><td>No &mdash; needs #590 first</td></tr>
+  </table>
+  <h4 style="font-size:14px;font-weight:700;margin:16px 0 8px;">P1 &mdash; Parallel Track (work alongside P0s)</h4>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Status</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/pull/568">#568</a></td><td>Change Password flow</td><td><strong style="color:var(--amber);">PR open &mdash; needs review NOW</strong></td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/526">#526</a></td><td>Replace permissive CORS with explicit allowlist</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/527">#527</a></td><td>Remove or redact PII from backend logs</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/276">#276</a></td><td>Implement logging utility (suppress logs in prod)</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/603">#603</a> <span class="tag tag-new">NEW</span></td><td>Verify Stripe SCA/3DS for Terminal + Payment Element</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/604">#604</a> <span class="tag tag-infra">INFRA</span> <span class="tag tag-new">NEW</span></td><td>Set up Firebase test/staging environment</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/605">#605</a> <span class="tag tag-infra">INFRA</span> <span class="tag tag-new">NEW</span></td><td>Set up production SendGrid account + email templates</td><td>Open, unassigned</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/602">#602</a> <span class="tag tag-new">NEW</span></td><td>Admin KYC status screen + manual approval gate</td><td>Open, unassigned</td></tr>
+  </table>
+  <h3>6. Phase 1: Magic Link Infrastructure</h3>
+  <div class="callout callout-purple"><strong>Build the token system that everything else depends on.</strong>Backend-heavy. Can start frontend work in parallel once the API contract is defined. Cannot start until #525 (webhook idempotency) lands.</div>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th><th>What It Delivers</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/587">#587</a></td><td>Magic Link token model, creation on webhook, validation API</td><td>#525</td><td>Firestore <code>magicLinkTokens</code> collection, token creation in payment webhook, public validation endpoint, token completion endpoint, 30-day expiry lifecycle</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/589">#589</a></td><td>/link/[token] page &mdash; route, context screen, dynamic renderer</td><td>#587</td><td>Public route <code>/link/[token]</code>, token validation on load, context screen, purpose-driven content switching, completed/expired/invalid states, mobile-first design</td></tr>
+  </table>
+  <p style="font-size:14px;"><strong>Exit criteria:</strong> Token lifecycle works end-to-end. /link/[token] page loads and validates.</p>
+  <h3>7. Phase 2: Kiosk Flow Enhancement + Gift Aid Form</h3>
+  <div class="callout callout-green"><strong>End of Phase 2 = Minimum Viable Go-Live.</strong>The complete kiosk &rarr; payment &rarr; QR &rarr; phone &rarr; Gift Aid journey works. A charity can deploy kiosks, collect tap-to-pay donations, and capture Gift Aid via magic link.</div>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th><th>What It Delivers</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586">#586</a></td><td>Add donationFlowConfig and Flow Router to campaign settings</td><td>Nothing (can start in Phase 1)</td><td>Admin UI to configure flow type per campaign (Option A / B+ / Hybrid), kiosk Flow Router component, QR enable/disable toggle</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/590">#590</a></td><td>HMRC-compliant Gift Aid form component (shared: kiosk + magic link)</td><td>#585, #598</td><td>Reusable form: all HMRC fields, postcode lookup (#599), declaration type selector, GDPR consent, IP capture, captureMethod tracking</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/599">#599</a> <span class="tag tag-new">NEW</span></td><td>Postcode lookup API integration</td><td>Nothing (can start any time)</td><td>PostcodeLookup React component, backend proxy, fallback to manual entry</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/588">#588</a></td><td>Kiosk Thank You screen with QR code</td><td>#587, #586</td><td>4-region Thank You layout: celebration, QR code (200&times;200px min), instructions, Done + countdown</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/591">#591</a></td><td>Returning donor confirmation screen</td><td>#590</td><td>&ldquo;Welcome back!&rdquo; screen, address summary, &ldquo;Yes, these are correct&rdquo; / &ldquo;Update my details&rdquo; buttons, fresh consent</td></tr>
+  </table>
+  <h3>8. Phase 3: Recurring via Magic Link</h3>
+  <div class="callout callout-purple"><strong>The revenue multiplier.</strong>Stripe Terminal cannot store payment methods (card-present). The magic link is the only way to convert a kiosk donor into a recurring giver. This phase unlocks that.</div>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th><th>What It Delivers</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/592">#592</a></td><td>Magic link recurring setup &mdash; frequency, Payment Element, subscription</td><td>#587, #589, #521/#522, #525</td><td>Frequency selector (monthly/quarterly/yearly), Stripe Payment Element on phone, Apple Pay/Google Pay, subscription creation, handleInvoicePaid webhook linking future donations to existing Gift Aid declaration</td></tr>
+  </table>
+  <h3>9. Phase 4: Polish, Testing &amp; Go-Live Readiness</h3>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Depends On</th></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/531">#531</a></td><td>Automated tests for critical auth/payment/email flows</td><td>All above + #604 (test environment)</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/467">#467</a></td><td>Gift Aid classification tracks &amp; threshold-based extraction (incl. GASDS auto-classify for unclaimed &le;&pound;30)</td><td>#590</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/600">#600</a> <span class="tag tag-new">NEW</span></td><td>Admin HMRC Gift Aid export &mdash; manual Excel/XML, 999-record batch limit</td><td>#467, #585, #598</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/601">#601</a> <span class="tag tag-new">NEW</span></td><td>Gift Aid health check admin screen</td><td>#585, #467, #587</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/593">#593</a></td><td>Confirmation emails for magic link completions</td><td>#587, #590, #592, #605</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/594">#594</a></td><td>Admin view of unclaimed tokens + manual re-send</td><td>#587, #605</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/595">#595</a></td><td>Automated email follow-up for pending tokens (24/48hr)</td><td>#587, #605</td></tr>
+  </table>
+  <h3>10. What You Can Start Today</h3>
+  <p style="font-size:14px;">These issues have <strong>zero upstream dependencies</strong>. They are ready for assignment and development right now.</p>
+  <table class="briefing-table">
+    <tr><th>Issue</th><th>Title</th><th>Type</th><th>Impact</th></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/525">#525</a></td><td>Webhook idempotency</td><td><span class="tag tag-p0">P0</span></td><td>Unblocks entire critical path</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/585">#585</a></td><td>Gift Aid data capture gaps</td><td><span class="tag tag-p0">P0</span></td><td>Unblocks Gift Aid form (#590)</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/598">#598</a></td><td>GiftAidDeclaration model + DonorRecord collection</td><td><span class="tag tag-p0">P0</span></td><td>Unblocks #590, #591, #467</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/524">#524</a></td><td>Abuse protection on public endpoints</td><td><span class="tag tag-p0">P0</span></td><td>Secures magic link page</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/521">#521</a>/<a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/522">#522</a></td><td>Subscription auth hardening</td><td><span class="tag tag-p0">P0</span></td><td>Unblocks recurring (#592)</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/596">#596</a></td><td>Preserve donor input on payment failure</td><td><span class="tag tag-p0">P0</span></td><td>Go-live blocker</td></tr>
+    <tr style="background:var(--red-light);"><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/597">#597</a></td><td>Campaign auto-stop bug at 100%</td><td><span class="tag tag-p0">P0</span></td><td>Go-live blocker</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/604">#604</a></td><td>Firebase test/staging environment</td><td><span class="tag tag-infra">INFRA</span></td><td>Unblocks E2E testing (#531)</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/605">#605</a></td><td>SendGrid production setup</td><td><span class="tag tag-infra">INFRA</span></td><td>Unblocks all email issues</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/603">#603</a></td><td>Stripe SCA/3DS verification</td><td><span class="tag tag-p1">P1</span></td><td>Unblocks recurring (#592)</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/599">#599</a></td><td>Postcode lookup API</td><td><span class="tag tag-p1">P1</span></td><td>Needed by Gift Aid form (#590)</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/586">#586</a></td><td>Flow Router + donationFlowConfig</td><td><span class="tag tag-p1">P1</span></td><td>Admin config for flow type per campaign</td></tr>
+    <tr><td><a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/602">#602</a></td><td>KYC admin screen + manual approval</td><td><span class="tag tag-p1">P1</span></td><td>Compliance for org onboarding</td></tr>
+  </table>
+  <h3>11. Key Reference Material</h3>
+  <table class="briefing-table">
+    <tr><th>Document</th><th>Where</th><th>What It Contains</th></tr>
+    <tr><td><strong>v2 Magic Link User Flows</strong></td><td>See tabs: Architecture Change through Sprint Plan</td><td>All 4 flows, data capture matrix, dependency map, sprint plan, combined journey map</td></tr>
+    <tr><td><strong>Gift Aid Data Model Spec</strong></td><td>Slack #charity_project, 13 March 2026</td><td>GiftAidDeclaration interface, DonorRecord collection, declarationType, skip logic. <strong>Must read before starting #585, #598, or #590.</strong></td></tr>
+    <tr><td><strong>Recurring Donations Handover</strong></td><td>Slack #charity_project, 7 January 2026 (Yuvraj)</td><td>Full backend/frontend architecture for subscriptions, webhook handlers, branch: customAmountRecurringDonations. <strong>Must read before starting #525 or #592.</strong></td></tr>
+    <tr><td><strong>13 Feb Meeting Notes</strong></td><td>Slack #charity_project, 13 February 2026</td><td>KYC decision, Gift Aid GASDS/Standard/Future tracks, HMRC 999-record batch limit, P0 bugs (#596, #597)</td></tr>
+  </table>
+  <h3>12. Explicitly Deferred &mdash; Do NOT Work On These</h3>
+  <div class="callout callout-amber"><strong>These are parked until after go-live. Do not let them creep into current sprint scope.</strong></div>
+  <table class="briefing-table">
+    <tr><th>Issues</th><th>Description</th><th>Why Deferred</th></tr>
+    <tr><td>#569&ndash;#576</td><td>Donor portal (magic link login, subscription management, donation history, Stripe customer portal)</td><td>The v2 architecture deliberately removed the persistent web portal. Go-live uses magic links only. The donor portal is a separate product phase that reuses magic link infrastructure (#587) once it is built and proven. Building it now would split development capacity across two surfaces when the team needs to focus on one.</td></tr>
+    <tr><td>#577&ndash;#583</td><td>Admin performance (cursor-based pagination, skeleton loading, dashboard optimisation)</td><td>These are quality-of-life improvements for the admin panel. The admin panel works today &mdash; it is slow with large datasets but functional. At go-live with the first 10 customers (per 22 March meeting), data volumes will be small. These become necessary at scale, not at launch.</td></tr>
+    <tr><td>#528&ndash;#530</td><td>Firestore rules CI, Cloud Functions runtime unification, hardcoded URL removal</td><td>Technical debt cleanup. Important for long-term maintainability but does not affect any user-facing flow or compliance requirement. Doing this now risks destabilising the codebase before go-live (the 22 March meeting explicitly said stabilisation first, then structural changes).</td></tr>
+    <tr><td>#532&ndash;#534</td><td>Admin subscription cancellation workflow (backend, UI, notifications)</td><td>Subscription cancellation requires the subscription system to be live first (#592). Even after #592 ships, cancellation can be handled manually via the Stripe dashboard for the initial customer cohort. A dedicated admin workflow is a Phase 2 admin feature, not a go-live requirement.</td></tr>
+    <tr><td>NFC delivery</td><td>Magic link via NFC push from handset (noted on #588, future enhancement)</td><td>QR code is the primary delivery method and is simpler to implement and universally supported. NFC requires device compatibility checks and adds complexity. It can be layered on after QR is proven. Noted on #588 for future pickup.</td></tr>
+  </table>
+  <h3>13. Immediate Actions</h3>
+  <div class="rule rule-red"><strong>1. Assign and progress PR #568.</strong> Change Password flow &mdash; open since 21 March, needs a reviewer assigned to move forward.</div>
+  <div class="rule rule-red"><strong>2. Assign the 7 P0 issues.</strong> #525, #524, #521/#522, #585, #598, #596, #597 &mdash; all unassigned, all can start now.</div>
+  <div class="rule rule-green"><strong>3. Read the Slack specs before starting work.</strong> The 13 March Gift Aid data model spec and the 7 January recurring handover contain implementation details not in the GitHub issues.</div>
+  <div class="rule rule-blue"><strong>4. Start infrastructure in parallel.</strong> #604 (Firebase staging) and #605 (SendGrid) are not on the critical path but block Phase 4. Getting them done early avoids a bottleneck later.</div>
+  <div class="rule rule-green"><strong>5. Pick up #586 (Flow Router) and #599 (Postcode Lookup) early.</strong> They have no upstream dependencies and will be needed the moment Phase 2 starts.</div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
