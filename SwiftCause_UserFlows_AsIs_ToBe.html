@@ -1,1 +1,42 @@
-PLACEHOLDER_FILE1_CONTENT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause — User Flows: As-Is vs To-Be</title>
+<style>
+:root {
+  --green: #0E8F5A;
+  --green-light: #EEF7F2;
+  --green-dark: #0a6b43;
+  --red: #DC2626;
+  --red-light: #FEF2F2;
+  --amber: #D97706;
+  --amber-light: #FFFBEB;
+  --blue: #2563EB;
+  --blue-light: #EFF6FF;
+  --purple: #7C3AED;
+  --purple-light: #F5F3FF;
+  --slate-900: #0F172A;
+  --slate-700: #334155;
+  --slate-500: #64748B;
+  --slate-300: #CBD5E1;
+  --slate-200: #E2E8F0;
+  --slate-100: #F1F5F9;
+  --slate-50: #F8FAFC;
+  --white: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #FAFBFD; color: var(--slate-900); }
+
+/* Header */
+.header { background: linear-gradient(135deg, var(--green), var(--green-dark)); color: white; padding: 28px 32px; }
+.header h1 { font-size: 24px; font-weight: 700; }
+.header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+.header .refresh-badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+
+/* Navigation */
+.nav { display: flex; background: var(--white); border-bottom: 2px solid var(--slate-200); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+.nav-btn { padding: 12px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--slate-500); border: none; background: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; }
+.nav-btn:hover { color: var(--green); background: var(--green-light); }
+.nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
