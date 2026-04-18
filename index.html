@@ -1,11 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause — Team Hub</title>
+<style>
+  :root{--bg:#0f1117;--card:#1a1d27;--card-hover:#22263a;--accent:#6c63ff;--accent-glow:rgba(108,99,255,.25);--green:#22c55e;--amber:#f59e0b;--text:#e4e4e7;--muted:#9ca3af;--border:#2a2d3a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+  .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+  header{text-align:center;margin-bottom:3rem}
+  header h1{font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,#6c63ff,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
+  header p{color:var(--muted);font-size:1rem}
+  .updated{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--green);margin-top:.75rem}
+  .section{margin-bottom:2.5rem}
+  .section h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-decoration:none;color:var(--text);transition:all .2s ease;position:relative;overflow:hidden}
+  .card:hover{background:var(--card-hover);border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow);transform:translateY(-2px)}
+  .card h3{font-size:1rem;font-weight:600;margin-bottom:.4rem}
+  .card p{font-size:.85rem;color:var(--muted)}
+  .badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:4px;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px}
+  .badge-live{background:rgba(34,197,94,.15);color:var(--green)}
+  .badge-analysis{background:rgba(108,99,255,.15);color:var(--accent)}
+  .badge-guide{background:rgba(245,158,11,.15);color:var(--amber)}
+  .badge-strategy{background:rgba(236,72,153,.15);color:#ec4899}
+  footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+</style>
 </head>
 <body>
-    <h1>write your html here</h1>
+<div class="container">
+  <header>
+    <h1>SwiftCause Team Hub</h1>
+    <p>Product, architecture &amp; operations reports for the dev team</p>
+    <span class="updated">Last updated: 18 Apr 2026</span>
+  </header>
+  <div class="section">
+    <h2>Product &amp; Sprint Tracking</h2>
+    <div class="grid">
+      <a class="card" href="SwiftCause-Product-Dashboard.html">
+        <span class="badge badge-live">Live Dashboard</span>
+        <h3>Product Dashboard</h3>
+        <p>WAY_FORWARD_TICKETS, GitHub live data, sprint tracking, feature status. The permanent product overview.</p>
+      </a>
+      <a class="card" href="SwiftCause_Project_Portal.html">
+        <span class="badge badge-live">Live Dashboard</span>
+        <h3>Project Portal</h3>
+        <p>Master index linking to all SwiftCause HTML assets across product, sales, and operations.</p>
+      </a>
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html">
+        <span class="badge badge-live">Latest Briefing</span>
+        <h3>Daily Briefing — 17 Apr 2026</h3>
+        <p>5-tab briefing: daily summary, decisions log, GitHub activity, Slack digest, risks and blockers.</p>
+      </a>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Architecture &amp; User Flows</h2>
+    <div class="grid">
+      <a class="card" href="SwiftCause_GiftAid_Analysis_2026-04-13.html">
+        <span class="badge badge-analysis">Analysis</span>
+        <h3>Gift Aid &amp; GASDS Analysis</h3>
+        <p>Problem analysis, capture flows, compliance blockers, and proposed solutions for Gift Aid automation.</p>
+      </a>
+      <a class="card" href="SwiftCause_UserFlows_AsIs_ToBe.html">
+        <span class="badge badge-analysis">Analysis</span>
+        <h3>User Flows — As-Is vs To-Be</h3>
+        <p>Current state vs target state user journey comparison. Gap analysis for go-live readiness.</p>
+      </a>
+      <a class="card" href="SwiftCause_UserFlows_v2_MagicLink.html">
+        <span class="badge badge-analysis">Analysis</span>
+        <h3>User Flows — Magic Link Model</h3>
+        <p>Post-donation magic link architecture for Gift Aid capture. Core to the Option B+ flow.</p>
+      </a>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Strategy &amp; Planning</h2>
+    <div class="grid">
+      <a class="card" href="licensing_playbook_2026-04-18.html">
+        <span class="badge badge-strategy">Strategy</span>
+        <h3>Licensing Playbook</h3>
+        <p>Licensing model strategy and decision framework. Updated 18 Apr 2026.</p>
+      </a>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Operations &amp; Guides</h2>
+    <div class="grid">
+      <a class="card" href="SwiftCause_Tablet_Sourcing_Plan.html">
+        <span class="badge badge-guide">Guide</span>
+        <h3>Tablet Sourcing Plan</h3>
+        <p>Ruggedised tablet and floor stand sourcing — specs, suppliers, pricing for collection point hardware.</p>
+      </a>
+      <a class="card" href="SwiftCause_Collection_Point_Setup_Guide.html">
+        <span class="badge badge-guide">Guide</span>
+        <h3>Collection Point Setup Guide</h3>
+        <p>Customer-facing guide for setting up a SwiftCause collection point at a venue.</p>
+      </a>
+    </div>
+  </div>
+  <footer>
+    SwiftCause — Auto-deployed from <a href="https://github.com/CodrJitesh/SwiftCause-briefing" style="color:var(--accent);text-decoration:none;">GitHub</a> via Vercel
+  </footer>
+</div>
 </body>
 </html>
