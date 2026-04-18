@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set Up Your SwiftCause Collection Point</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-light: #e8eefb;
+    --primary-dark: #1344ab;
+    --success: #059669;
+    --success-light: #ecfdf5;
+    --warning: #d97706;
+    --warning-light: #fffbeb;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --accent: #7c3aed;
+    --accent-light: #ede9fe;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; color: var(--gray-800); line-height: 1.7; background: white; }
+  .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, var(--accent) 100%); color: white; padding: 3.5rem 2rem 3rem; text-align: center; }
+  .hero-logo { font-size: 0.9rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.75rem; }
+  .hero h1 { font-size: 2.2rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; }
+  .hero p { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto; }
+  .hero-time { display: inline-block; margin-top: 1.25rem; background: rgba(255,255,255,0.15); padding: 0.4rem 1rem; border-radius: 24px; font-size: 0.9rem; font-weight: 600; }
+  .container { max-width: 780px; margin: 0 auto; padding: 0 1.5rem; }
+  .intro { padding: 2.5rem 0 1.5rem; text-align: center; }
+  .intro p { font-size: 1.05rem; color: var(--gray-600); max-width: 640px; margin: 0 auto; }
+  .step { padding: 2rem 0; border-bottom: 1px solid var(--gray-200); }
+  .step:last-of-type { border-bottom: none; }
+  .step-number { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: white; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+  .step h2 { font-size: 1.4rem; color: var(--gray-900); margin-bottom: 0.5rem; border: none; padding: 0; }
+  .step p { color: var(--gray-600); margin-bottom: 1rem; }
+  .device-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 600px) { .device-grid { grid-template-columns: 1fr; } }
+  .device-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 1.25rem; }
+  .device-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--gray-900); }
+  .device-card .device-price { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; }
+  .device-card ul { list-style: none; font-size: 0.85rem; color: var(--gray-600); }
+  .device-card ul li { padding: 0.15rem 0; }
+  .device-card ul li::before { content: '\2713 '; color: var(--success); font-weight: 700; }
+  .device-label { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: 700; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .label-free { background: var(--success-light); color: var(--success); }
+  .label-budget { background: var(--primary-light); color: var(--primary); }
+  .label-best { background: var(--accent-light); color: var(--accent); }
+  .label-android { background: #d1fae5; color: #065f46; }
+  .label-apple { background: #dbeafe; color: #1e40af; }
+  .stand-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 600px) { .stand-grid { grid-template-columns: 1fr; } }
+  .stand-card { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 1rem; text-align: center; }
+  .stand-card .stand-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  .stand-card h4 { font-size: 0.9rem; margin-bottom: 0.25rem; }
+  .stand-card .stand-price { font-weight: 700; color: var(--primary); font-size: 1rem; }
+  .stand-card p { font-size: 0.8rem; color: var(--gray-600); margin-top: 0.25rem; }
+  .lockdown-tabs { display: flex; gap: 0; margin: 1rem 0 0; border-bottom: 2px solid var(--gray-200); }
+  .lockdown-tab { padding: 0.6rem 1.25rem; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--gray-400); border-bottom: 3px solid transparent; margin-bottom: -2px; background: none; border-top: none; border-left: none; border-right: none; transition: all 0.2s; }
+  .lockdown-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .lockdown-tab:hover { color: var(--gray-800); }
+  .lockdown-content { display: none; padding: 1.5rem 0; }
+  .lockdown-content.active { display: block; }
+  .instruction-list { counter-reset: inst; list-style: none; }
+  .instruction-list li { counter-increment: inst; padding: 0.75rem 0 0.75rem 3rem; position: relative; border-bottom: 1px solid var(--gray-100); font-size: 0.95rem; }
+  .instruction-list li:last-child { border-bottom: none; }
+  .instruction-list li::before { content: counter(inst); position: absolute; left: 0; top: 0.65rem; width: 28px; height: 28px; border-radius: 50%; background: var(--primary-light); color: var(--primary); font-size: 0.8rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .instruction-list li strong { color: var(--gray-900); }
+  .tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 600px) { .tip-grid { grid-template-columns: 1fr; } }
+  .tip-card { background: var(--gray-50); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--gray-200); }
+  .tip-card .tip-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  .tip-card h4 { font-size: 0.9rem; margin-bottom: 0.25rem; }
+  .tip-card p { font-size: 0.85rem; color: var(--gray-600); }
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 600px) { .do-dont { grid-template-columns: 1fr; } }
+  .do-list, .dont-list { border-radius: 10px; padding: 1.25rem; }
+  .do-list { background: var(--success-light); }
+  .dont-list { background: #fef2f2; }
+  .do-list h4 { color: var(--success); margin-bottom: 0.5rem; }
+  .dont-list h4 { color: #dc2626; margin-bottom: 0.5rem; }
+  .do-list ul, .dont-list ul { list-style: none; font-size: 0.85rem; }
+  .do-list ul li { padding: 0.2rem 0; }
+  .do-list ul li::before { content: '\2713 '; color: var(--success); font-weight: 700; }
+  .dont-list ul li { padding: 0.2rem 0; }
+  .dont-list ul li::before { content: '\2717 '; color: #dc2626; font-weight: 700; }
+  .checklist { background: var(--primary-light); border: 2px solid var(--primary); border-radius: 12px; padding: 1.5rem; margin: 2rem 0; }
+  .checklist h3 { color: var(--primary); margin-bottom: 0.75rem; font-size: 1.1rem; }
+  .checklist ul { list-style: none; }
+  .checklist ul li { padding: 0.4rem 0 0.4rem 2rem; position: relative; font-size: 0.95rem; }
+  .checklist ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 18px; height: 18px; border: 2px solid var(--primary); border-radius: 4px; background: white; }
+  .support-banner { background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%); color: white; border-radius: 12px; padding: 2rem; text-align: center; margin: 2.5rem 0; }
+  .support-banner h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .support-banner p { opacity: 0.75; font-size: 0.9rem; margin-bottom: 1rem; }
+  .support-banner a { display: inline-block; padding: 0.6rem 1.5rem; background: white; color: var(--primary); border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+  .footer { text-align: center; padding: 2rem 0; color: var(--gray-400); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-logo">SwiftCause</div>
+  <h1>Set Up Your Collection Point</h1>
+  <p>Turn any phone or tablet into a contactless donation station for your charity. No special hardware required.</p>
+  <div class="hero-time">Takes about 10 minutes</div>
+</div>
+<div class="container">
+<div class="intro">
+  <p>SwiftCause works on any device with a web browser. This guide walks you through choosing a device, securing it, and placing it where donors will see it. You can set up multiple collection points at no extra cost.</p>
+</div>
+<div class="step">
+  <div class="step-number">1</div>
+  <h2>Choose your device</h2>
+  <p>Use any phone or tablet you already have, or pick one up for as little as \u00a330. Here are our recommendations at every budget.</p>
+  <h3 style="font-size:0.95rem; color:var(--gray-600); margin-bottom:0.5rem;">Already have a spare device?</h3>
+  <p style="font-size:0.9rem;">Any Android phone or tablet (2019 or newer) or any iPhone/iPad running iOS 15+ will work perfectly. Skip to Step 2.</p>
+  <h3 style="font-size:0.95rem; color:var(--primary); margin-top:1.5rem; margin-bottom:0.75rem;">Need to buy a device? Here are our top picks:</h3>
+  <div class="device-grid">
+    <div class="device-card"><span class="device-label label-budget">Cheapest</span><span class="device-label label-android">Android</span><h4>Any used Android phone</h4><div class="device-price">\u00a320\u201340</div><ul><li>eBay, CeX, Facebook Marketplace</li><li>Samsung Galaxy A series ideal</li><li>Great for desk or counter use</li></ul></div>
+    <div class="device-card"><span class="device-label label-budget">Budget tablet</span><span class="device-label label-android">Android</span><h4>Amazon Fire 7 Tablet</h4><div class="device-price">\u00a330\u201350</div><ul><li>New from Amazon UK</li><li>7\u2033 screen, compact</li><li>Good for small spaces</li></ul></div>
+    <div class="device-card"><span class="device-label label-best">Best value</span><span class="device-label label-android">Android</span><h4>Samsung Galaxy Tab A9</h4><div class="device-price">\u00a380</div><ul><li>8.7\u2033 screen, brand new</li><li>Samsung Knox kiosk mode built in</li><li>Samsung UK, Amazon, Currys</li></ul></div>
+    <div class="device-card"><span class="device-label label-best">Best screen</span><span class="device-label label-android">Android</span><h4>Samsung Galaxy Tab A9+</h4><div class="device-price">\u00a3158</div><ul><li>11\u2033 display, 90Hz</li><li>Ideal for floor-stand use</li><li>Premium feel, great viewing angles</li></ul></div>
+    <div class="device-card"><span class="device-label label-budget">Budget iPad</span><span class="device-label label-apple">Apple</span><h4>Used iPad 7th/8th Gen</h4><div class="device-price">\u00a380\u2013120</div><ul><li>CeX, Back Market, eBay</li><li>10.2\u2033 Retina display</li><li>Apple Guided Access built in</li></ul></div>
+    <div class="device-card"><span class="device-label label-best">Premium</span><span class="device-label label-apple">Apple</span><h4>Refurb iPad 10th Gen</h4><div class="device-price">\u00a3229</div><ul><li>Back Market, Hoxton Macs</li><li>10.9\u2033 Liquid Retina</li><li>12-month warranty included</li></ul></div>
+  </div>
+</div>
+<div class="step">
+  <div class="step-number">2</div>
+  <h2>Choose a stand</h2>
+  <p>Pick a stand that suits your space. You can start with a simple desk stand and upgrade later.</p>
+  <div class="stand-grid">
+    <div class="stand-card"><div class="stand-icon">\ud83d\udcbb</div><h4>Desk / Counter Stand</h4><div class="stand-price">\u00a38\u201315</div><p>Sits on a table, desk, or reception counter. Simple and portable.</p></div>
+    <div class="stand-card" style="border-color: var(--primary); border-width: 2px;"><div class="stand-icon">\ud83c\udfaf</div><h4>Locking Floor Stand</h4><div class="stand-price">\u00a345\u201380</div><p>Freestanding with anti-theft lock. Ideal for lobbies and entrances. Height-adjustable.</p></div>
+    <div class="stand-card"><div class="stand-icon">\ud83d\udee0</div><h4>Wall Mount</h4><div class="stand-price">\u00a38\u201320</div><p>Fixed to a wall near an entrance or exit. Space-saving, tidy look.</p></div>
+  </div>
+  <p style="font-size:0.85rem; color:var(--gray-600);">All available on <strong>Amazon UK</strong>. Search for \u201ctablet floor stand locking\u201d or \u201ctablet desk stand\u201d. We recommend <strong>AboveTEK</strong> or <strong>Mount-It!</strong> brands for locking floor stands.</p>
+</div>
+<div class="step">
+  <div class="step-number">3</div>
+  <h2>Lock the device to SwiftCause</h2>
+  <p>Prevent visitors from closing the donation page or accessing other apps. This is free and takes 2 minutes.</p>
+  <div class="lockdown-tabs">
+    <button class="lockdown-tab active" onclick="showTab('samsung')">Samsung</button>
+    <button class="lockdown-tab" onclick="showTab('android')">Other Android</button>
+    <button class="lockdown-tab" onclick="showTab('apple')">iPad / iPhone</button>
+  </div>
+  <div id="tab-samsung" class="lockdown-content active">
+    <h3 style="margin-top:0;">Samsung Knox Kiosk Mode <span style="font-size:0.8rem; font-weight:400; color:var(--success);">(Free, built-in)</span></h3>
+    <ol class="instruction-list">
+      <li>Open <strong>Settings</strong> \u2192 <strong>Biometrics and security</strong> \u2192 <strong>Other security settings</strong></li>
+      <li>Tap <strong>Pin windows</strong> and toggle it <strong>ON</strong></li>
+      <li>Open <strong>Chrome</strong> and go to your SwiftCause donation page URL</li>
+      <li>Tap the <strong>Recent apps</strong> button (square icon)</li>
+      <li>Tap the app icon at the top of the Chrome card \u2192 select <strong>Pin this app</strong></li>
+      <li>The device is now locked to your donation page. To unpin, press and hold <strong>Back + Recent</strong> together.</li>
+    </ol>
+  </div>
+  <div id="tab-android" class="lockdown-content">
+    <h3 style="margin-top:0;">Android Screen Pinning <span style="font-size:0.8rem; font-weight:400; color:var(--success);">(Free, built-in)</span></h3>
+    <ol class="instruction-list">
+      <li>Open <strong>Settings</strong> \u2192 <strong>Security</strong> \u2192 <strong>Advanced</strong> \u2192 <strong>App pinning</strong></li>
+      <li>Toggle it <strong>ON</strong>. Optionally set \u201cAsk for PIN before unpinning\u201d</li>
+      <li>Open <strong>Chrome</strong> and go to your SwiftCause donation page URL</li>
+      <li>Tap the <strong>Recent apps</strong> button \u2192 tap the <strong>pin icon</strong> at the bottom of the Chrome card</li>
+      <li>Done! The device is locked to SwiftCause. To unpin, hold <strong>Back + Recent</strong> (or enter your PIN).</li>
+    </ol>
+  </div>
+  <div id="tab-apple" class="lockdown-content">
+    <h3 style="margin-top:0;">Apple Guided Access <span style="font-size:0.8rem; font-weight:400; color:var(--success);">(Free, built-in)</span></h3>
+    <ol class="instruction-list">
+      <li>Open <strong>Settings</strong> \u2192 <strong>Accessibility</strong> \u2192 <strong>Guided Access</strong></li>
+      <li>Toggle <strong>Guided Access ON</strong></li>
+      <li>Tap <strong>Passcode Settings</strong> and set a 6-digit passcode</li>
+      <li>Open <strong>Safari</strong> and go to your SwiftCause donation page URL</li>
+      <li><strong>Triple-click the side button</strong> (or Home button on older iPads)</li>
+      <li>Tap <strong>Start</strong> in the top-right corner</li>
+      <li>The device is now locked to SwiftCause. To exit, triple-click again and enter your passcode.</li>
+    </ol>
+  </div>
+</div>
+<div class="step">
+  <div class="step-number">4</div>
+  <h2>Plug in and place it</h2>
+  <p>Keep your device charged and visible.</p>
+  <div class="tip-grid">
+    <div class="tip-card"><div class="tip-icon">\ud83d\udea2</div><h4>Near the entrance or exit</h4><p>Donors are most likely to give when arriving or leaving.</p></div>
+    <div class="tip-card"><div class="tip-icon">\u26a1</div><h4>Always plugged in</h4><p>Use a long charging cable routed through the stand.</p></div>
+    <div class="tip-card"><div class="tip-icon">\ud83d\udca1</div><h4>Well-lit area</h4><p>Make sure the screen is visible. Turn brightness to maximum.</p></div>
+    <div class="tip-card"><div class="tip-icon">\ud83d\udcac</div><h4>Add a sign</h4><p>A small sign saying \u201cTap to donate\u201d makes a big difference.</p></div>
+  </div>
+  <div class="do-dont">
+    <div class="do-list"><h4>Do</h4><ul><li>Set screen brightness to maximum</li><li>Turn off auto-sleep</li><li>Connect to reliable Wi-Fi</li><li>Route charging cable neatly</li><li>Test a real donation first</li></ul></div>
+    <div class="dont-list"><h4>Don't</h4><ul><li>Leave on battery power overnight</li><li>Place in direct sunlight</li><li>Use weak or guest Wi-Fi</li><li>Forget to lock the device</li><li>Hide it in a corner</li></ul></div>
+  </div>
+</div>
+<div class="step">
+  <div class="step-number">5</div>
+  <h2>Multiply your collection points</h2>
+  <p>SwiftCause lets you create unlimited collection points at no extra cost.</p>
+  <div class="tip-grid">
+    <div class="tip-card"><div class="tip-icon">\ud83d\udcf1</div><h4>Volunteer phones</h4><p>Activate volunteers to collect on their own phones at events.</p></div>
+    <div class="tip-card"><div class="tip-icon">\ud83d\udcc4</div><h4>QR code posters</h4><p>Print QR codes for walls, tables, leaflets, and collection boxes.</p></div>
+    <div class="tip-card"><div class="tip-icon">\ud83d\udce9</div><h4>Email &amp; social media</h4><p>Share your donation link via newsletters and social posts.</p></div>
+    <div class="tip-card"><div class="tip-icon">\ud83c\udfc6</div><h4>Campaign-specific links</h4><p>Create separate campaigns so donors choose where money goes.</p></div>
+  </div>
+</div>
+<div class="checklist">
+  <h3>Go-Live Checklist</h3>
+  <ul>
+    <li>Device charged and plugged in</li>
+    <li>Connected to reliable Wi-Fi</li>
+    <li>SwiftCause page loaded in browser</li>
+    <li>Device locked in kiosk mode</li>
+    <li>Screen brightness to maximum</li>
+    <li>Auto-sleep disabled</li>
+    <li>Device secured in stand</li>
+    <li>Test donation completed</li>
+    <li>Signage placed next to device</li>
+    <li>Charging cable routed securely</li>
+  </ul>
+</div>
+<div class="support-banner">
+  <h3>Need help getting set up?</h3>
+  <p>Our team can walk you through the setup over a quick video call.</p>
+  <a href="mailto:support@swiftcause.com">Contact support</a>
+</div>
+<div class="footer">
+  <p>\u00a9 2026 SwiftCause. Turn any device into a donation point.</p>
+</div>
+</div>
+<script>
+function showTab(id) {
+  document.querySelectorAll('.lockdown-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.lockdown-content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+</script>
+</body>
+</html>
