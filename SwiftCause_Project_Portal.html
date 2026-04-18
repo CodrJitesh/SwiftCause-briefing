@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwiftCause Project Portal &mdash; 18 April 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #0b0d14; color: #e5e7eb; font-family: 'Inter', sans-serif; padding: 24px; line-height: 1.5; }
+    .container { max-width: 1500px; margin: 0 auto; }
+    h1 { font-size: 32px; font-weight: 800; margin-bottom: 4px; color: #f3f4f6; }
+    .subtitle { font-size: 14px; color: #9ca3af; margin-bottom: 28px; }
+    .headline-banner { background: linear-gradient(135deg, #1a3a2a, #14171f); border: 1px solid #10b981; border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; }
+    .headline-banner h2 { font-size: 18px; color: #10b981; margin-bottom: 8px; }
+    .headline-banner p { font-size: 14px; color: #d1d5db; line-height: 1.7; }
+
+    /* KPI Strip */
+    .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 32px; }
+    .kpi-box { background-color: #14171f; border: 1px solid #1e202b; border-radius: 8px; padding: 16px; }
+    .kpi-label { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .kpi-value { font-size: 28px; font-weight: 700; color: #f3f4f6; }
+    .kpi-value.success { color: #10b981; }
+    .kpi-value.alert { color: #ef4444; }
+    .kpi-value.warning { color: #f59e0b; }
+    .kpi-value.info { color: #6c72e0; }
+    .kpi-meta { font-size: 11px; color: #6b7280; margin-top: 6px; }
+
+    /* Tabs */
+    .tab-nav { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid #1e202b; overflow-x: auto; padding-bottom: 0; }
+    .tab-button { background: none; border: none; color: #9ca3af; font-size: 13px; font-weight: 500; padding: 12px 16px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+    .tab-button:hover { color: #d1d5db; background-color: #14171f; }
+    .tab-button.active { color: #6c72e0; border-bottom-color: #6c72e0; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Cards */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background-color: #14171f; border: 1px solid #1e202b; border-radius: 10px; padding: 20px; transition: border-color 0.2s, transform 0.15s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+    .card:hover { border-color: #6c72e0; transform: translateY(-2px); }
+    .card-category { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+    .cat-dashboard { background-color: #312e81; color: #c7d2fe; }
+    .cat-briefing { background-color: #065f46; color: #86efac; }
+    .cat-battlecard { background-color: #7f1d1d; color: #fca5a5; }
+    .cat-flow { background-color: #78350f; color: #fde047; }
+    .cat-architecture { background-color: #1e3a8a; color: #bfdbfe; }
+    .cat-sales { background-color: #4c1d95; color: #ddd6fe; }
+    .cat-report { background-color: #064e3b; color: #a7f3d0; }
+    .cat-board { background-color: #713f12; color: #fef08a; }
+    .cat-video { background-color: #831843; color: #fbcfe8; }
+    .cat-ops { background-color: #134e4a; color: #99f6e4; }
+    .card-title { font-size: 15px; font-weight: 600; color: #f3f4f6; margin-bottom: 6px; }
+    .card-desc { font-size: 12px; color: #9ca3af; line-height: 1.5; }
+    .card-date { font-size: 11px; color: #6b7280; margin-top: 10px; }
+
+    /* Section headers */
+    h2 { font-size: 20px; font-weight: 700; color: #f3f4f6; margin: 28px 0 16px 0; display: flex; align-items: center; gap: 10px; }
+    h2 .count { font-size: 13px; background-color: #1e202b; color: #9ca3af; padding: 2px 10px; border-radius: 12px; font-weight: 500; }
+    h3 { font-size: 16px; font-weight: 600; color: #d1d5db; margin: 20px 0 12px 0; }
+
+    /* APK Review */
+    .apk-review { background-color: #14171f; border: 1px solid #1e202b; border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .apk-review h3 { margin-top: 0; color: #f3f4f6; }
+    .flow-step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 16px; padding: 12px; background-color: #0f1117; border-radius: 8px; }
+    .step-num { min-width: 36px; height: 36px; background-color: #6c72e0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
+    .step-content { flex: 1; }
+    .step-title { font-size: 14px; font-weight: 600; color: #f3f4f6; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: #9ca3af; }
+    .finding { background-color: #0f1117; border-left: 3px solid; border-radius: 6px; padding: 12px 16px; margin-bottom: 10px; }
+    .finding.good { border-left-color: #10b981; }
+    .finding.warn { border-left-color: #f59e0b; }
+    .finding.issue { border-left-color: #ef4444; }
+    .finding-label { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+    .finding-label.good { color: #10b981; }
+    .finding-label.warn { color: #f59e0b; }
+    .finding-label.issue { color: #ef4444; }
+    .finding-text { font-size: 13px; color: #d1d5db; }
+
+    /* Issues table */
+    .issues-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+    .issues-table th { background-color: #0f1117; border: 1px solid #1e202b; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; }
+    .issues-table td { background-color: #14171f; border: 1px solid #1e202b; padding: 10px 12px; font-size: 13px; color: #d1d5db; }
+    .issues-table tr:hover td { background-color: #1a1d27; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.3px; margin-right: 4px; }
+    .badge.p0 { background-color: #7f1d1d; color: #fca5a5; }
+    .badge.open { background-color: #78350f; color: #fde047; }
+    .badge.unassigned { background-color: #4c1d95; color: #ddd6fe; }
+    .badge.merged { background-color: #065f46; color: #86efac; }
+    .badge.sprint { background-color: #1e3a8a; color: #bfdbfe; }
+    .badge.assigned { background-color: #065f46; color: #86efac; }
+    .badge.new { background-color: #831843; color: #fbcfe8; }
+    .badge.review { background-color: #312e81; color: #c7d2fe; }
+
+    /* Commits */
+    .commit-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #1e202b; }
+    .commit-sha { font-family: 'Monaco', 'Menlo', monospace; font-size: 12px; color: #6c72e0; min-width: 80px; }
+    .commit-msg { font-size: 13px; color: #d1d5db; flex: 1; }
+    .commit-author { font-size: 12px; color: #9ca3af; min-width: 120px; text-align: right; }
+    .commit-date { font-size: 11px; color: #6b7280; min-width: 90px; text-align: right; }
+
+    .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #1e202b; font-size: 12px; color: #6b7280; text-align: center; }
+    .text-success { color: #10b981; }
+    .text-warning { color: #f59e0b; }
+    .text-danger { color: #ef4444; }
+
+    /* Video embed */
+    .video-container { margin: 16px 0; border-radius: 8px; overflow: hidden; max-width: 400px; }
+    .video-container video { width: 100%; border-radius: 8px; }
+
+    /* Iframe viewer */
+    .viewer-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.85); z-index: 9999; flex-direction: column; }
+    .viewer-overlay.open { display: flex; }
+    .viewer-toolbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background-color: #14171f; border-bottom: 1px solid #1e202b; flex-shrink: 0; }
+    .viewer-title { font-size: 14px; font-weight: 600; color: #f3f4f6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+    .viewer-actions { display: flex; gap: 12px; align-items: center; }
+    .viewer-btn { background: #1e202b; border: 1px solid #2d3040; color: #d1d5db; font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.15s; font-family: 'Inter', sans-serif; }
+    .viewer-btn:hover { background: #2d3040; color: #f3f4f6; border-color: #6c72e0; }
+    .viewer-btn.close-btn { background: #7f1d1d; border-color: #991b1b; color: #fca5a5; }
+    .viewer-btn.close-btn:hover { background: #991b1b; color: #fff; }
+    .viewer-iframe { flex: 1; border: none; width: 100%; background: #fff; }
+
+    .change-up { color: #ef4444; font-size: 12px; }
+    .change-down { color: #10b981; font-size: 12px; }
+    .change-new { color: #6c72e0; font-size: 12px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>SwiftCause Project Portal</h1>
+  <p class="subtitle">Last updated: 18 April 2026 (Saturday) &bull; 21 days to GTM launch (9 May) &bull; Sprint 04, Day 21</p>
+
+  <!-- Headline Banner -->
+  <div class="headline-banner">
+    <h2>Today's Headline: Gift Aid Hardening Shipped &mdash; P0 #597 Closed, Bug #650 Closed, Permissions PR #661 In Review</h2>
+    <p>
+      <strong>7 PRs merged 15 Apr</strong> (#653, #654, #655, #656, #659, #651, #660) cleared the server-side export suite, hardened Gift Aid validation (bug #650), closed P0 #597 (campaign 100% funding goal) and aligned export filters. <strong>3 PRs currently open:</strong> #661 (dedicated export permissions, Yuvraj, awaiting review from dp-singh/Jitesh/prsrwt), #668 (tokenHash as doc ID for O(1) magic link lookup, prsrwt, <em>last updated 16 Apr 17:56</em>) and #652 (Jitesh's Android tap-to-pay APK). 8 new Gift Aid UX / backend issues (#662&ndash;#667) were raised 16 Apr and are all assigned to the team &mdash; Magic Link v2 uplift. <strong>The Apr-12 strategy backlog (#629&ndash;#641, #646&ndash;#647) is still unassigned</strong> &mdash; 15 strategy issues waiting for prioritisation. Sprint 04 tasks #611/#612 unassigned at Day 21. Repo: <strong>YNVSolutions/SwiftCause_Mono</strong>. 21 days to GTM.
+    </p>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-box">
+      <div class="kpi-label">Days to GTM</div>
+      <div class="kpi-value warning">21</div>
+      <div class="kpi-meta">Launch: 9 May 2026</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Open Issues (top page)</div>
+      <div class="kpi-value alert">30+</div>
+      <div class="kpi-meta">Top 30 by recent update</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Unassigned Strategy</div>
+      <div class="kpi-value alert">15</div>
+      <div class="kpi-meta">#629&ndash;#641, #646, #647</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Open PRs</div>
+      <div class="kpi-value warning">3</div>
+      <div class="kpi-meta">#661, #668, #652</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">PRs Merged (Apr)</div>
+      <div class="kpi-value success">12+</div>
+      <div class="kpi-meta">last: #660 (15 Apr 15:34)</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">P0 Open</div>
+      <div class="kpi-value warning">1</div>
+      <div class="kpi-meta">#629 GO-LIVE CRITICAL</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">Sprint 04 Tasks</div>
+      <div class="kpi-value warning">2/4 visible</div>
+      <div class="kpi-meta">#609, #610 assigned; #611/#612 unknown</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">HTML Assets</div>
+      <div class="kpi-value info">26</div>
+      <div class="kpi-meta">Active files (Vercel-ready)</div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-button active" onclick="showTab(event, 'apk')">APK Review</button>
+    <button class="tab-button" onclick="showTab(event, 'dashboards')">Dashboards</button>
+    <button class="tab-button" onclick="showTab(event, 'daily')">Daily Reports</button>
+    <button class="tab-button" onclick="showTab(event, 'battlecards')">Battlecards &amp; Sales</button>
+    <button class="tab-button" onclick="showTab(event, 'flows')">User Flows &amp; Magic Link</button>
+    <button class="tab-button" onclick="showTab(event, 'architecture')">Architecture &amp; Consent</button>
+    <button class="tab-button" onclick="showTab(event, 'board')">Board Reviews</button>
+    <button class="tab-button" onclick="showTab(event, 'github')">GitHub Live</button>
+    <button class="tab-button" onclick="showTab(event, 'all')">All Files (A&ndash;Z)</button>
+  </div>
+
+  <!-- ========== TAB: APK REVIEW ========== -->
+  <div id="tab-apk" class="tab-content active">
+    <h2>Jitesh APK Build &mdash; 12 April 2026</h2>
+    <div class="apk-review">
+      <h3>Donation Flow Walkthrough (32-second recording)</h3>
+      <div class="video-container">
+        <video controls preload="metadata">
+          <source src="Screen_Recording_20260412_125053_SwiftCause_APK_Jitesh.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
+      <h3 style="margin-top: 24px;">Latest Android PR &mdash; <span class="badge review">In Review</span> #652 (still open, updated 16 Apr)</h3>
+      <div class="finding good">
+        <div class="finding-label good">Open by Jitesh &mdash; awaiting review</div>
+        <div class="finding-text">
+          <strong><a href="https://github.com/YNVSolutions/SwiftCause_Mono/pull/652" target="_blank" style="color:#86efac;">PR #652 &mdash; Android setup: complete payment flow for initial internal testing</a></strong><br>
+          Adds <code style="background:#1e202b;padding:2px 6px;border-radius:3px;font-size:12px;">ThankYouScreen</code> after successful Tap-to-Pay; auto-routes to Tap-to-Pay on NFC-capable devices; pulls magic-link token at payment completion; adds <code style="background:#1e202b;padding:2px 6px;border-radius:3px;font-size:12px;">MAGIC_LINK_BASE_URL</code> build config; brings in zxing for QR rendering. Lays groundwork for QR-based magic links in the Android app &mdash; directly aligned with go-live flow. <strong>PR has been open since 14 Apr &mdash; needs review decision.</strong>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px;">Flow Steps Observed</h3>
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Campaign List (Home Screen)</div>
+          <div class="step-desc">SwiftCause logo + 4 campaigns visible: "Threads of Hope: Clothing Children in Need" (2%), "Educate a Girl, Empower a Future" (2%), "Feed the devs" (6%), "Feed 100 Children This Winter" (0%). Each has image, description, and progress bar.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Campaign Detail &rarr; Amount Selection</div>
+          <div class="step-desc">Tapped "Threads of Hope". Shows campaign hero image, preset amounts (&pound;25, &pound;50, &pound;100), custom amount field, and "Make this recurring" toggle. Clean layout, proper &pound; formatting.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Processing Payment Modal</div>
+          <div class="step-desc">After selecting &pound;25, a modal overlay appears: spinning loader with "Processing Payment &mdash; Please wait..." text. Properly overlays the donation screen behind.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Stripe Payment Simulation</div>
+          <div class="step-desc">Shows "PRESS HERE TO SIMULATE PAYMENT" button with "Total: &pound;25.00" at bottom. This is the test/sandbox Stripe flow &mdash; no real payment taken.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Processing Your Payment (Full Screen)</div>
+          <div class="step-desc">Full-screen loading state: small green spinner + "Processing your payment &mdash; Please wait..." Transitions smoothly from Stripe simulation.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Payment Complete &rarr; QR Code for Gift Aid</div>
+          <div class="step-desc">Green tick + "Payment complete &mdash; Thank you for your donation". Large QR code displayed with text "Scan this QR code with your phone to complete your Gift Aid declaration." Auto-return countdown (29s &rarr; 19s observed). Button: "I've scanned the QR".</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">Return to Campaign List</div>
+          <div class="step-desc">After countdown or button tap, returns cleanly to the campaign list home screen. Full loop complete.</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px;">Findings</h3>
+      <div class="finding good">
+        <div class="finding-label good">Working Well</div>
+        <div class="finding-text">End-to-end donation flow completes successfully. Campaign listing, amount selection, Stripe integration, payment processing states, QR code generation, and auto-return all functional.</div>
+      </div>
+      <div class="finding good">
+        <div class="finding-label good">Working Well</div>
+        <div class="finding-text">Gift Aid QR code flow matches the magic link architecture (PR #622). Post-donation QR &rarr; donor's phone &rarr; Gift Aid declaration. This is the core go-live flow.</div>
+      </div>
+      <div class="finding good">
+        <div class="finding-label good">Working Well</div>
+        <div class="finding-text">UI is clean and on-brand &mdash; dark green buttons, SwiftCause logo, proper &pound; currency formatting, progress bars on campaigns.</div>
+      </div>
+      <div class="finding good">
+        <div class="finding-label good">RESOLVED &mdash; PR #659 Merged 15 Apr 14:52</div>
+        <div class="finding-text">
+          Bug <strong><a href="https://github.com/YNVSolutions/SwiftCause_Mono/issues/650" target="_blank" style="color:#86efac;">#650</a></strong> (donations tagged Gift Aid without explicit consent) is now <strong>fixed and merged</strong>. <strong><a href="https://github.com/YNVSolutions/SwiftCause_Mono/pull/659" target="_blank" style="color:#86efac;">PR #659</a></strong> by Paras adds strict server-side validation so declarations are only created on explicit consent. Reviewed by Jitesh + Yuvraj. <span class="text-success">HMRC false-claim risk closed.</span>
+        </div>
+      </div>
+      <div class="finding good">
+        <div class="finding-label good">RESOLVED &mdash; P0 #597 Closed via PR #651</div>
+        <div class="finding-text">
+          P0 "Campaign should not auto-stop at 100%" (fix in PR #651) merged 15 Apr 15:17. Campaigns can now exceed funding goal and continue accepting donations. <span class="text-success">Blocker cleared.</span>
+        </div>
+      </div>
+      <div class="finding warn">
+        <div class="finding-label warn">Note</div>
+        <div class="finding-text">"Feed the devs" campaign is a test/joke entry &mdash; needs removing before any customer demos or go-live. Placeholder content like this will undermine credibility.</div>
+      </div>
+      <div class="finding warn">
+        <div class="finding-label warn">Note</div>
+        <div class="finding-text">Payment simulation screen ("PRESS HERE TO SIMULATE PAYMENT") is test mode only. Need to verify Stripe live key toggle is ready for production switch.</div>
+      </div>
+      <div class="finding warn">
+        <div class="finding-label warn">UX Note &rarr; Issue #627 Still Open</div>
+        <div class="finding-text">The auto-return countdown (29s) is too long. <strong><a href="https://github.com/YNVSolutions/SwiftCause_Mono/issues/627" target="_blank" style="color:#f59e0b;">Issue #627</a></strong> raised for a <strong>configurable post-donation redirect timer</strong>: org-level default (15s) with per-campaign override. <span style="color:#fde047;">Still unassigned</span> &mdash; sits in the strategy backlog awaiting prioritisation.</div>
+      </div>
+
+      <h3 style="margin-top: 24px;">Magic Link v2 Uplift (16 Apr)</h3>
+      <div class="finding good">
+        <div class="finding-label good">NEW &mdash; 8 Issues Raised 16 Apr Morning</div>
+        <div class="finding-text">
+          Team raised a cluster of Magic Link v2 improvements all assigned within the dev team:<br>
+          <strong>#662</strong> Backend Magic Link Token Storage &bull; <strong>#663</strong> Backend completeGiftAidFlow Function &bull; <strong>#664</strong> Frontend Gift Aid Page &bull; <strong>#665</strong> Frontend Form Components &bull; <strong>#666</strong> Frontend Result Page with QR Code Prominence &bull; <strong>#667</strong> Frontend Thank You Page &bull; <strong>#668</strong> (PR) refactor: tokenHash as doc ID for O(1) lookup.<br>
+          This is a coordinated sprint on the post-donation Gift Aid flow. <strong>PR #668 is open and awaiting review</strong> (last updated 16 Apr 17:56).
+        </div>
+      </div>
+
+      <h3 style="margin-top: 24px;">Action Required</h3>
+      <div class="finding issue">
+        <div class="finding-label issue">Qamar Decisions &mdash; Pick Up This Week</div>
+        <div class="finding-text">
+          <strong>1. Strategy backlog (#629&ndash;#641, #646, #647):</strong> 15 unassigned issues from 12-13 Apr. Pick at least 3 for this sprint; defer rest to post-launch. <strong>#629 (GO-LIVE CRITICAL: Location entity with Local Authority tagging for GASDS)</strong> must be triaged.<br>
+          <strong>2. Sprint 04 tail (#611, #612):</strong> Still unassigned at Day 20. Decision: assign to idle dev, or descope before GTM?<br>
+          <strong>3. Review PR #661 and PR #668:</strong> Both sitting open awaiting reviewers. PR #668 is a Magic Link performance optimisation &mdash; worth expediting.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TAB: DASHBOARDS ========== -->
+  <div id="tab-dashboards" class="tab-content">
+    <h2>Dashboards <span class="count">2</span></h2>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause-Product-Dashboard.html" onclick="event.preventDefault(); openViewer('SwiftCause-Product-Dashboard.html', 'Product Dashboard (Master)')">
+        <span class="card-category cat-dashboard">Dashboard</span>
+        <div class="card-title">Product Dashboard (Master)</div>
+        <div class="card-desc">Permanent dashboard. Full data arrays for commits, PRs, issues, sprint tracking. Overwritten each refresh.</div>
+      </a>
+      <a class="card" href="SwiftCause_Enrichment_Dashboard.html" onclick="event.preventDefault(); openViewer('SwiftCause_Enrichment_Dashboard.html', 'Enrichment Dashboard')">
+        <span class="card-category cat-dashboard">Dashboard</span>
+        <div class="card-title">Enrichment Dashboard</div>
+        <div class="card-desc">Charity data enrichment results &mdash; ICP scores, Charity Commission matches.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== TAB: DAILY REPORTS ========== -->
+  <div id="tab-daily" class="tab-content">
+    <h2>Daily Briefings &amp; Reports <span class="count">2</span></h2>
+    <p style="font-size:13px; color:#9ca3af; margin-bottom:16px;">Latest active daily snapshots.</p>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html" onclick="event.preventDefault(); openViewer('SwiftCause_Daily_Briefing_2026-04-17.html', 'Daily Briefing — 17 Apr 2026')">
+        <span class="card-category cat-briefing">Briefing</span>
+        <div class="card-title">Daily Briefing &mdash; 17 Apr 2026</div>
+        <div class="card-desc">Latest briefing. 21 days to GTM. 3 open PRs (#661, #668, #652). Strategy backlog unassigned.</div>
+        <div class="card-date">LATEST</div>
+      </a>
+      <a class="card" href="SwiftCause_GiftAid_Analysis_2026-04-13.html" onclick="event.preventDefault(); openViewer('SwiftCause_GiftAid_Analysis_2026-04-13.html', 'Gift Aid Analysis — 13 Apr 2026')">
+        <span class="card-category cat-report">Report</span>
+        <div class="card-title">Gift Aid Analysis &mdash; 13 Apr 2026</div>
+        <div class="card-desc">OTP requirement, postcode validation, Apple/Google Pay spike.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== TAB: BATTLECARDS & SALES ========== -->
+  <div id="tab-battlecards" class="tab-content">
+    <h2>Battlecards &amp; Sales Collateral <span class="count">13</span></h2>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause-Battlecard-V3.1-Corrected.html" onclick="event.preventDefault(); openViewer('SwiftCause-Battlecard-V3.1-Corrected.html', 'Battlecard V3.1 Corrected')">
+        <span class="card-category cat-battlecard">Battlecard</span>
+        <div class="card-title">Battlecard V3.1 (Corrected)</div>
+        <div class="card-desc">Latest competitive battlecard with pricing corrections.</div>
+      </a>
+      <a class="card" href="SwiftCause_ICP_Model.html" onclick="event.preventDefault(); openViewer('SwiftCause_ICP_Model.html', 'ICP Model')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">ICP Model</div>
+        <div class="card-desc">Ideal customer profile scoring framework (0-10 scale).</div>
+      </a>
+      <a class="card" href="SwiftCause_Pricing_Decision.html" onclick="event.preventDefault(); openViewer('SwiftCause_Pricing_Decision.html', 'Pricing Decision')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Pricing Decision</div>
+        <div class="card-desc">Pricing model: tiered fee, micro-txn floor, Stripe rates.</div>
+      </a>
+      <a class="card" href="SwiftCause_Deal_Pricing_Calculator.html" onclick="event.preventDefault(); openViewer('SwiftCause_Deal_Pricing_Calculator.html', 'Deal Pricing Calculator')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Deal Pricing Calculator</div>
+        <div class="card-desc">Interactive calculator for per-deal pricing scenarios.</div>
+      </a>
+      <a class="card" href="SwiftCause_Competitive_Tracker.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Tracker.html', 'Competitive Tracker')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Competitive Tracker</div>
+        <div class="card-desc">Live competitor monitoring.</div>
+      </a>
+      <a class="card" href="SwiftCause_Competitive_Comparison.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Comparison.html', 'Competitive Comparison')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Competitive Comparison</div>
+        <div class="card-desc">Feature matrix vs Dona, GoodBox, others.</div>
+      </a>
+      <a class="card" href="SwiftCause_Competitive_Scenarios.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Scenarios.html', 'Competitive Scenarios')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Competitive Scenarios</div>
+        <div class="card-desc">Win/loss scenario planning.</div>
+      </a>
+      <a class="card" href="SwiftCause_Regional_Prospecting.html" onclick="event.preventDefault(); openViewer('SwiftCause_Regional_Prospecting.html', 'Regional Prospecting')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Regional Prospecting</div>
+        <div class="card-desc">Bristol cluster, UK MSF network, regional targeting.</div>
+      </a>
+      <a class="card" href="SwiftCause_Email_Collateral.html" onclick="event.preventDefault(); openViewer('SwiftCause_Email_Collateral.html', 'Email Collateral')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Email Collateral</div>
+        <div class="card-desc">Outreach email templates.</div>
+      </a>
+      <a class="card" href="SwiftCause_Sales_Picture.html" onclick="event.preventDefault(); openViewer('SwiftCause_Sales_Picture.html', 'Sales Picture')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Sales Picture</div>
+        <div class="card-desc">Full sales landscape view.</div>
+      </a>
+      <a class="card" href="SwiftCause_Sales_Finance_Projections.html" onclick="event.preventDefault(); openViewer('SwiftCause_Sales_Finance_Projections.html', 'Sales Finance Projections')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Sales Finance Projections</div>
+        <div class="card-desc">6-year sales + finance bridge.</div>
+      </a>
+      <a class="card" href="SwiftCause_PreSales_Qualification.html" onclick="event.preventDefault(); openViewer('SwiftCause_PreSales_Qualification.html', 'Pre-Sales Qualification')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Pre-Sales Qualification</div>
+        <div class="card-desc">Qualification checklist for prospect triage.</div>
+      </a>
+      <a class="card" href="SwiftCause Baseline Sales Collateral/SwiftCause_Sales_Status.html" onclick="event.preventDefault(); openViewer('SwiftCause Baseline Sales Collateral/SwiftCause_Sales_Status.html', 'Sales Status (Baseline)')">
+        <span class="card-category cat-sales">Sales</span>
+        <div class="card-title">Sales Status (Baseline)</div>
+        <div class="card-desc">Baseline sales status reference.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== TAB: USER FLOWS & MAGIC LINK ========== -->
+  <div id="tab-flows" class="tab-content">
+    <h2>User Flows &amp; Magic Link <span class="count">2</span></h2>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause_UserFlows_v2_MagicLink.html" onclick="event.preventDefault(); openViewer('SwiftCause_UserFlows_v2_MagicLink.html', 'User Flows v2 — Magic Link')">
+        <span class="card-category cat-flow">Flow</span>
+        <div class="card-title">User Flows v2 &mdash; Magic Link</div>
+        <div class="card-desc">Updated magic link post-donation Gift Aid flow. Token 30-day expiry, tokenHash as doc ID (PR #668).</div>
+      </a>
+      <a class="card" href="SwiftCause_UserFlows_AsIs_ToBe.html" onclick="event.preventDefault(); openViewer('SwiftCause_UserFlows_AsIs_ToBe.html', 'User Flows As-Is / To-Be')">
+        <span class="card-category cat-flow">Flow</span>
+        <div class="card-title">User Flows As-Is / To-Be</div>
+        <div class="card-desc">Side-by-side current vs target flow comparison.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== TAB: ARCHITECTURE & CONSENT ========== -->
+  <div id="tab-architecture" class="tab-content">
+    <p style="font-size:13px; color:#9ca3af; margin-bottom:16px; padding: 16px;">All architecture files have been archived to maintain clean, active project assets. Related information is available in Daily Briefings and Board Reviews.</p>
+  </div>
+
+  <!-- ========== TAB: BOARD REVIEWS ========== -->
+  <div id="tab-board" class="tab-content">
+    <h2>Board Reviews &amp; PM Decisions <span class="count">2</span></h2>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause_Board_Review_Pricing.html" onclick="event.preventDefault(); openViewer('SwiftCause_Board_Review_Pricing.html', 'Board Review — Pricing')">
+        <span class="card-category cat-board">Board</span>
+        <div class="card-title">Board Review &mdash; Pricing</div>
+        <div class="card-desc">Virtual board review on tiered pricing &amp; micro-txn floor.</div>
+      </a>
+      <a class="card" href="SwiftCause_Board_of_Directors_2026-04-04.html" onclick="event.preventDefault(); openViewer('SwiftCause_Board_of_Directors_2026-04-04.html', 'Board of Directors — 4 Apr 2026')">
+        <span class="card-category cat-board">Board</span>
+        <div class="card-title">Board of Directors &mdash; 4 Apr 2026</div>
+        <div class="card-desc">CEO/CTO/PO/Dev perspectives review.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ========== TAB: GITHUB LIVE ========== -->
+  <div id="tab-github" class="tab-content">
+    <h2>GitHub Live &mdash; YNVSolutions/SwiftCause_Mono</h2>
+    <p style="font-size:13px; color:#9ca3af; margin-bottom:16px;">Fetched live at portal refresh. Links open on GitHub.</p>
+
+    <h3>Recent Commits (last 15)</h3>
+    <div>
+      <div class="commit-item"><div class="commit-sha">d191940</div><div class="commit-msg">Merge PR #660 &mdash; donation export respects admin filters</div><div class="commit-author">prsrwt/web-flow</div><div class="commit-date">15 Apr 15:34</div></div>
+      <div class="commit-item"><div class="commit-sha">6c06ea6</div><div class="commit-msg">fix(donations-export): include admin filters in export request</div><div class="commit-author">Yuvraj</div><div class="commit-date">15 Apr 15:32</div></div>
+      <div class="commit-item"><div class="commit-sha">f5bb49e</div><div class="commit-msg">feat(donations-export): send active admin filters</div><div class="commit-author">Yuvraj</div><div class="commit-date">15 Apr 15:29</div></div>
+      <div class="commit-item"><div class="commit-sha">79d1f2a</div><div class="commit-msg">Merge PR #651 &mdash; campaigns can exceed 100% funding</div><div class="commit-author">prsrwt/web-flow</div><div class="commit-date">15 Apr 15:17</div></div>
+      <div class="commit-item"><div class="commit-sha">11b3ea0</div><div class="commit-msg">Resolve merge conflict in CampaignManagement.tsx</div><div class="commit-author">prsrwt</div><div class="commit-date">15 Apr 15:10</div></div>
+      <div class="commit-item"><div class="commit-sha">eaac6ce</div><div class="commit-msg">Merge PR #659 &mdash; Gift Aid validation hardening</div><div class="commit-author">prsrwt/web-flow</div><div class="commit-date">15 Apr 14:52</div></div>
+      <div class="commit-item"><div class="commit-sha">845b467</div><div class="commit-msg">Merge PR #656 &mdash; operator Gift Aid export permission</div><div class="commit-author">Yuvraj/web-flow</div><div class="commit-date">15 Apr 14:47</div></div>
+      <div class="commit-item"><div class="commit-sha">51c790c</div><div class="commit-msg">Merge PR #655 &mdash; subscription export server-side</div><div class="commit-author">Yuvraj/web-flow</div><div class="commit-date">15 Apr 07:06</div></div>
+      <div class="commit-item"><div class="commit-sha">3fe2b27</div><div class="commit-msg">resolve merge conflicts</div><div class="commit-author">Yuvraj</div><div class="commit-date">15 Apr 07:04</div></div>
+      <div class="commit-item"><div class="commit-sha">cc6c33d</div><div class="commit-msg">Merge PR #654 &mdash; kiosks export server-side</div><div class="commit-author">Yuvraj/web-flow</div><div class="commit-date">15 Apr 07:01</div></div>
+      <div class="commit-item"><div class="commit-sha">b2607e0</div><div class="commit-msg">merge conflict resolved (kiosks export)</div><div class="commit-author">Yuvraj</div><div class="commit-date">15 Apr 06:59</div></div>
+      <div class="commit-item"><div class="commit-sha">2729281</div><div class="commit-msg">Merge PR #653 &mdash; campaign export server-side</div><div class="commit-author">Yuvraj/web-flow</div><div class="commit-date">15 Apr 06:53</div></div>
+      <div class="commit-item"><div class="commit-sha">82ef54b</div><div class="commit-msg">fix(subscription-export): apply admin filters server-side</div><div class="commit-author">Yuvraj</div><div class="commit-date">14 Apr 19:25</div></div>
+      <div class="commit-item"><div class="commit-sha">c6d5856</div><div class="commit-msg">fix(admin-subscriptions): send active filters in export</div><div class="commit-author">Yuvraj</div><div class="commit-date">14 Apr 19:24</div></div>
+      <div class="commit-item"><div class="commit-sha">ce4dde9</div><div class="commit-msg">feat(subscription-export): extend request contract with filters</div><div class="commit-author">Yuvraj</div><div class="commit-date">14 Apr 19:24</div></div>
+    </div>
+
+    <h3>Open Pull Requests <span style="color:#f59e0b;">(3)</span></h3>
+    <table class="issues-table">
+      <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Opened</th><th>Last Update</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>#668</td>
+          <td>refactor: use tokenHash as document ID for O(1) magic link lookup</td>
+          <td>prsrwt</td>
+          <td>16 Apr 08:16</td>
+          <td>16 Apr 17:56</td>
+          <td><span class="badge review">Review</span></td>
+        </tr>
+        <tr>
+          <td>#661</td>
+          <td>Add dedicated export permissions (subscriptions, campaigns, kiosks) &mdash; closes #657</td>
+          <td>yuvraj-shishodia</td>
+          <td>15 Apr 17:45</td>
+          <td>17 Apr 07:40</td>
+          <td><span class="badge review">Review</span></td>
+        </tr>
+        <tr>
+          <td>#652</td>
+          <td>Android: complete payment flow for internal testing</td>
+          <td>CodrJitesh</td>
+          <td>14 Apr 08:00</td>
+          <td>16 Apr 08:03</td>
+          <td><span class="badge review">Review</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Recently Merged PRs (last 10)</h3>
+    <table class="issues-table">
+      <thead><tr><th>#</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead>
+      <tbody>
+        <tr><td>#660</td><td>Fix donation export to respect admin filters</td><td>yuvraj-shishodia</td><td>15 Apr 15:34</td></tr>
+        <tr><td>#651</td><td>Fix: Allow campaigns to exceed 100% funding goal (closes P0 #597)</td><td>prsrwt</td><td>15 Apr 15:17</td></tr>
+        <tr><td>#659</td><td>Harden Gift Aid Validation to Prevent Phantom Declarations (closes #650)</td><td>prsrwt</td><td>15 Apr 14:52</td></tr>
+        <tr><td>#656</td><td>Grant operator default Gift Aid export-download permission</td><td>yuvraj-shishodia</td><td>15 Apr 14:47</td></tr>
+        <tr><td>#655</td><td>Move subscription export to server side</td><td>yuvraj-shishodia</td><td>15 Apr 07:06</td></tr>
+        <tr><td>#654</td><td>Move kiosks export to server side</td><td>yuvraj-shishodia</td><td>15 Apr 07:01</td></tr>
+        <tr><td>#653</td><td>Move campaign export to server side</td><td>yuvraj-shishodia</td><td>15 Apr 06:53</td></tr>
+        <tr><td>#623</td><td>Server-side donation export</td><td>yuvraj-shishodia</td><td>10 Apr 15:19</td></tr>
+        <tr><td>#626</td><td>Fix Gift Aid CSV Formula Injection + export flow docs</td><td>yuvraj-shishodia</td><td>10 Apr 15:20</td></tr>
+        <tr><td>#625</td><td>Server-side donation export documentation</td><td>yuvraj-shishodia</td><td>10 Apr 15:19</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Open Issues (top 30 by recent activity)</h3>
+    <table class="issues-table">
+      <thead><tr><th>#</th><th>Title</th><th>Assignees</th><th>Updated</th><th>Flags</th></tr></thead>
+      <tbody>
+        <tr><td>#668</td><td>(PR) refactor: tokenHash as doc ID for O(1) magic link lookup</td><td>prsrwt</td><td>16 Apr</td><td><span class="badge assigned">PR</span></td></tr>
+        <tr><td>#667</td><td>[Frontend] Improve Thank You Page</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#666</td><td>[Frontend] Enhance Result Page with QR Code Prominence</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#665</td><td>Frontend &ndash; Form Components</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#664</td><td>Frontend &ndash; Gift Aid Page</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#663</td><td>Backend &ndash; completeGiftAidFlow Function</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#662</td><td>[Backend] Update Magic Link Token Storage</td><td>Dev team</td><td>16 Apr</td><td><span class="badge new">New</span></td></tr>
+        <tr><td>#661</td><td>(PR) Add dedicated export permissions for non-viewer roles</td><td>yuvraj</td><td>17 Apr</td><td><span class="badge assigned">PR</span></td></tr>
+        <tr><td>#658</td><td>Document implementation flow for Campaign/Kiosk/Subscription exports</td><td>yuvraj</td><td>14 Apr</td><td><span class="badge assigned">Assigned</span></td></tr>
+        <tr><td>#657</td><td>Add export permissions (non-viewer roles)</td><td>yuvraj</td><td>14 Apr</td><td><span class="badge assigned">Assigned</span> Fix in PR #661</td></tr>
+        <tr><td>#652</td><td>(PR) Android: complete payment flow for internal testing</td><td>CodrJitesh</td><td>16 Apr</td><td><span class="badge assigned">PR</span></td></tr>
+        <tr><td>#649</td><td>Revamp Magic Link Flow (Web Data Capture UX)</td><td>Assigned</td><td>13 Apr</td><td><span class="badge assigned">Assigned</span></td></tr>
+        <tr><td>#648</td><td>Add Organization Settings Screen (centralized org controls)</td><td>Assigned</td><td>14 Apr</td><td><span class="badge assigned">Assigned</span></td></tr>
+        <tr><td>#647</td><td>Micro-Transaction Shield: Donor Covers Fees (opt-in)</td><td>Qamar</td><td>13 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#646</td><td>Super Admin: Stripe billing rate management</td><td>Qamar</td><td>13 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#641</td><td>Super Admin panel: org pause/unpause + go-live gate</td><td>Qamar</td><td>13 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#640</td><td>Stripe KYC gating + Organisation active/inactive state</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#639</td><td>Activity Mode &mdash; member reference + PTA solver</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#638</td><td>Roaming volunteer mode &mdash; multi-device</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#637</td><td>Location-level Gift Aid conversion dashboard</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#636</td><td>Per-location capture flow config (A / B+ / Hybrid)</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#635</td><td>SORP 2026 impact reporting data export</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#634</td><td>CIC validation on charity onboarding &mdash; prevent Gift Aid for non-charities</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#633</td><td>Fee transparency disclosure (CoFP compliance)</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#632</td><td>GASDS 10x matching calculator + Gap Alert dashboard</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#631</td><td>GASDS community building schedule auto-gen for HMRC</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#630</td><td>Two-Pile campaign compliance lock (Donation vs Activity)</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span></td></tr>
+        <tr><td>#629</td><td>GO-LIVE CRITICAL: Location entity with Local Authority tagging (GASDS)</td><td>Qamar</td><td>12 Apr</td><td><span class="badge unassigned">Unassigned</span> <span class="badge p0">P0</span></td></tr>
+        <tr><td>#610</td><td>[Sprint 04/C] Populate declarationIpAddress + captureMethod</td><td>prsrwt</td><td>13 Apr</td><td><span class="badge sprint">Sprint 04</span></td></tr>
+        <tr><td>#609</td><td>[Sprint 04/B] Cloud Function trigger on ConsentEvents</td><td>prsrwt</td><td>13 Apr</td><td><span class="badge sprint">Sprint 04</span></td></tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:12px; color:#6b7280; margin-top:16px;">
+      <strong>Notes:</strong> Data from list_issues (state=open, sort=updated desc, per_page=30) and list_pull_requests (state=all, sort=updated). P0 flags inferred from title markers (GO-LIVE CRITICAL). GitHub labels on PM-created strategy issues are mostly absent. Sprint 04 tasks #611 / #612 did not appear in the top 30 by recent activity &mdash; status needs direct lookup.
+    </p>
+  </div>
+
+  <!-- ========== TAB: ALL FILES ========== -->
+  <div id="tab-all" class="tab-content">
+    <h2>All Files (A&ndash;Z) <span class="count">26</span></h2>
+    <p style="font-size:13px; color:#9ca3af; margin-bottom:16px;">Active HTML files in root and Baseline subfolder. Vercel-ready deployment.</p>
+    <div class="card-grid">
+      <a class="card" href="SwiftCause-Battlecard-V3.1-Corrected.html" onclick="event.preventDefault(); openViewer('SwiftCause-Battlecard-V3.1-Corrected.html', 'Battlecard V3.1 Corrected')"><span class="card-category cat-battlecard">Battlecard</span><div class="card-title">Battlecard V3.1 Corrected</div></a>
+      <a class="card" href="SwiftCause-Product-Dashboard.html" onclick="event.preventDefault(); openViewer('SwiftCause-Product-Dashboard.html', 'Product Dashboard')"><span class="card-category cat-dashboard">Dashboard</span><div class="card-title">Product Dashboard</div></a>
+      <a class="card" href="SwiftCause_Board_of_Directors_2026-04-04.html" onclick="event.preventDefault(); openViewer('SwiftCause_Board_of_Directors_2026-04-04.html', 'Board of Directors 4 Apr')"><span class="card-category cat-board">Board</span><div class="card-title">Board of Directors 2026-04-04</div></a>
+      <a class="card" href="SwiftCause_Board_Review_Pricing.html" onclick="event.preventDefault(); openViewer('SwiftCause_Board_Review_Pricing.html', 'Board Review Pricing')"><span class="card-category cat-board">Board</span><div class="card-title">Board Review Pricing</div></a>
+      <a class="card" href="SwiftCause_Collection_Point_Setup_Guide.html" onclick="event.preventDefault(); openViewer('SwiftCause_Collection_Point_Setup_Guide.html', 'Collection Point Setup')"><span class="card-category cat-ops">Operations</span><div class="card-title">Collection Point Setup Guide</div></a>
+      <a class="card" href="SwiftCause_Competitive_Comparison.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Comparison.html', 'Competitive Comparison')"><span class="card-category cat-sales">Sales</span><div class="card-title">Competitive Comparison</div></a>
+      <a class="card" href="SwiftCause_Competitive_Scenarios.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Scenarios.html', 'Competitive Scenarios')"><span class="card-category cat-sales">Sales</span><div class="card-title">Competitive Scenarios</div></a>
+      <a class="card" href="SwiftCause_Competitive_Tracker.html" onclick="event.preventDefault(); openViewer('SwiftCause_Competitive_Tracker.html', 'Competitive Tracker')"><span class="card-category cat-sales">Sales</span><div class="card-title">Competitive Tracker</div></a>
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html" onclick="event.preventDefault(); openViewer('SwiftCause_Daily_Briefing_2026-04-17.html', 'Daily Briefing 17 Apr')"><span class="card-category cat-briefing">Briefing</span><div class="card-title">Daily Briefing 2026-04-17</div></a>
+      <a class="card" href="SwiftCause_Deal_Pricing_Calculator.html" onclick="event.preventDefault(); openViewer('SwiftCause_Deal_Pricing_Calculator.html', 'Deal Pricing Calculator')"><span class="card-category cat-sales">Sales</span><div class="card-title">Deal Pricing Calculator</div></a>
+      <a class="card" href="SwiftCause_Email_Collateral.html" onclick="event.preventDefault(); openViewer('SwiftCause_Email_Collateral.html', 'Email Collateral')"><span class="card-category cat-sales">Sales</span><div class="card-title">Email Collateral</div></a>
+      <a class="card" href="SwiftCause_Enrichment_Dashboard.html" onclick="event.preventDefault(); openViewer('SwiftCause_Enrichment_Dashboard.html', 'Enrichment Dashboard')"><span class="card-category cat-dashboard">Dashboard</span><div class="card-title">Enrichment Dashboard</div></a>
+      <a class="card" href="SwiftCause_GiftAid_Analysis_2026-04-13.html" onclick="event.preventDefault(); openViewer('SwiftCause_GiftAid_Analysis_2026-04-13.html', 'Gift Aid Analysis')"><span class="card-category cat-report">Report</span><div class="card-title">GiftAid Analysis 2026-04-13</div></a>
+      <a class="card" href="SwiftCause_ICP_Model.html" onclick="event.preventDefault(); openViewer('SwiftCause_ICP_Model.html', 'ICP Model')"><span class="card-category cat-sales">Sales</span><div class="card-title">ICP Model</div></a>
+      <a class="card" href="SwiftCause_PreSales_Qualification.html" onclick="event.preventDefault(); openViewer('SwiftCause_PreSales_Qualification.html', 'Pre-Sales Qualification')"><span class="card-category cat-sales">Sales</span><div class="card-title">Pre-Sales Qualification</div></a>
+      <a class="card" href="SwiftCause_Pricing_Decision.html" onclick="event.preventDefault(); openViewer('SwiftCause_Pricing_Decision.html', 'Pricing Decision')"><span class="card-category cat-sales">Sales</span><div class="card-title">Pricing Decision</div></a>
+      <a class="card" href="SwiftCause_Project_Portal.html" onclick="event.preventDefault(); openViewer('SwiftCause_Project_Portal.html', 'Project Portal')"><span class="card-category cat-dashboard">Portal</span><div class="card-title">Project Portal (this file)</div></a>
+      <a class="card" href="SwiftCause_Regional_Prospecting.html" onclick="event.preventDefault(); openViewer('SwiftCause_Regional_Prospecting.html', 'Regional Prospecting')"><span class="card-category cat-sales">Sales</span><div class="card-title">Regional Prospecting</div></a>
+      <a class="card" href="SwiftCause_Sales_Finance_Projections.html" onclick="event.preventDefault(); openViewer('SwiftCause_Sales_Finance_Projections.html', 'Sales Finance Projections')"><span class="card-category cat-sales">Sales</span><div class="card-title">Sales Finance Projections</div></a>
+      <a class="card" href="SwiftCause_Sales_Picture.html" onclick="event.preventDefault(); openViewer('SwiftCause_Sales_Picture.html', 'Sales Picture')"><span class="card-category cat-sales">Sales</span><div class="card-title">Sales Picture</div></a>
+      <a class="card" href="SwiftCause_Tablet_Sourcing_Plan.html" onclick="event.preventDefault(); openViewer('SwiftCause_Tablet_Sourcing_Plan.html', 'Tablet Sourcing Plan')"><span class="card-category cat-ops">Operations</span><div class="card-title">Tablet Sourcing Plan</div></a>
+      <a class="card" href="SwiftCause_UserFlows_AsIs_ToBe.html" onclick="event.preventDefault(); openViewer('SwiftCause_UserFlows_AsIs_ToBe.html', 'User Flows As-Is/To-Be')"><span class="card-category cat-flow">Flow</span><div class="card-title">UserFlows AsIs ToBe</div></a>
+      <a class="card" href="SwiftCause_UserFlows_v2_MagicLink.html" onclick="event.preventDefault(); openViewer('SwiftCause_UserFlows_v2_MagicLink.html', 'User Flows v2 Magic Link')"><span class="card-category cat-flow">Flow</span><div class="card-title">UserFlows v2 MagicLink</div></a>
+      <a class="card" href="SwiftCause Baseline Sales Collateral/SwiftCause-Battlecard-V2-Roadmap-Aligned.html" onclick="event.preventDefault(); openViewer('SwiftCause Baseline Sales Collateral/SwiftCause-Battlecard-V2-Roadmap-Aligned.html', 'Battlecard V2 Baseline')"><span class="card-category cat-battlecard">Battlecard</span><div class="card-title">Battlecard V2 Roadmap (Baseline)</div></a>
+      <a class="card" href="SwiftCause Baseline Sales Collateral/SwiftCause-Battlecard-V3-Updated.html" onclick="event.preventDefault(); openViewer('SwiftCause Baseline Sales Collateral/SwiftCause-Battlecard-V3-Updated.html', 'Battlecard V3 Baseline')"><span class="card-category cat-battlecard">Battlecard</span><div class="card-title">Battlecard V3 Updated (Baseline)</div></a>
+      <a class="card" href="SwiftCause Baseline Sales Collateral/SwiftCause_Sales_Status.html" onclick="event.preventDefault(); openViewer('SwiftCause Baseline Sales Collateral/SwiftCause_Sales_Status.html', 'Sales Status Baseline')"><span class="card-category cat-sales">Sales</span><div class="card-title">Sales Status (Baseline)</div></a>
+    </div>
+  </div>
+
+  <div class="footer">
+    SwiftCause Project Portal &bull; Vercel-deployed &bull; 18 April 2026 &bull; 21 days to GTM &bull; Repo: YNVSolutions/SwiftCause_Mono
+  </div>
+</div>
+
+<!-- Iframe Viewer Overlay -->
+<div id="viewer" class="viewer-overlay" onclick="if (event.target === this) closeViewer()">
+  <div class="viewer-toolbar">
+    <div class="viewer-title" id="viewer-title">File</div>
+    <div class="viewer-actions">
+      <button class="viewer-btn" onclick="openInNewTab()">Open in new tab</button>
+      <button class="viewer-btn close-btn" onclick="closeViewer()">Close &times;</button>
+    </div>
+  </div>
+  <iframe id="viewer-iframe" class="viewer-iframe" src="about:blank"></iframe>
+</div>
+
+<script>
+  function showTab(evt, tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    evt.currentTarget.classList.add('active');
+  }
+  let currentViewerSrc = '';
+  function openViewer(src, title) {
+    // Open in new tab — works locally (file://) and on Vercel
+    window.open(src, '_blank');
+  }
+  function closeViewer() {
+    document.getElementById('viewer').classList.remove('open');
+    document.getElementById('viewer-iframe').src = 'about:blank';
+    document.body.style.overflow = '';
+  }
+  function openInNewTab() { if (currentViewerSrc) window.open(currentViewerSrc, '_blank'); }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
+
+  // Graceful iframe error handler
+  document.getElementById('viewer-iframe').addEventListener('error', function() {
+    this.srcdoc = '<html><body style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;"><h2>File not available</h2></body></html>';
+  });
+</script>
+</body>
+</html>
