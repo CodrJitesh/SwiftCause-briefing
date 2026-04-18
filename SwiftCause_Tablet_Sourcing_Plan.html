@@ -1,1 +1,536 @@
-placeholder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause — Ruggedized Tablet & Floor Stand Sourcing Plan</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-light: #e8eefb;
+    --success: #059669;
+    --success-light: #ecfdf5;
+    --warning: #d97706;
+    --warning-light: #fffbeb;
+    --danger: #dc2626;
+    --danger-light: #fef2f2;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', -apple-system, sans-serif; color: var(--gray-800); line-height: 1.6; background: var(--gray-50); }
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .header { background: var(--primary); color: white; padding: 2.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; }
+  .header h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+  .header p { opacity: 0.85; font-size: 0.95rem; }
+  .header .meta { display: flex; gap: 1.5rem; margin-top: 1rem; font-size: 0.85rem; opacity: 0.75; }
+
+  .alert { padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid; }
+  .alert-warning { background: var(--warning-light); border-color: var(--warning); }
+  .alert-success { background: var(--success-light); border-color: var(--success); }
+  .alert-danger { background: var(--danger-light); border-color: var(--danger); }
+  .alert strong { display: block; margin-bottom: 0.25rem; }
+
+  h2 { font-size: 1.35rem; color: var(--gray-900); margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary); }
+  h3 { font-size: 1.1rem; color: var(--gray-800); margin: 1.5rem 0 0.75rem; }
+
+  .card { background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid var(--gray-200); }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+  .card-header h3 { margin: 0; }
+  .badge { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+  .badge-best { background: var(--success-light); color: var(--success); }
+  .badge-good { background: var(--primary-light); color: var(--primary); }
+  .badge-stretch { background: var(--warning-light); color: var(--warning); }
+  .badge-over { background: var(--danger-light); color: var(--danger); }
+  .badge-android { background: #d1fae5; color: #065f46; }
+  .badge-ios { background: #dbeafe; color: #1e40af; }
+
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th { background: var(--gray-100); text-align: left; padding: 0.6rem 0.75rem; font-weight: 600; border-bottom: 2px solid var(--gray-200); }
+  td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--gray-200); }
+  tr:last-child td { border-bottom: none; }
+  .price { font-weight: 700; color: var(--primary); }
+  .total { font-weight: 700; font-size: 1.05rem; }
+  .total-row { background: var(--primary-light); }
+
+  .combo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.5rem 0; }
+  @media (max-width: 640px) { .combo-grid { grid-template-columns: 1fr; } }
+
+  .combo-card { background: white; border: 2px solid var(--gray-200); border-radius: 10px; padding: 1.25rem; position: relative; }
+  .combo-card.recommended { border-color: var(--success); }
+  .combo-card.recommended::before { content: 'RECOMMENDED'; position: absolute; top: -10px; left: 1rem; background: var(--success); color: white; font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 4px; letter-spacing: 0.5px; }
+  .combo-card h4 { margin-bottom: 0.5rem; font-size: 1rem; }
+  .combo-price { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 0.5rem 0; }
+  .combo-price small { font-size: 0.75rem; font-weight: 400; color: var(--gray-600); }
+  .combo-items { list-style: none; font-size: 0.85rem; color: var(--gray-600); }
+  .combo-items li { padding: 0.2rem 0; }
+  .combo-items li::before { content: '✓ '; color: var(--success); font-weight: 700; }
+
+  .timeline { margin: 1.5rem 0; }
+  .timeline-item { display: flex; gap: 1rem; padding: 0.75rem 0; border-left: 3px solid var(--primary-light); padding-left: 1.25rem; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -7px; top: 1rem; width: 11px; height: 11px; border-radius: 50%; background: var(--primary); }
+  .timeline-label { min-width: 100px; font-weight: 600; color: var(--primary); font-size: 0.9rem; }
+  .timeline-content { font-size: 0.9rem; }
+
+  .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.75rem 0; font-size: 0.85rem; }
+  .pros li::before { content: '+ '; color: var(--success); font-weight: 700; }
+  .cons li::before { content: '- '; color: var(--danger); font-weight: 700; }
+  .pros, .cons { list-style: none; }
+  .pros li, .cons li { padding: 0.15rem 0; }
+
+  .decision-box { background: var(--primary-light); border: 2px solid var(--primary); border-radius: 10px; padding: 1.5rem; margin: 1.5rem 0; }
+  .decision-box h3 { color: var(--primary); margin-top: 0; }
+
+  .footnote { font-size: 0.8rem; color: var(--gray-600); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Tablet & Floor Stand Sourcing Plan</h1>
+  <p>Ruggedized tablets in locking floor stands for charity venues and SwiftCause demos</p>
+  <div class="meta">
+    <span>Created: 12 April 2026</span>
+    <span>Budget target: Under &pound;200 per unit</span>
+    <span>Platforms: Android + iPad</span>
+  </div>
+</div>
+
+<div class="alert alert-warning">
+  <strong>Budget reality check</strong>
+  &pound;200 all-in (tablet + locking floor stand + protection) is tight. Android can hit it comfortably. iPad cannot &mdash; even refurbished iPads start at ~&pound;230 before stand costs. This plan presents realistic options with clear total costs so you can decide where to flex.
+</div>
+
+<h2>1. Tablet Options</h2>
+
+<h3>Android Tablets</h3>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Samsung Galaxy Tab A9 (8.7&Prime;)</h3>
+    <div><span class="badge badge-android">Android</span> <span class="badge badge-best">Best value</span></div>
+  </div>
+  <table>
+    <tr><td>Screen</td><td>8.7&Prime; TFT LCD, 1340&times;800</td></tr>
+    <tr><td>Storage / RAM</td><td>64GB / 4GB</td></tr>
+    <tr><td>Price (new)</td><td class="price">From &pound;80</td></tr>
+    <tr><td>Where to buy</td><td>Samsung UK, Amazon UK, PriceSpy</td></tr>
+    <tr><td>NFC</td><td>No &mdash; QR-only flow</td></tr>
+  </table>
+  <div class="pros-cons">
+    <ul class="pros">
+      <li>Cheapest brand-name tablet on the market</li>
+      <li>Leaves &pound;120 budget for stand + case</li>
+      <li>Samsung Knox security for locking to SwiftCause app</li>
+    </ul>
+    <ul class="cons">
+      <li>8.7&Prime; is small for a floor-stand kiosk</li>
+      <li>No NFC for card-tap (QR/link only)</li>
+      <li>Lower resolution screen</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Samsung Galaxy Tab A9+ (11&Prime;)</h3>
+    <div><span class="badge badge-android">Android</span> <span class="badge badge-good">Sweet spot</span></div>
+  </div>
+  <table>
+    <tr><td>Screen</td><td>11&Prime; IPS LCD, 1920&times;1200, 90Hz</td></tr>
+    <tr><td>Storage / RAM</td><td>64GB / 4GB or 128GB / 8GB</td></tr>
+    <tr><td>Price (new)</td><td class="price">From &pound;158 (64GB) / &pound;169 (128GB)</td></tr>
+    <tr><td>Where to buy</td><td>Samsung UK, Amazon UK, Currys, PriceSpy</td></tr>
+    <tr><td>NFC</td><td>No</td></tr>
+  </table>
+  <div class="pros-cons">
+    <ul class="pros">
+      <li>11&Prime; screen is ideal for public-facing kiosk</li>
+      <li>Good resolution, 90Hz smooth scrolling</li>
+      <li>Samsung Knox for kiosk lockdown mode</li>
+      <li>Strong brand recognition for charity trust</li>
+    </ul>
+    <ul class="cons">
+      <li>At &pound;158&ndash;169 leaves only &pound;31&ndash;42 for stand</li>
+      <li>Tight on budget for a quality locking stand</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Lenovo Tab M11 (11&Prime;)</h3>
+    <div><span class="badge badge-android">Android</span> <span class="badge badge-good">Alternative</span></div>
+  </div>
+  <table>
+    <tr><td>Screen</td><td>11&Prime; IPS, 1920&times;1200, 90Hz</td></tr>
+    <tr><td>Storage / RAM</td><td>128GB / 4GB</td></tr>
+    <tr><td>Price (new)</td><td class="price">From &pound;165</td></tr>
+    <tr><td>Where to buy</td><td>Lenovo UK, Amazon UK, Currys</td></tr>
+  </table>
+  <div class="pros-cons">
+    <ul class="pros">
+      <li>128GB storage at a competitive price</li>
+      <li>Comes with a pen (useful for surveys/signing)</li>
+    </ul>
+    <ul class="cons">
+      <li>Lenovo doesn't have Samsung Knox-level kiosk lockdown</li>
+      <li>Similar budget squeeze as the Tab A9+</li>
+    </ul>
+  </div>
+</div>
+
+<h3>iPad Options</h3>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Refurbished iPad 10th Gen (10.9&Prime;)</h3>
+    <div><span class="badge badge-ios">iPadOS</span> <span class="badge badge-over">Over budget</span></div>
+  </div>
+  <table>
+    <tr><td>Screen</td><td>10.9&Prime; Liquid Retina, 2360&times;1640</td></tr>
+    <tr><td>Storage / RAM</td><td>64GB / 4GB</td></tr>
+    <tr><td>Price (refurb)</td><td class="price">From &pound;229 (Back Market, Hoxton Macs)</td></tr>
+    <tr><td>Where to buy</td><td>Back Market, Hoxton Macs, The iOutlet, ur.co.uk, eBay</td></tr>
+    <tr><td>NFC</td><td>NFC read only (no payment tap)</td></tr>
+  </table>
+  <div class="pros-cons">
+    <ul class="pros">
+      <li>Premium feel &mdash; best for demos and high-end charity venues</li>
+      <li>Apple Guided Access for single-app kiosk mode</li>
+      <li>Exceptional display quality</li>
+      <li>12-month warranty from most refurb sellers</li>
+    </ul>
+    <ul class="cons">
+      <li>&pound;229+ before stand = well over &pound;200 budget</li>
+      <li>Refurb stock varies; may not get matching units</li>
+      <li>Refurb iPad 9th gen (10.2&Prime;) might be &pound;150&ndash;180 but older</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Refurbished iPad 9th Gen (10.2&Prime;)</h3>
+    <div><span class="badge badge-ios">iPadOS</span> <span class="badge badge-stretch">Stretch</span></div>
+  </div>
+  <table>
+    <tr><td>Screen</td><td>10.2&Prime; Retina, 2160&times;1620</td></tr>
+    <tr><td>Storage / RAM</td><td>64GB / 3GB</td></tr>
+    <tr><td>Price (refurb)</td><td class="price">Est. &pound;150&ndash;180 (Back Market, eBay, The iOutlet)</td></tr>
+    <tr><td>Where to buy</td><td>Back Market, eBay, The iOutlet</td></tr>
+  </table>
+  <div class="pros-cons">
+    <ul class="pros">
+      <li>Cheapest iPad route &mdash; brings total closer to budget</li>
+      <li>Still runs latest iPadOS for Guided Access</li>
+      <li>Home button = simpler for public interaction</li>
+    </ul>
+    <ul class="cons">
+      <li>A13 chip is ageing; may lose iPadOS support in 1&ndash;2 years</li>
+      <li>Still &pound;200&ndash;230 all-in with stand</li>
+    </ul>
+  </div>
+</div>
+
+<h2>2. Floor Stand Options</h2>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Crusader AV Anti-Theft Universal Floor Stand</h3>
+    <span class="badge badge-best">Best value UK</span>
+  </div>
+  <table>
+    <tr><td>Price</td><td class="price">&pound;42.50 + VAT = ~&pound;51</td></tr>
+    <tr><td>Compatibility</td><td>Universal: 7&Prime;&ndash;10.5&Prime; tablets (iPad, Samsung, Lenovo)</td></tr>
+    <tr><td>Security</td><td>Cable key lock, 2 keys included</td></tr>
+    <tr><td>Features</td><td>360&deg; rotation, 180&deg; tilt, weighted base</td></tr>
+    <tr><td>Supplier</td><td><a href="https://crusaderav.co.uk/products/anti-theft-universal-ipad-tablet-floor-stand">crusaderav.co.uk</a></td></tr>
+    <tr><td>Status</td><td>Currently backordered &mdash; check availability</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Mount-It! Universal Tablet Floor Kiosk (Amazon UK)</h3>
+    <span class="badge badge-good">Good option</span>
+  </div>
+  <table>
+    <tr><td>Price</td><td class="price">Est. &pound;50&ndash;80</td></tr>
+    <tr><td>Compatibility</td><td>Universal clamp: 7.9&Prime;&ndash;13.1&Prime;</td></tr>
+    <tr><td>Security</td><td>Locking enclosure, anti-theft clamp</td></tr>
+    <tr><td>Features</td><td>Height adjustable 27.5&Prime;&ndash;47&Prime;, cable management, heavy base</td></tr>
+    <tr><td>Supplier</td><td><a href="https://www.amazon.co.uk/Mount-Universal-Theft-Deterrent-Adjustable-Surface-White/dp/B082WNQQ7W">Amazon UK</a></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>AboveTEK Anti-Theft Kiosk Stand (Amazon UK)</h3>
+    <span class="badge badge-good">Good option</span>
+  </div>
+  <table>
+    <tr><td>Price</td><td class="price">Est. &pound;45&ndash;65</td></tr>
+    <tr><td>Compatibility</td><td>Universal: 7.9&Prime;&ndash;11&Prime;</td></tr>
+    <tr><td>Security</td><td>Anti-theft screw + wrench lock</td></tr>
+    <tr><td>Features</td><td>360&deg; swivel, height adjustable, steel construction</td></tr>
+    <tr><td>Supplier</td><td><a href="https://www.amazon.co.uk/AboveTEK-POS-Tablet-Kiosk-Stand/dp/B0CNXDLS1Y">Amazon UK</a></td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>StarTech Secure Tablet Floor Stand</h3>
+    <span class="badge badge-over">Premium / over budget</span>
+  </div>
+  <table>
+    <tr><td>Price</td><td class="price">&pound;146 (ERS)</td></tr>
+    <tr><td>Features</td><td>Bolt-to-floor option, steel + aluminium, commercial grade</td></tr>
+    <tr><td>Best for</td><td>Permanent installations in high-footfall venues</td></tr>
+  </table>
+</div>
+
+<h2>3. Recommended Bundles</h2>
+
+<p style="margin-bottom:1rem; color: var(--gray-600);">Four options across both platforms, ranked by value for money.</p>
+
+<div class="combo-grid">
+  <div class="combo-card recommended">
+    <h4>Option A: Budget Android</h4>
+    <span class="badge badge-android">Android</span>
+    <div class="combo-price">&pound;131&ndash;145 <small>per unit</small></div>
+    <ul class="combo-items">
+      <li>Samsung Galaxy Tab A9 (8.7&Prime;) &mdash; &pound;80</li>
+      <li>Crusader AV or AboveTEK stand &mdash; &pound;45&ndash;55</li>
+      <li>Rugged silicone case &mdash; &pound;6&ndash;10</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.75rem;">Best for: volume rollout, cost-sensitive charities, events. Smaller screen but well under budget.</p>
+  </div>
+
+  <div class="combo-card">
+    <h4>Option B: Premium Android</h4>
+    <span class="badge badge-android">Android</span>
+    <div class="combo-price">&pound;209&ndash;230 <small>per unit</small></div>
+    <ul class="combo-items">
+      <li>Samsung Galaxy Tab A9+ (11&Prime;) &mdash; &pound;158</li>
+      <li>Crusader AV or AboveTEK stand &mdash; &pound;45&ndash;55</li>
+      <li>Rugged silicone case &mdash; &pound;6&ndash;10</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.75rem;">Best for: demos, premium charity venues. Slightly over budget but the 11&Prime; screen is worth it for public-facing use.</p>
+  </div>
+
+  <div class="combo-card">
+    <h4>Option C: Budget iPad</h4>
+    <span class="badge badge-ios">iPad</span>
+    <div class="combo-price">&pound;206&ndash;245 <small>per unit</small></div>
+    <ul class="combo-items">
+      <li>Refurb iPad 9th Gen &mdash; &pound;150&ndash;180</li>
+      <li>Crusader AV or AboveTEK stand &mdash; &pound;45&ndash;55</li>
+      <li>Rugged case &mdash; &pound;10&ndash;15</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.75rem;">Best for: charities who prefer Apple. Over budget but closest iPad option. Ageing chip &mdash; 1&ndash;2 years of OS support left.</p>
+  </div>
+
+  <div class="combo-card">
+    <h4>Option D: Premium iPad</h4>
+    <span class="badge badge-ios">iPad</span>
+    <div class="combo-price">&pound;280&ndash;300 <small>per unit</small></div>
+    <ul class="combo-items">
+      <li>Refurb iPad 10th Gen &mdash; &pound;229</li>
+      <li>Crusader AV or AboveTEK stand &mdash; &pound;45&ndash;55</li>
+      <li>Rugged case &mdash; &pound;10&ndash;15</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.75rem;">Best for: SwiftCause demo kit, high-end venues. Premium feel but 40&ndash;50% over budget.</p>
+  </div>
+</div>
+
+<h2>4. Product Positioning Note</h2>
+
+<div class="alert alert-success">
+  <strong>This doesn't make SwiftCause a "kiosk"</strong>
+  The tablet-in-stand is an <em>optional premium accessory</em> &mdash; one of many collection points. A charity might have one floor stand at reception AND 10 volunteers' phones AND 50 QR posters around the building. The stand is an <em>anchor point</em>, not the product. Position it as: "Put SwiftCause at your front door &mdash; then put it everywhere else too."
+</div>
+
+<p>Suggested product naming to keep messaging consistent:</p>
+<table>
+  <tr><th>Don't say</th><th>Do say</th></tr>
+  <tr><td>"SwiftCause kiosk"</td><td>"SwiftCause Collection Point" or "SwiftCause Welcome Stand"</td></tr>
+  <tr><td>"Kiosk hardware"</td><td>"Collection stand" or "Venue stand"</td></tr>
+  <tr><td>"Our kiosk solution"</td><td>"Fixed collection point &mdash; one of many ways to collect"</td></tr>
+</table>
+
+<h2>5. Software Lockdown (Kiosk Mode)</h2>
+
+<table>
+  <tr><th>Platform</th><th>Method</th><th>Cost</th></tr>
+  <tr><td>Android (Samsung)</td><td><strong>Samsung Knox Kiosk Mode</strong> &mdash; locks tablet to SwiftCause web app. Disables home button, notifications, status bar. Free via Knox Configure.</td><td>Free</td></tr>
+  <tr><td>Android (non-Samsung)</td><td><strong>Android Kiosk Browser</strong> or <strong>Fully Kiosk Browser</strong> &mdash; locks to a single URL with remote management.</td><td>Free / &pound;7 one-off</td></tr>
+  <tr><td>iPad</td><td><strong>Apple Guided Access</strong> &mdash; built-in single-app mode. Triple-click home to lock. Or use <strong>Apple Configurator 2</strong> for managed deployment.</td><td>Free</td></tr>
+</table>
+
+<h2>6. UK Supplier Directory</h2>
+
+<h3>Tablets</h3>
+<table>
+  <tr><th>Supplier</th><th>What</th><th>Notes</th></tr>
+  <tr><td><a href="https://www.samsung.com/uk/tablets/galaxy-tab-a9/buy/">Samsung UK</a></td><td>Galaxy Tab A9 / A9+</td><td>Direct. Business accounts available for bulk.</td></tr>
+  <tr><td><a href="https://www.amazon.co.uk">Amazon UK</a></td><td>All Android options</td><td>Fast delivery, easy returns. Compare sellers.</td></tr>
+  <tr><td><a href="https://www.backmarket.co.uk">Back Market</a></td><td>Refurb iPads</td><td>Graded condition, 12-month warranty. From &pound;229 (10th gen).</td></tr>
+  <tr><td><a href="https://www.hoxtonmacs.co.uk/collections/ipad-10th-generation">Hoxton Macs</a></td><td>Refurb iPads</td><td>Free next-day delivery. UK-based.</td></tr>
+  <tr><td><a href="https://www.theioutlet.com/product-category/refurbished-ipads/">The iOutlet</a></td><td>Refurb iPads</td><td>Fully tested, 12-month warranty.</td></tr>
+  <tr><td><a href="https://www.ur.co.uk/collections/refurbished-apple-ipads">ur.co.uk</a></td><td>Refurb iPads</td><td>12-month warranty + free insurance.</td></tr>
+  <tr><td><a href="https://box.co.uk/android-tablets">Box.co.uk</a></td><td>Android tablets</td><td>UK retailer, good deals on Samsung/Lenovo.</td></tr>
+</table>
+
+<h3>Floor Stands</h3>
+<table>
+  <tr><th>Supplier</th><th>What</th><th>Notes</th></tr>
+  <tr><td><a href="https://crusaderav.co.uk/products/anti-theft-universal-ipad-tablet-floor-stand">Crusader AV</a></td><td>Universal floor stand</td><td>&pound;42.50+VAT. Currently backordered.</td></tr>
+  <tr><td><a href="https://www.amazon.co.uk">Amazon UK</a></td><td>Mount-It!, AboveTEK</td><td>Multiple options &pound;45&ndash;80. Prime delivery.</td></tr>
+  <tr><td><a href="https://www.maclocks.co.uk">Mac Locks UK</a></td><td>Premium stands</td><td>Higher price but very robust. Good for permanent installs.</td></tr>
+  <tr><td><a href="https://www.cables4all.co.uk">Cables4All</a></td><td>Budget stands</td><td>Check for iPad-specific options.</td></tr>
+</table>
+
+<h2>7. BYOD: Charity Sources Their Own Device</h2>
+
+<div class="alert alert-success">
+  <strong>This is the SwiftCause superpower</strong>
+  Any charity can turn a spare phone, old tablet, or cheap new device into a donation collection point &mdash; no special hardware needed. This section helps charities do it themselves, or lets SwiftCause provide a simple setup guide.
+</div>
+
+<h3>Cheapest devices that work</h3>
+<p style="margin-bottom:1rem; color:var(--gray-600);">Charities can use literally any Android or iOS device with a browser. Here are the cheapest options if they need to buy:</p>
+
+<div class="card">
+  <div class="card-header">
+    <h3>Android &mdash; under &pound;50</h3>
+    <span class="badge badge-android">Android</span>
+  </div>
+  <table>
+    <tr><th>Device</th><th>Price</th><th>Where</th></tr>
+    <tr><td>Amazon Fire 7 tablet (2022)</td><td class="price">&pound;30&ndash;50 (new/refurb)</td><td>Amazon UK</td></tr>
+    <tr><td>Any used Android phone (2019+)</td><td class="price">&pound;20&ndash;40</td><td>eBay, Facebook Marketplace, CeX, Music Magpie</td></tr>
+    <tr><td>Samsung Galaxy A series (used)</td><td class="price">&pound;30&ndash;60</td><td>CeX, Back Market, eBay</td></tr>
+    <tr><td>Lenovo Tab M8 (used/refurb)</td><td class="price">&pound;40&ndash;60</td><td>Amazon UK, eBay</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>iPad / iPhone &mdash; under &pound;100</h3>
+    <span class="badge badge-ios">Apple</span>
+  </div>
+  <table>
+    <tr><th>Device</th><th>Price</th><th>Where</th></tr>
+    <tr><td>iPad 7th/8th Gen (used)</td><td class="price">&pound;80&ndash;120</td><td>CeX, Back Market, eBay, The iOutlet</td></tr>
+    <tr><td>iPhone SE 2nd Gen (used)</td><td class="price">&pound;60&ndash;80</td><td>CeX, Back Market, Music Magpie</td></tr>
+    <tr><td>iPhone 8/X (used)</td><td class="price">&pound;40&ndash;70</td><td>eBay, CeX, Facebook Marketplace</td></tr>
+    <tr><td>iPad 6th Gen (used)</td><td class="price">&pound;60&ndash;90</td><td>eBay, CeX</td></tr>
+  </table>
+</div>
+
+<h3>Budget stands for BYOD</h3>
+<div class="card">
+  <table>
+    <tr><th>Stand type</th><th>Price</th><th>Best for</th></tr>
+    <tr><td>Amazon Basics tablet/phone stand (desk)</td><td class="price">&pound;8&ndash;15</td><td>Reception desks, countertops, tables</td></tr>
+    <tr><td>Adjustable phone/tablet holder with clamp</td><td class="price">&pound;10&ndash;20</td><td>Attaching to shelves, counters, podiums</td></tr>
+    <tr><td>Acrylic display stand</td><td class="price">&pound;5&ndash;10</td><td>Minimal, clean look for small devices</td></tr>
+    <tr><td>Wall mount phone/tablet bracket</td><td class="price">&pound;8&ndash;15</td><td>Wall-mounted near entrances or exits</td></tr>
+    <tr><td>DIY: SwiftCause branded stand (3D-printed)</td><td class="price">&pound;3&ndash;8</td><td>Branded, can be offered as part of onboarding kit</td></tr>
+  </table>
+  <p style="font-size:0.85rem; color:var(--gray-600); margin-top:0.75rem;">All available on Amazon UK, eBay, or specialist display suppliers like <a href="https://www.displaysuk.co.uk">DisplaysUK</a>.</p>
+</div>
+
+<h3>Free kiosk lockdown software</h3>
+<div class="card">
+  <table>
+    <tr><th>App</th><th>Platform</th><th>Cost</th><th>Notes</th></tr>
+    <tr><td><strong>FreeKiosk</strong> (open source)</td><td>Android 8.0+</td><td>Free</td><td>Full lockdown, open-source. <a href="https://github.com/RushB-fr/freekiosk">GitHub</a></td></tr>
+    <tr><td><strong>Webview Kiosk</strong></td><td>Android</td><td>Free</td><td>Locks to a single URL. Available on <a href="https://f-droid.org/en/packages/uk.nktnet.webviewkiosk/">F-Droid</a>.</td></tr>
+    <tr><td><strong>Fully Kiosk Browser</strong></td><td>Android</td><td>&pound;7 one-off</td><td>Most popular. Remote management. Great for unattended devices.</td></tr>
+    <tr><td><strong>Samsung Knox</strong></td><td>Samsung only</td><td>Free</td><td>Built-in on Samsung devices. Enterprise-grade lockdown.</td></tr>
+    <tr><td><strong>Apple Guided Access</strong></td><td>iPad / iPhone</td><td>Free</td><td>Built-in. Triple-click to lock to SwiftCause web app.</td></tr>
+    <tr><td><strong>Android Screen Pinning</strong></td><td>All Android</td><td>Free</td><td>Built-in. Settings &rarr; Security &rarr; App pinning. Quick and simple.</td></tr>
+  </table>
+</div>
+
+<h3>BYOD total cost examples</h3>
+<div class="combo-grid">
+  <div class="combo-card recommended">
+    <h4>Ultra-Budget: Old Phone</h4>
+    <div class="combo-price">&pound;28&ndash;55 <small>total</small></div>
+    <ul class="combo-items">
+      <li>Used Android phone &mdash; &pound;20&ndash;40</li>
+      <li>Desk stand &mdash; &pound;8&ndash;15</li>
+      <li>Kiosk app &mdash; Free</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.5rem;">Charity uses a spare phone or buys a used one. Place on desk near entrance or at events.</p>
+  </div>
+
+  <div class="combo-card">
+    <h4>Budget: Cheap Tablet</h4>
+    <div class="combo-price">&pound;43&ndash;75 <small>total</small></div>
+    <ul class="combo-items">
+      <li>Amazon Fire 7 or used tablet &mdash; &pound;30&ndash;50</li>
+      <li>Desk/counter stand &mdash; &pound;8&ndash;15</li>
+      <li>Silicone case &mdash; &pound;5&ndash;10</li>
+      <li>Kiosk app &mdash; Free</li>
+    </ul>
+    <p style="font-size:0.8rem; color:var(--gray-600); margin-top:0.5rem;">Ideal for small charities, churches, community centres. Low risk, easy to replace.</p>
+  </div>
+</div>
+
+<div class="alert alert-warning">
+  <strong>Product opportunity: SwiftCause BYOD Setup Kit</strong>
+  Consider offering a &ldquo;SwiftCause Starter Kit&rdquo; that includes: a branded desk stand, a QR code card, a setup guide (PDF/card), and a link to the kiosk lockdown instructions. Cost to SwiftCause: ~&pound;5&ndash;10 per kit. Sell or give free with subscription. This helps charities who aren&rsquo;t tech-savvy get set up without you needing to source tablets for them.
+</div>
+
+<h2>8. Suggested Next Steps</h2>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <span class="timeline-label">Week 1</span>
+    <span class="timeline-content"><strong>Decide on bundle.</strong> Pick Option A (budget Android) for volume or Option B/D for demos. You can mix: Android for charity rollout, iPad for your demo kit.</span>
+  </div>
+  <div class="timeline-item">
+    <span class="timeline-label">Week 1&ndash;2</span>
+    <span class="timeline-content"><strong>Order 1 test unit.</strong> Buy one tablet + stand combo. Test SwiftCause web app in kiosk mode. Verify: screen brightness, viewing angle, lock security, power cable routing.</span>
+  </div>
+  <div class="timeline-item">
+    <span class="timeline-label">Week 2&ndash;3</span>
+    <span class="timeline-content"><strong>Test kiosk lockdown.</strong> Set up Samsung Knox or Apple Guided Access. Confirm the donation flow works end-to-end. Stress test with team.</span>
+  </div>
+  <div class="timeline-item">
+    <span class="timeline-label">Week 3&ndash;4</span>
+    <span class="timeline-content"><strong>Photography &amp; pricing.</strong> Photograph the stand setup for marketing materials. Set a resale or rental price if offering to charities. Create a "Collection Stand" product page.</span>
+  </div>
+  <div class="timeline-item">
+    <span class="timeline-label">Week 4+</span>
+    <span class="timeline-content"><strong>Bulk order.</strong> Based on test results and early customer interest, order initial batch (5&ndash;10 units). Negotiate bulk pricing with Samsung UK or Amazon Business.</span>
+  </div>
+</div>
+
+<div class="decision-box">
+  <h3>Decision needed from Qamar</h3>
+  <p style="margin-top:0.5rem;">Three questions to unlock the next step:</p>
+  <ol style="margin-top:0.5rem; padding-left:1.25rem;">
+    <li><strong>Budget flex?</strong> Are you firm at &pound;200 or willing to stretch to &pound;230 for the 11&Prime; Android sweet spot?</li>
+    <li><strong>Screen size priority?</strong> 8.7&Prime; (cheap, portable) vs 11&Prime; (better for public-facing)?</li>
+    <li><strong>Mixed fleet?</strong> Happy to use Android for charity rollout + iPad for your own demo kit? Or need one platform only?</li>
+  </ol>
+</div>
+
+<div class="footnote">
+  <p>All prices checked April 2026. Prices may vary by retailer and availability. VAT included unless stated. Refurbished iPad prices depend on condition grade and stock levels. Stand prices on Amazon UK should be verified at time of purchase as they fluctuate.</p>
+</div>
+
+</div>
+</body>
+</html>
