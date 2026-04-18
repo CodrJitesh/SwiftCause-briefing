@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCause Daily Briefing - April 17, 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0b0d14; color: #e5e7eb; line-height: 1.6; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { margin-bottom: 30px; border-bottom: 1px solid rgba(108, 114, 224, 0.2); padding-bottom: 20px; }
+        .header h1 { font-size: 32px; font-weight: 700; margin-bottom: 10px; background: linear-gradient(135deg, #6c72e0, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .header-info { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; color: #9ca3af; }
+        .header-info span { display: flex; align-items: center; gap: 6px; }
+        .gtm-section { background: rgba(108, 114, 224, 0.1); border: 1px solid rgba(108, 114, 224, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 30px; }
+        .gtm-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 600; }
+        .gtm-countdown { font-size: 24px; color: #6c72e0; }
+        .progress-bar-container { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #6c72e0, #a78bfa); width: 54%; border-radius: 4px; transition: width 0.3s ease; }
+        .tab-nav { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid rgba(108, 114, 224, 0.2); overflow-x: auto; padding-bottom: 10px; }
+        .tab-btn { padding: 10px 20px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-weight: 500; font-size: 14px; transition: all 0.3s ease; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: #6c72e0; }
+        .tab-btn.active { color: #6c72e0; border-bottom-color: #6c72e0; }
+        .tab-content { display: none; animation: fadeIn 0.2s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .badge-success { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .badge-warning { background: rgba(234, 179, 8, 0.2); color: #fcd34d; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .badge-indigo { background: rgba(108, 114, 224, 0.2); color: #a5b4fc; }
+        .card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(108, 114, 224, 0.2); border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .card-header { font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #f3f4f6; }
+        .card-body { font-size: 14px; line-height: 1.8; }
+        .headline { background: rgba(108, 114, 224, 0.12); border-left: 3px solid #6c72e0; padding: 15px; margin-bottom: 20px; border-radius: 4px; }
+        .headline-text { font-weight: 600; color: #a5b4fc; margin-bottom: 8px; }
+        .headline-details { color: #d1d5db; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px; }
+        th { background: rgba(108, 114, 224, 0.1); padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid rgba(108, 114, 224, 0.2); color: #a5b4fc; }
+        td { padding: 12px; border-bottom: 1px solid rgba(108, 114, 224, 0.1); }
+        tr:hover { background: rgba(108, 114, 224, 0.08); }
+        .status-active { color: #86efac; font-weight: 600; }
+        .status-assigned { color: #fcd34d; font-weight: 600; }
+        .status-overloaded { color: #fca5a5; font-weight: 600; }
+        .status-idle { color: #cbd5e1; }
+        .status-unknown { color: #9ca3af; }
+        .decision-item { background: rgba(234, 179, 8, 0.08); border-left: 3px solid #eab308; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
+        .decision-number { color: #fcd34d; font-weight: 700; font-size: 12px; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
+        .decision-title { font-weight: 600; color: #f3f4f6; margin-bottom: 6px; }
+        .decision-desc { color: #d1d5db; font-size: 13px; }
+        .risk-high { border-left-color: #ef4444; }
+        .risk-medium { border-left-color: #eab308; }
+        .risk-low { border-left-color: #22c55e; }
+        .slack-warning { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: flex-start; }
+        .slack-warning-icon { color: #fca5a5; font-weight: bold; font-size: 18px; flex-shrink: 0; }
+        .slack-warning-text { color: #fecaca; font-size: 13px; }
+        .slack-message { background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; padding: 12px; margin-bottom: 12px; border-radius: 4px; }
+        .slack-date { color: #a5b4fc; font-weight: 600; font-size: 12px; text-transform: uppercase; margin-bottom: 6px; }
+        .slack-text { color: #e5e7eb; font-size: 13px; line-height: 1.6; }
+        .slack-reaction { color: #9ca3af; font-size: 12px; margin-top: 6px; }
+        .refresh-time { font-size: 11px; color: #6b7280; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(108, 114, 224, 0.1); }
+        .pr-row-open { background: rgba(59, 130, 246, 0.07); }
+        .pr-row-merged { background: rgba(34, 197, 94, 0.05); }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 24px; }
+            .header-info { flex-direction: column; gap: 10px; }
+            .tab-nav { flex-wrap: wrap; }
+            table { font-size: 12px; }
+            td, th { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SwiftCause Daily Briefing</h1>
+            <div class="header-info">
+                <span>📅 April 17, 2026 (Friday)</span>
+                <span>🔄 Auto-updated dashboard (last run 17:00 BST)</span>
+                <span>👥 7-person team</span>
+                <span>📦 Repo: YNVSolutions/SwiftCause_Mono</span>
+            </div>
+        </div>
+
+        <div class="gtm-section">
+            <div class="gtm-header">
+                <span>GTM Launch Countdown</span>
+                <span class="gtm-countdown">22 days to May 9</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
+                54% through countdown (26 days elapsed · 22 days remaining)
+            </div>
+        </div>
+
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('briefing')">Daily Briefing</button>
+            <button class="tab-btn" onclick="switchTab('decisions')">Decisions Needed</button>
+            <button class="tab-btn" onclick="switchTab('github')">GitHub Live</button>
+            <button class="tab-btn" onclick="switchTab('slack')">Slack Digest</button>
+            <button class="tab-btn" onclick="switchTab('risks')">Priorities &amp; Risks</button>
+        </div>
+
+        <!-- Tab 1: Daily Briefing -->
+        <div id="briefing" class="tab-content active">
+            <div class="headline">
+                <div class="headline-text">🔥 PR #668 enters review — first PR to progress since Apr 15 mega-merge day. Still no merges to main in 48h+.</div>
+                <div class="headline-details">
+                    Main branch stalled since the Apr 15 mega-merge window that landed 7 PRs (#653–#660). Zero commits to main in 48+ hours. Feature branch activity continues: PR #668 (Paras's magic link token refactor) now has reviews requested from CodrJitesh and yuvraj-shishodia as of 10:46 today — this is the first PR to enter review since Apr 15. Paras's 6 sub-task issues (#662–#667) from yesterday remain open. PR #661 (export permissions, Yuvraj) and PR #652 (Android payment flow, Jitesh, 3 days open) also awaiting review. P0 issue #598 (GiftAidDeclaration model) is now 21 days old and UNASSIGNED. With 22 days to GTM (May 9), four P0 compliance tickets (#598, #640, #641, #634) still need owners.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Today's Activity Snapshot</div>
+                <div class="card-body">
+                    <ul style="margin-left: 20px; margin-bottom: 15px;">
+                        <li><strong>No merges in 48h+</strong> — Main branch stalled since Apr 15 15:34 UTC mega-merge window.</li>
+                        <li><strong>PR #668 entered review (10:46 today)</strong> — Paras's magic link token refactor now has reviews requested from CodrJitesh + yuvraj-shishodia. Small PR, quick win to merge.</li>
+                        <li><strong>6 sub-task issues (#662–#667) from yesterday</strong> — Paras broke down Gift Aid magic link flow. All still open.</li>
+                        <li><strong>PR #661 open (Yuvraj)</strong> — Export permissions for subscriptions, campaigns, kiosks. Updated today.</li>
+                        <li><strong>PR #652 still open 3 days (Jitesh)</strong> — Android payment flow. Large PR, no reviewer assigned.</li>
+                        <li><strong>P0 #598 UNASSIGNED — 21 DAYS OLD</strong> — GiftAidDeclaration model + DonorRecord. This is the bottleneck for Gift Aid critical path. Needs immediate ownership.</li>
+                        <li><strong>4 P0 compliance tickets unassigned:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>#598 — GiftAidDeclaration model (21d)</li>
+                                <li>#640 — Stripe KYC gating (5d)</li>
+                                <li>#641 — Super Admin pause (5d)</li>
+                                <li>#634 — CIC validation (5d)</li>
+                            </ul>
+                        </li>
+                        <li style="margin-top: 10px;"><strong>22 days to GTM launch (May 9)</strong> — Critical path requires all 4 P0s + Android + Gift Aid domain work + Magic Link hardening.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Team Capacity Grid (7 members)</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Current Work</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Jitesh Singh</strong><br>(CodrJitesh)</td>
+                                <td>Lead Dev / Android + Stripe</td>
+                                <td><span class="status-active">● ACTIVE</span></td>
+                                <td>PR #652 Android payment flow (open 3d), #648 Org Settings</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yuvraj Shishodia</strong><br>(yuvraj-shishodia)</td>
+                                <td>Frontend + Backend</td>
+                                <td><span class="status-active">● ACTIVE</span></td>
+                                <td>PR #661 export permissions (updated today), #657/#658 follow-ups</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Paras</strong><br>(prsrwt)</td>
+                                <td>Backend (Magic Link)</td>
+                                <td><span class="status-active">● ACTIVE</span></td>
+                                <td>PR #668 token refactor (in review ✓), created #662–#667 sub-tasks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yash Raghuvanshi</strong><br>(yash_raghuvanshi)</td>
+                                <td>Dev</td>
+                                <td><span class="status-unknown">● UNKNOWN</span></td>
+                                <td>No GitHub activity visible</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dharmendra Singh</strong><br>(dp-singh)</td>
+                                <td>Infrastructure / Firebase</td>
+                                <td><span class="status-assigned">● REVIEWING</span></td>
+                                <td>Listed as reviewer on PRs</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Shipra Rawat</strong></td>
+                                <td>Project Coordinator</td>
+                                <td><span class="status-assigned">● COORDINATING</span></td>
+                                <td>Tracking sheets coordination</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vivek</strong></td>
+                                <td>New member</td>
+                                <td><span class="status-unknown">● UNKNOWN</span></td>
+                                <td>No recent activity</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Decisions Needed -->
+        <div id="decisions" class="tab-content">
+            <div class="card">
+                <div class="card-header">Decisions Needed Today</div>
+                <div class="card-body">
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #1 · P0</span>
+                        <div class="decision-title">#598 GiftAidDeclaration model — 21 days unassigned. Who owns this?</div>
+                        <div class="decision-desc">
+                            Blocks Gift Aid critical path. Paras is closest to the domain (built magic link GA). Assign to Paras or pull in new resource?
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #2 · P0</span>
+                        <div class="decision-title">Compliance tickets #640, #641, #634 — 5 days unassigned. These are go-live blockers.</div>
+                        <div class="decision-desc">
+                            Need owner assignment this week. P0s: Stripe KYC gating, Super Admin pause, CIC validation.
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #3 · REVIEW</span>
+                        <div class="decision-title">PR #652 (Android payment flow) — 3 days open. Who reviews this large PR?</div>
+                        <div class="decision-desc">
+                            Need to unblock Android testing.
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #4 · REVIEW</span>
+                        <div class="decision-title">PR #668 (magic link token refactor by Paras) — now IN REVIEW. Reviews requested from CodrJitesh + yuvraj-shishodia.</div>
+                        <div class="decision-desc">
+                            Small PR, unblocks O(1) magic link lookup. Should be a quick merge — expedite review.
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #5 · PLANNING</span>
+                        <div class="decision-title">Paras has 6 open sub-tasks (#662–#667) plus PR #668. Is this sustainable?</div>
+                        <div class="decision-desc">
+                            Should some be delegated?
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #6 · RISK</span>
+                        <div class="decision-title">#596 (Payment retry) closed as not_planned by Jitesh on Apr 13. PM review: acceptable for launch?</div>
+                        <div class="decision-desc">
+                            What's the fallback for failed payments?
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #7 · STRATEGY</span>
+                        <div class="decision-title">22 days to GTM. Strategy backlog (#634–#641) is 5 days old, all unassigned. When do these get scheduled?</div>
+                        <div class="decision-desc">
+                            Critical path timing.
+                        </div>
+                    </div>
+
+                    <div class="decision-item">
+                        <span class="decision-number">DECISION #8 · TEAM</span>
+                        <div class="decision-title">Yash and Vivek have no visible GitHub activity. Are they blocked? Need capacity check.</div>
+                        <div class="decision-desc">
+                            Potential invisible resources or allocation issue.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: GitHub Live -->
+        <div id="github" class="tab-content">
+            <div class="card">
+                <div class="card-header">Open PRs (3)</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PR</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Days Open</th>
+                                <th>Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pr-row-open">
+                                <td><strong>#668</strong></td>
+                                <td>refactor: use tokenHash as document ID for O(1) magic link lookup</td>
+                                <td>prsrwt</td>
+                                <td>1</td>
+                                <td>small</td>
+                            </tr>
+                            <tr class="pr-row-open">
+                                <td><strong>#661</strong></td>
+                                <td>add dedicated export permissions for subscriptions, campaigns, kiosks</td>
+                                <td>yuvraj-shishodia</td>
+                                <td>2</td>
+                                <td>large</td>
+                            </tr>
+                            <tr class="pr-row-open">
+                                <td><strong>#652</strong></td>
+                                <td>Android setup — complete payment flow for internal testing</td>
+                                <td>CodrJitesh</td>
+                                <td>3</td>
+                                <td>large</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Recently Merged (April 15)</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>PR</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Merged</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="pr-row-merged"><td>#660</td><td>Fix donation export to respect admin filters</td><td>yuvraj-shishodia</td><td>Apr 15 15:34</td></tr>
+                            <tr class="pr-row-merged"><td>#651</td><td>Fix: Allow campaigns to exceed 100% funding</td><td>prsrwt</td><td>Apr 15 15:17</td></tr>
+                            <tr class="pr-row-merged"><td>#659</td><td>Harden Gift Aid Validation — Phantom Declarations</td><td>prsrwt</td><td>Apr 15 14:52</td></tr>
+                            <tr class="pr-row-merged"><td>#656</td><td>Grant operator default Gift Aid export-download permission</td><td>yuvraj-shishodia</td><td>Apr 15 14:47</td></tr>
+                            <tr class="pr-row-merged"><td>#655</td><td>Move subscription export to server side</td><td>yuvraj-shishodia</td><td>Apr 15 07:06</td></tr>
+                            <tr class="pr-row-merged"><td>#654</td><td>Move kiosks export to server side</td><td>yuvraj-shishodia</td><td>Apr 15 07:01</td></tr>
+                            <tr class="pr-row-merged"><td>#653</td><td>Move campaign export to server side</td><td>yuvraj-shishodia</td><td>Apr 15 06:53</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Open P0 / P1 Issues (Top 7)</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Priority</th>
+                                <th>Assignee</th>
+                                <th>Days Open</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>#598</strong></td><td>GiftAidDeclaration model standardization</td><td><span class="badge badge-danger">P0</span></td><td>UNASSIGNED</td><td>21 ⚠</td></tr>
+                            <tr><td><strong>#640</strong></td><td>Stripe KYC gating</td><td><span class="badge badge-danger">P0</span></td><td>UNASSIGNED</td><td>5</td></tr>
+                            <tr><td><strong>#641</strong></td><td>Super Admin panel</td><td><span class="badge badge-danger">P0</span></td><td>UNASSIGNED</td><td>5</td></tr>
+                            <tr><td><strong>#634</strong></td><td>CIC validation on onboarding</td><td><span class="badge badge-danger">P0</span></td><td>UNASSIGNED</td><td>5</td></tr>
+                            <tr><td><strong>#629</strong></td><td>Location entity + GASDS</td><td><span class="badge badge-danger">P0</span></td><td>UNASSIGNED</td><td>5</td></tr>
+                            <tr><td><strong>#611</strong></td><td>Donor reconciliation</td><td><span class="badge badge-warning">P1</span></td><td>UNASSIGNED</td><td>18 ⚠</td></tr>
+                            <tr><td><strong>#612</strong></td><td>QR funnel analytics</td><td><span class="badge badge-warning">P1</span></td><td>UNASSIGNED</td><td>18 ⚠</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="refresh-time">GitHub data refreshed: Apr 17, 2026 17:00 BST (afternoon auto-run) · YNVSolutions/SwiftCause_Mono · No merges in 48h · 3 open PRs (PR #668 now in review)</div>
+        </div>
+
+        <!-- Tab 4: Slack Digest -->
+        <div id="slack" class="tab-content">
+            <div class="slack-warning">
+                <span class="slack-warning-icon">⚠</span>
+                <span class="slack-warning-text">
+                    <strong>Slack data is 5 days old</strong> (last cached 12 Apr 2026). Connect Slack in an interactive session to refresh.
+                </span>
+            </div>
+
+            <div class="card">
+                <div class="card-header">#charity_project — Cached Activity (through Apr 12)</div>
+                <div class="card-body">
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 12 · Jitesh Singh · Milestone</div>
+                        <div class="slack-text">First Android APK (alpha) released for testing. Kiosk login credentials shared. Full donation flow working.</div>
+                    </div>
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 10 · Qamar Waraich · Message</div>
+                        <div class="slack-text">Posted 'Design' — shared design assets.</div>
+                    </div>
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 8 · Yuvraj Shishodia · Question (resolved)</div>
+                        <div class="slack-text">Firebase console for swiftcause-app not active. Jitesh escalated to Dharmendra. Resolved same day.</div>
+                    </div>
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 7 · Yuvraj Shishodia · Question</div>
+                        <div class="slack-text">Asked about tracking failed payments and timestamp field priority for donation export.</div>
+                    </div>
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 6 · Yuvraj Shishodia · Proposal</div>
+                        <div class="slack-text">Proposed server-side donation export (matching Gift Aid export pattern). Jitesh approved — pattern shipped across 4 PRs by Apr 15.</div>
+                    </div>
+                    <div class="slack-message">
+                        <div class="slack-date">Apr 6 · Jitesh Singh · Meeting</div>
+                        <div class="slack-text">Called Paras + Yuvraj for EOD meeting to discuss export implementation and KT.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Standups Status</div>
+                <div class="card-body">
+                    <ul style="margin-left: 20px;">
+                        <li>Last standup: <strong>Mar 27, 2026</strong></li>
+                        <li>Paused by Geekbot: <strong>Mar 28, 2026</strong> — <span class="badge badge-warning">21 days paused</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="refresh-time">Slack data cached: Apr 12, 2026 (5 days old) · Source: slack_database.json</div>
+        </div>
+
+        <!-- Tab 5: Priorities & Risks -->
+        <div id="risks" class="tab-content">
+            <div class="card">
+                <div class="card-header">Top 10 Priorities</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Priority</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Assign #598 — GiftAidDeclaration model (21d stale, unblocks Gift Aid)</td><td><span class="badge badge-danger">P0</span></td><td>CRITICAL</td></tr>
+                            <tr><td>2</td><td>Assign compliance tickets #640/#641/#634 (go-live blockers)</td><td><span class="badge badge-danger">P0</span></td><td>CRITICAL</td></tr>
+                            <tr><td>3</td><td>Review & merge PR #668 (small, quick win for magic link)</td><td><span class="badge badge-danger">P0</span></td><td>HIGH</td></tr>
+                            <tr><td>4</td><td>Review PR #661 (export permissions — unblocks admin exports)</td><td><span class="badge badge-danger">P0</span></td><td>HIGH</td></tr>
+                            <tr><td>5</td><td>Review PR #652 (Android — unblocks device testing)</td><td><span class="badge badge-danger">P0</span></td><td>HIGH</td></tr>
+                            <tr><td>6</td><td>Assign #611 (donor reconciliation, 18d stale)</td><td><span class="badge badge-warning">P1</span></td><td>HIGH</td></tr>
+                            <tr><td>7</td><td>Assign #612 (QR funnel analytics, 18d stale)</td><td><span class="badge badge-warning">P1</span></td><td>HIGH</td></tr>
+                            <tr><td>8</td><td>Yash/Vivek capacity check — invisible devs</td><td><span class="badge badge-warning">P1</span></td><td>MEDIUM</td></tr>
+                            <tr><td>9</td><td>Plan sprint for compliance tickets before GTM</td><td><span class="badge badge-warning">P1</span></td><td>MEDIUM</td></tr>
+                            <tr><td>10</td><td>Paras workload review — 6 open issues + PR</td><td><span class="badge badge-warning">P1</span></td><td>MEDIUM</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Risk Register</div>
+                <div class="card-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Risk</th>
+                                <th>Severity</th>
+                                <th>Status</th>
+                                <th>Mitigation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="risk-high"><td>Gift Aid compliance (#598) — 21d unassigned P0</td><td><span class="badge badge-danger">HIGH</span></td><td>OPEN</td><td>Assign Paras or escalate</td></tr>
+                            <tr class="risk-high"><td>GTM compliance gap — 4 P0 tickets unassigned</td><td><span class="badge badge-danger">HIGH</span></td><td>OPEN</td><td>Schedule sprint this week</td></tr>
+                            <tr class="risk-medium"><td>Android testing blocked (PR #652 3d open)</td><td><span class="badge badge-warning">MEDIUM</span></td><td>OPEN</td><td>Assign reviewer</td></tr>
+                            <tr class="risk-medium"><td>Yash/Vivek capacity unknown</td><td><span class="badge badge-warning">MEDIUM</span></td><td>OPEN</td><td>Capacity check call</td></tr>
+                            <tr class="risk-low"><td>Main branch stale 48h</td><td><span class="badge badge-success">LOW</span></td><td>MONITORING</td><td>Feature branches active</td></tr>
+                            <tr class="risk-low"><td>Slack data 5 days stale</td><td><span class="badge badge-success">LOW</span></td><td>OPEN</td><td>Reconnect in interactive session</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">GTM Timeline Status</div>
+                <div class="card-body">
+                    <div style="font-weight: 600; color: #f3f4f6; margin-bottom: 15px;">
+                        Launch: May 9, 2026 — 22 days remaining (54% progress)
+                    </div>
+                    <div style="font-size: 13px; color: #d1d5db;">
+                        <p style="margin-bottom: 10px;"><strong>Days Elapsed:</strong> 26 days (since ~Mar 22)</p>
+                        <p style="margin-bottom: 10px;"><strong>Days Remaining:</strong> 22 days to May 9</p>
+                        <p><strong>Critical Path:</strong> Assign #598 Gift Aid → Assign #640/#641/#634 compliance → Review & merge PR #668/#661/#652 → Paras #662–#667 sub-tasks → Android QA → Magic Link production hardening → Pilot charity onboarding</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="refresh-time">Last refreshed: Apr 17, 2026 17:00 BST (afternoon scheduled run) · Sources: GitHub (SwiftCause_Mono live), Slack cache (5 days old), memory files</div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            var contents = document.querySelectorAll('.tab-content');
+            contents.forEach(function(content) { content.classList.remove('active'); });
+            var buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(function(button) { button.classList.remove('active'); });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
