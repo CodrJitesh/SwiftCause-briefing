@@ -40,3 +40,901 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .nav-btn { padding: 12px 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--slate-500); border: none; background: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.15s; }
 .nav-btn:hover { color: var(--green); background: var(--green-light); }
 .nav-btn.active { color: var(--green); border-bottom-color: var(--green); }
+
+/* Panels */
+.panel { display: none; max-width: 1300px; margin: 0 auto; padding: 28px 20px; }
+.panel.active { display: block; }
+
+/* Flow diagram */
+.flow-container { position: relative; }
+.flow-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+@media (max-width: 900px) { .flow-comparison { grid-template-columns: 1fr; } }
+
+.flow-col { background: var(--white); border-radius: 14px; border: 1px solid var(--slate-200); overflow: hidden; }
+.flow-col-header { padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--white); }
+.flow-col-header.as-is { background: var(--slate-700); }
+.flow-col-header.to-be { background: var(--green); }
+.flow-col-body { padding: 20px; }
+
+/* Steps */
+.step { position: relative; padding: 14px 16px; border-radius: 10px; margin-bottom: 8px; font-size: 13px; line-height: 1.5; border: 1px solid var(--slate-200); background: var(--white); }
+.step.active { border-color: var(--green); background: var(--green-light); }
+.step.new { border-color: var(--blue); background: var(--blue-light); }
+.step.changed { border-color: var(--amber); background: var(--amber-light); }
+.step.removed { border-color: var(--red); background: var(--red-light); opacity: 0.7; text-decoration: line-through; }
+.step.gap { border: 2px dashed var(--red); background: var(--red-light); }
+.step.shipped { border-color: var(--green); background: var(--green-light); }
+
+.step-num { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; color: var(--white); margin-right: 8px; flex-shrink: 0; }
+.step-num.green { background: var(--green); }
+.step-num.blue { background: var(--blue); }
+.step-num.amber { background: var(--amber); }
+.step-num.red { background: var(--red); }
+.step-num.slate { background: var(--slate-500); }
+
+.step-title { font-weight: 600; color: var(--slate-900); }
+.step-detail { font-size: 12px; color: var(--slate-500); margin-top: 4px; }
+.step-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 8px; margin-left: 6px; vertical-align: middle; }
+.badge-exists { background: var(--green-light); color: var(--green); }
+.badge-new { background: var(--blue-light); color: var(--blue); }
+.badge-changed { background: var(--amber-light); color: var(--amber); }
+.badge-gap { background: var(--red-light); color: var(--red); }
+.badge-file { background: var(--slate-100); color: var(--blue); font-family: 'SF Mono', monospace; font-size: 10px; }
+.badge-shipped { background: #D1FAE5; color: #065F46; }
+.badge-merged { background: #D1FAE5; color: #065F46; }
+
+.arrow { text-align: center; color: var(--slate-300); font-size: 18px; margin: 2px 0; }
+
+/* Decision diamond */
+.decision { position: relative; padding: 14px 16px; border-radius: 10px; margin-bottom: 8px; font-size: 13px; background: var(--purple-light); border: 1px solid #C4B5FD; }
+.decision .step-title { color: var(--purple); }
+
+/* Connector lines */
+.branch-container { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 4px 0 8px; }
+.branch { padding: 10px 12px; border-radius: 8px; font-size: 12px; border: 1px solid var(--slate-200); background: var(--slate-50); }
+.branch-label { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.branch-label.yes { color: var(--green); }
+.branch-label.no { color: var(--red); }
+
+/* Section heading */
+h2 { font-size: 20px; font-weight: 700; margin: 24px 0 8px; color: var(--slate-900); }
+h3 { font-size: 16px; font-weight: 600; margin: 16px 0 8px; color: var(--slate-700); }
+.section-desc { font-size: 14px; color: var(--slate-500); margin-bottom: 16px; line-height: 1.6; }
+
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; margin-bottom: 20px; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--slate-700); }
+.legend-swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid; }
+
+/* Data capture matrix */
+.matrix { width: 100%; border-collapse: collapse; font-size: 12px; margin: 16px 0 24px; }
+.matrix th { background: var(--slate-700); color: var(--white); padding: 10px 12px; text-align: left; font-weight: 600; }
+.matrix td { padding: 8px 12px; border-bottom: 1px solid var(--slate-200); }
+.matrix tr:nth-child(even) { background: var(--slate-50); }
+.matrix .yes-cell { color: var(--green); font-weight: 700; }
+.matrix .no-cell { color: var(--red); font-weight: 700; }
+.matrix .partial-cell { color: var(--amber); font-weight: 700; }
+.matrix .na-cell { color: var(--slate-300); }
+
+/* Outcome strip */
+.outcome { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+.outcome-tag { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+.outcome-tag.gift-aid { background: var(--green-light); color: var(--green); border: 1px solid #BFE2CF; }
+.outcome-tag.gasds { background: var(--blue-light); color: var(--blue); border: 1px solid var(--blue); }
+.outcome-tag.anon { background: var(--slate-100); color: var(--slate-500); border: 1px solid var(--slate-300); }
+.outcome-tag.recurring { background: var(--purple-light); color: var(--purple); border: 1px solid #C4B5FD; }
+
+/* Full-width single flow */
+.flow-full { background: var(--white); border-radius: 14px; border: 1px solid var(--slate-200); overflow: hidden; margin: 16px 0; }
+.flow-full-header { padding: 14px 20px; font-size: 14px; font-weight: 700; color: var(--white); background: var(--blue); }
+.flow-full-body { padding: 20px; }
+
+/* Summary cards */
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 16px 0; }
+.summary-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 18px; }
+.summary-card h4 { font-size: 13px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.summary-card .value { font-size: 28px; font-weight: 800; }
+.summary-card .detail { font-size: 12px; color: var(--slate-500); margin-top: 4px; }
+
+/* Change log callout */
+.changelog { background: var(--blue-light); border: 1px solid var(--blue); border-radius: 10px; padding: 16px; margin: 16px 0; }
+.changelog h4 { color: var(--blue); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.changelog ul { font-size: 12px; color: var(--slate-700); line-height: 1.8; padding-left: 18px; }
+.changelog li { margin-bottom: 2px; }
+
+/* PR reference */
+.pr-ref { display: inline-block; background: #D1FAE5; color: #065F46; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: 'SF Mono', monospace; }
+
+/* APK Review */
+.apk-flow-strip { display: flex; gap: 0; margin: 20px 0; overflow-x: auto; }
+.apk-flow-step { flex: 1; min-width: 140px; padding: 14px 12px; background: var(--white); border: 1px solid var(--slate-200); position: relative; text-align: center; }
+.apk-flow-step:first-child { border-radius: 10px 0 0 10px; }
+.apk-flow-step:last-child { border-radius: 0 10px 10px 0; }
+.apk-flow-step::after { content: '\2192'; position: absolute; right: -10px; top: 50%; transform: translateY(-50%); color: var(--slate-300); font-size: 16px; z-index: 1; }
+.apk-flow-step:last-child::after { content: ''; }
+.apk-flow-step.pass { background: var(--green-light); border-color: var(--green); }
+.apk-flow-step.warn { background: var(--amber-light); border-color: var(--amber); }
+.apk-flow-step.fail { background: var(--red-light); border-color: var(--red); }
+.apk-step-num { font-size: 11px; font-weight: 700; color: var(--slate-500); margin-bottom: 4px; }
+.apk-step-title { font-size: 12px; font-weight: 600; color: var(--slate-900); }
+.apk-step-status { font-size: 10px; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.finding-card { background: var(--white); border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
+.finding-card.good { border-left-color: var(--green); }
+.finding-card.warning { border-left-color: var(--amber); }
+.finding-card.critical { border-left-color: var(--red); }
+.finding-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.finding-card p { font-size: 12px; color: var(--slate-500); line-height: 1.6; }
+.finding-card .finding-tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+.finding-tag.pass { background: var(--green-light); color: var(--green); }
+.finding-tag.warn { background: var(--amber-light); color: var(--amber); }
+.finding-tag.action { background: var(--red-light); color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>SwiftCause User Flows: As-Is vs To-Be</h1>
+  <p>Visual walkthrough of every donor and admin journey &middot; Code-verified against YNVSolutions/SwiftCause_Mono &middot; 12 April 2026 <span class="refresh-badge">Refreshed &mdash; was 30 Mar</span></p>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="show('overview')">Overview</button>
+  <button class="nav-btn" onclick="show('flow1')">Flow 1: Kiosk Tap-to-Pay</button>
+  <button class="nav-btn" onclick="show('flow2')">Flow 2: QR / Magic Link</button>
+  <button class="nav-btn" onclick="show('flow3')">Flow 3: Web Portal</button>
+  <button class="nav-btn" onclick="show('flow4')">Flow 4: Recurring</button>
+  <button class="nav-btn" onclick="show('flow5')">Flow 5: Returning Donor</button>
+  <button class="nav-btn" onclick="show('admin')">Admin Flows</button>
+  <button class="nav-btn" onclick="show('matrix')">Data Capture Matrix</button>
+  <button class="nav-btn" onclick="show('apk')" style="color:#10b981;">APK Review (12 Apr)</button>
+</div>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<div id="overview" class="panel active">
+  <h2>Flow Summary</h2>
+  <p class="section-desc">SwiftCause handles donations through three primary channels. Since 30 March, significant code has shipped: Magic Link token infrastructure (PR #622), Stripe Tap-to-Pay on Android (PR #619), server-side donation exports (PR #623), and CSV security hardening (PR #626). The kiosk and magic link channels now work end-to-end on device (APK validated 12 Apr). The consent ledger and web portal remain the critical gaps with 27 days to GTM (9 May 2026).</p>
+
+  <div class="changelog">
+    <h4>What Changed Since 30 March 2026</h4>
+    <ul>
+      <li><span class="pr-ref">PR #622</span> Magic Link token generation, validation API, /link/[token] page, Gift Aid declaration form &mdash; <strong>SHIPPED</strong> (9 Apr)</li>
+      <li><span class="pr-ref">PR #619</span> Stripe Tap-to-Pay on Android via Stripe SDK &mdash; <strong>SHIPPED</strong> (9 Apr)</li>
+      <li><span class="pr-ref">PR #623</span> Server-side donation export (all donations, not just visible page) &mdash; <strong>SHIPPED</strong> (10 Apr)</li>
+      <li><span class="pr-ref">PR #625</span> Donation export documentation &mdash; <strong>SHIPPED</strong> (10 Apr)</li>
+      <li><span class="pr-ref">PR #626</span> CSV formula injection fix for HMRC &amp; internal exports &mdash; <strong>SHIPPED</strong> (10 Apr)</li>
+      <li><span class="pr-ref">PR #620</span> Gift Aid flow documentation &mdash; <strong>SHIPPED</strong> (9 Apr)</li>
+      <li><span class="pr-ref">PR #618</span> Skeleton loading states &mdash; <strong>SHIPPED</strong> (8 Apr)</li>
+      <li><span class="pr-ref">PR #617</span> Admin panel pagination &mdash; <strong>SHIPPED</strong> (7 Apr)</li>
+      <li><span class="pr-ref">PR #615</span> Webhook event handling improvements &mdash; <strong>SHIPPED</strong> (3 Apr)</li>
+      <li><span class="pr-ref">APK</span> First Android alpha build &mdash; full donation flow validated on device (12 Apr)</li>
+      <li><span class="pr-ref">#627</span> Configurable post-donation redirect timer &mdash; <strong>ISSUE CREATED</strong> (pending PM agreement)</li>
+    </ul>
+  </div>
+
+  <div class="summary-row">
+    <div class="summary-card">
+      <h4>Flow 1: Kiosk Tap-to-Pay</h4>
+      <div class="value" style="color:var(--green);">Shipped</div>
+      <div class="detail">Stripe Terminal + Tap-to-Pay on Android (PR #619). Full flow validated on APK: campaign list &rarr; amount &rarr; payment &rarr; QR &rarr; Gift Aid. Thank You screen with QR code + countdown working.</div>
+    </div>
+    <div class="summary-card">
+      <h4>Flow 2: QR / Magic Link</h4>
+      <div class="value" style="color:var(--green);">Shipped</div>
+      <div class="detail">PR #622 merged. Token generation (SHA-256), /link/[token] validation page, Gift Aid declaration form on donor's phone. APK recording confirms QR &rarr; phone flow works end-to-end.</div>
+    </div>
+    <div class="summary-card">
+      <h4>Flow 3: Web Portal</h4>
+      <div class="value" style="color:var(--red);">Not Built</div>
+      <div class="detail">Direct URL to /donate/[campaignId] still missing. Shares components with Flow 2 but needs its own entry point, Payment Element integration, and checkout page.</div>
+    </div>
+    <div class="summary-card">
+      <h4>Flow 4: Recurring Donations</h4>
+      <div class="value" style="color:var(--amber);">Partial</div>
+      <div class="detail">Stripe subscriptions work on kiosk. But recurring + Gift Aid declaration linking still unhandled. Only possible via Payment Element (web portal).</div>
+    </div>
+    <div class="summary-card">
+      <h4>Flow 5: Returning Donor</h4>
+      <div class="value" style="color:var(--amber);">Partial</div>
+      <div class="detail">Email lookup + auto-fill exists. But auto-submits consent without re-confirming &mdash; legal risk. Needs confirmation screen. No change since 30 Mar.</div>
+    </div>
+    <div class="summary-card">
+      <h4>Admin Flows</h4>
+      <div class="value" style="color:var(--amber);">Partial</div>
+      <div class="detail">Server-side donation export (PR #623) + CSV security (PR #626) + admin pagination (PR #617) shipped. But no Gift Aid dashboard, HMRC claim batch UI, or flow configuration screens yet.</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-light);border-color:var(--green);"></div> Exists / Shipped</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#D1FAE5;border-color:#065F46;"></div> Newly shipped (since 30 Mar)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--blue-light);border-color:var(--blue);"></div> New &mdash; to be built</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--amber-light);border-color:var(--amber);"></div> Changed &mdash; needs modification</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--red-light);border-color:var(--red); border-style:dashed;"></div> Gap &mdash; blocking compliance</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--purple-light);border-color:#C4B5FD;"></div> Decision point</div>
+  </div>
+
+  <h3>Possible Outcomes per Flow</h3>
+  <table class="matrix">
+    <tr>
+      <th>Flow</th><th>Gift Aid Eligible?</th><th>GASDS Eligible?</th><th>Recurring Possible?</th><th>Donor Identity?</th>
+    </tr>
+    <tr>
+      <td><strong>Kiosk Tap-to-Pay (Option A)</strong></td>
+      <td class="yes-cell">Yes &mdash; on-screen form</td>
+      <td class="yes-cell">Yes &mdash; &le;&pound;30 anonymous</td>
+      <td class="no-cell">No &mdash; Terminal can't store PM</td>
+      <td class="partial-cell">Only if Option A completed</td>
+    </tr>
+    <tr>
+      <td><strong>Kiosk Tap-to-Pay (Option B+)</strong></td>
+      <td class="yes-cell">Via QR follow-up &mdash; <strong>NOW WORKING</strong></td>
+      <td class="yes-cell">Yes &mdash; &le;&pound;30 anonymous</td>
+      <td class="no-cell">No</td>
+      <td class="yes-cell">Via magic link on phone</td>
+    </tr>
+    <tr>
+      <td><strong>QR / Magic Link Checkout</strong></td>
+      <td class="yes-cell">Yes &mdash; form on donor's phone</td>
+      <td class="yes-cell">Yes &mdash; if &le;&pound;30</td>
+      <td class="yes-cell">Yes &mdash; Payment Element stores PM</td>
+      <td class="yes-cell">Yes &mdash; wallet pre-fill + form</td>
+    </tr>
+    <tr>
+      <td><strong>Web Portal</strong></td>
+      <td class="yes-cell">Yes &mdash; inline form</td>
+      <td class="yes-cell">Yes &mdash; if &le;&pound;30</td>
+      <td class="yes-cell">Yes &mdash; Payment Element stores PM</td>
+      <td class="yes-cell">Yes &mdash; wallet pre-fill + form</td>
+    </tr>
+    <tr>
+      <td><strong>Recurring (any Payment Element flow)</strong></td>
+      <td class="yes-cell">Yes &mdash; one declaration covers all</td>
+      <td class="yes-cell">Yes &mdash; per-invoice if &le;&pound;30</td>
+      <td class="yes-cell">Yes &mdash; built-in</td>
+      <td class="yes-cell">Yes</td>
+    </tr>
+  </table>
+
+  <h3>GTM Readiness: 27 Days to Launch (9 May 2026)</h3>
+  <table class="matrix">
+    <tr><th>10-Step Donor Journey</th><th>Status</th><th>Issue/PR</th><th>Notes</th></tr>
+    <tr><td>1. Kiosk displays campaign</td><td class="yes-cell">SHIPPED</td><td>&mdash;</td><td>Working on Android APK</td></tr>
+    <tr><td>2. Donor taps to pay</td><td class="yes-cell">SHIPPED</td><td>PR #619</td><td>Stripe Tap-to-Pay on Android</td></tr>
+    <tr><td>3. Webhook processes payment</td><td class="yes-cell">SHIPPED</td><td>PR #615</td><td>Idempotency + atomicity fixed</td></tr>
+    <tr><td>4. Magic link generated</td><td class="yes-cell">SHIPPED</td><td>PR #622</td><td>SHA-256 tokens, 30-day expiry</td></tr>
+    <tr><td>5. Donor opens link on phone</td><td class="yes-cell">SHIPPED</td><td>PR #622</td><td>/link/[token] page + validation API</td></tr>
+    <tr><td>6. Gift Aid form displayed</td><td class="yes-cell">SHIPPED</td><td>PR #622</td><td>Declaration form on phone, APK-validated</td></tr>
+    <tr><td>7. Consent recorded</td><td class="no-cell">NOT BUILT</td><td>#609</td><td>ConsentEvents Cloud Function &mdash; UNASSIGNED 15 days</td></tr>
+    <tr><td>8. Donor reconciliation</td><td class="no-cell">NOT BUILT</td><td>#611</td><td>Unassigned 15 days</td></tr>
+    <tr><td>9. Recurring option</td><td class="partial-cell">DEFERRED</td><td>#592</td><td>Phase 3, not in go-live scope</td></tr>
+    <tr><td>10. HMRC export</td><td class="yes-cell">SHIPPED</td><td>PR #623, #626</td><td>Server-side export + CSV injection fix</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════ FLOW 1: KIOSK TAP-TO-PAY ═══════════ -->
+<div id="flow1" class="panel">
+  <h2>Flow 1: Kiosk Tap-to-Pay</h2>
+  <p class="section-desc">The primary high-footfall flow. Donor walks up to a kiosk (Android handset or fixed device), selects a campaign, chooses amount, and taps their card or phone. Gift Aid is captured either before payment (Option A) or after via QR (Option B+). <strong>APK build validated 12 April &mdash; full flow works end-to-end on Android device.</strong></p>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--green-light);border-color:var(--green);"></div> Built</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#D1FAE5;border-color:#065F46;"></div> Newly Shipped</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--amber-light);border-color:var(--amber);"></div> Changed</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:var(--red-light);border-color:var(--red); border-style:dashed;"></div> Gap</div>
+  </div>
+
+  <div class="flow-comparison">
+    <!-- AS-IS (now reflects shipped state as of 12 Apr) -->
+    <div class="flow-col">
+      <div class="flow-col-header as-is">AS-IS &mdash; What Exists Today (12 Apr 2026)</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Campaign List Screen</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Kiosk campaign list. Donor browses available campaigns. Working on Android APK.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">2</span><span class="step-title">Campaign Detail + Amount Selection</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Predefined amounts or custom &pound;1&ndash;&pound;10,000. APK shows &pound;5/&pound;10/&pound;25/&pound;50/Other.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">3</span><span class="step-title">Gift Aid Boost Panel</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">GiftAidBoostPanel.tsx &mdash; &ldquo;Turn your &pound;X into &pound;Y for free&rdquo;. Two CTAs: Yes / No.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="decision"><span class="step-title">Donor taps &ldquo;Yes, Boost&rdquo;?</span></div>
+        <div class="branch-container">
+          <div class="branch"><div class="branch-label yes">Yes</div>
+            <div class="step active" style="margin:6px 0"><span class="step-num green">4a</span><span class="step-title">Email Gate</span><span class="step-badge badge-exists">BUILT</span>
+              <div class="step-detail">GiftAidPage.tsx checks for saved profile by email.</div></div>
+            <div class="step active" style="margin:6px 0"><span class="step-num green">4b</span><span class="step-title">Gift Aid Details Form</span><span class="step-badge badge-exists">BUILT</span>
+              <div class="step-detail">GiftAidDetailsPanel.tsx &mdash; name, address, postcode, HMRC declaration checkbox.</div></div>
+          </div>
+          <div class="branch"><div class="branch-label no">No</div>
+            <div style="font-size:12px;color:var(--slate-500);padding:8px 0;">Skips Gift Aid. Goes straight to payment. Donation becomes GASDS-eligible if &le;&pound;30.</div>
+          </div>
+        </div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">5</span><span class="step-title">Stripe Terminal / Tap-to-Pay Payment</span><span class="step-badge badge-shipped">SHIPPED PR #619</span>
+          <div class="step-detail">Stripe Tap-to-Pay on Android via Stripe SDK. Payment processing with &ldquo;Processing your donation...&rdquo; screen. Returns NO donor identity data.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">6</span><span class="step-title">Webhook + Token Creation</span><span class="step-badge badge-shipped">SHIPPED PR #622</span>
+          <div class="step-detail">handlePaymentCompletedStripeWebhook. If isGiftAidCaptured: false, creates giftAidFollowUpToken with SHA-256 crypto token, donationId, 30-day expiry. Atomic batch writes. Idempotent (PR #615).</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">7</span><span class="step-title">Thank You Screen with QR</span><span class="step-badge badge-shipped">SHIPPED &mdash; APK VALIDATED</span>
+          <div class="step-detail">ThankYouScreen shows: celebration header, QR code encoding magic link URL, &ldquo;I've scanned the QR code&rdquo; button, auto-return countdown. <strong>APK recording (12 Apr) confirms this works.</strong> Countdown currently 29s &mdash; <a href="https://github.com/YNVSolutions/SwiftCause_Mono/issues/627">Issue #627</a> proposes configurable timer (pending PM agreement).</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">8</span><span class="step-title">Donor Scans QR &rarr; Flow 2</span><span class="step-badge badge-shipped">SHIPPED PR #622</span>
+          <div class="step-detail">Opens /link/[token] on donor&rsquo;s phone. Validation API checks token, returns donation context. APK recording confirms full flow: QR scan &rarr; Gift Aid form &rarr; auto-return.</div></div>
+
+        <div style="margin-top:16px;">
+          <div class="outcome">
+            <span class="outcome-tag gift-aid">Gift Aid: Option A (instant) or Option B+ (via QR) &mdash; BOTH WORKING</span>
+            <span class="outcome-tag gasds">GASDS: If &le;&pound;30 and no Gift Aid</span>
+            <span class="outcome-tag anon">Identity: Via QR checkout on phone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TO-BE: what still needs work -->
+    <div class="flow-col">
+      <div class="flow-col-header to-be">REMAINING GAPS &mdash; Still Needed for Production</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1&ndash;5</span><span class="step-title">Core Kiosk Flow</span><span class="step-badge badge-exists">COMPLETE</span>
+          <div class="step-detail">Campaign list &rarr; amount &rarr; Gift Aid boost &rarr; form &rarr; payment. All working on APK.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">6</span><span class="step-title">Production Hardening</span><span class="step-badge badge-gap">BLOCKER SC-B004</span>
+          <div class="step-detail">Firestore rules currently open for dev. Must tighten security rules, deploy indexes, configure TTL policies, deploy Cloud Functions before production use.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">7</span><span class="step-title">Consent Ledger Integration</span><span class="step-badge badge-gap">UNASSIGNED 15 DAYS</span>
+          <div class="step-detail">#609 ConsentEvents Cloud Function &mdash; computes DonorRecord.currentConsent from ConsentEvents subcollection. Not built. This is the #1 GTM risk.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">8</span><span class="step-title">IP Address Capture</span><span class="step-badge badge-gap">UNASSIGNED #610</span>
+          <div class="step-detail">HMRC audit trail requires IP address on declarations. Server-side capture not implemented. 15 days unassigned.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">9</span><span class="step-title">Donor Reconciliation</span><span class="step-badge badge-gap">UNASSIGNED #611</span>
+          <div class="step-detail">Link magic link declarations back to donor profiles. Merge/dedup donor records. 15 days unassigned.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">10</span><span class="step-title">QR-to-Submit Funnel Analytics</span><span class="step-badge badge-gap">UNASSIGNED #612</span>
+          <div class="step-detail">Track QR scan rate, form completion rate, drop-off points. Critical for measuring magic link ROI. 15 days unassigned.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">11</span><span class="step-title">APK Cleanup for Demos</span><span class="step-badge badge-changed">BLOCKER SC-B009</span>
+          <div class="step-detail">Remove &ldquo;Feed the devs&rdquo; test campaign. Verify Stripe live key toggle. Reduce auto-return from 29s (Issue #627). Record polished demo video.</div></div>
+
+        <div style="margin-top:16px; background:var(--red-light); border:1px solid var(--red); border-radius:8px; padding:12px;">
+          <strong style="color:var(--red); font-size:12px;">CRITICAL: 4 Sprint 04 tasks (#609&ndash;#612) unassigned 15 days. This is the #1 GTM risk.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FLOW 2: QR / MAGIC LINK ═══════════ -->
+<div id="flow2" class="panel">
+  <h2>Flow 2: QR / Magic Link Checkout</h2>
+  <p class="section-desc">Donor scans the QR code displayed on the kiosk Thank You screen. This opens a checkout page on their own phone. <strong>This flow was entirely missing on 30 March. It now exists</strong> &mdash; PR #622 shipped the magic link token infrastructure, /link/[token] page, validation API, and Gift Aid declaration form. APK recording (12 Apr) confirms end-to-end flow on device.</p>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header" style="background:var(--green);">CURRENT STATE &mdash; What's Shipped (PR #622, 9 Apr)</div>
+      <div class="flow-col-body">
+        <div class="step shipped"><span class="step-num green">1</span><span class="step-title">Donor Scans QR / Taps Magic Link</span><span class="step-badge badge-shipped">SHIPPED</span>
+          <div class="step-detail">QR on kiosk Thank You screen encodes URL: /link/[tokenId]. Opens on donor&rsquo;s phone browser. APK recording confirms this works.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">2</span><span class="step-title">Token Validation</span><span class="step-badge badge-shipped">SHIPPED</span>
+          <div class="step-detail">GET /api/link/[token] validates token exists, not expired (&lt;30 days), status is &ldquo;pending&rdquo;. Returns donation context (amount, campaign name). SHA-256 hashed storage. Deterministic doc IDs for idempotency.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="decision"><span class="step-title">Post-payment follow-up (from kiosk QR)</span></div>
+        <div class="step shipped"><span class="step-num green">3</span><span class="step-title">Gift Aid Declaration Form</span><span class="step-badge badge-shipped">SHIPPED</span>
+          <div class="step-detail">On donor&rsquo;s phone (responsive). HMRC-required fields: name, address, postcode, declaration checkbox. APK recording shows form completing successfully with auto-return to kiosk.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">4</span><span class="step-title">Declaration Created + Token Consumed</span><span class="step-badge badge-shipped">SHIPPED</span>
+          <div class="step-detail">POST /api/link/[token]/complete creates declaration in Firestore linked to original donationId. Sets captureMethod: POST_DONATION_QR. Marks token as &ldquo;completed&rdquo;. Atomic batch writes.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">5</span><span class="step-title">Confirmation + Auto-Return</span><span class="step-badge badge-shipped">SHIPPED</span>
+          <div class="step-detail">Kiosk detects QR scan completion and auto-returns to campaign list after countdown. Donor sees confirmation on their phone.</div></div>
+
+        <div style="margin-top:16px;">
+          <div class="outcome">
+            <span class="outcome-tag gift-aid">Gift Aid: Full capture via phone form &mdash; WORKING</span>
+            <span class="outcome-tag anon">Identity: Captured via form on donor's phone</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header" style="background:var(--amber);">REMAINING GAPS &mdash; Consent Ledger Not Built</div>
+      <div class="flow-col-body">
+        <div class="step gap"><span class="step-num red">A</span><span class="step-title">ConsentEvents Cloud Function (#609)</span><span class="step-badge badge-gap">UNASSIGNED</span>
+          <div class="step-detail">Each Gift Aid declaration should create a ConsentEvent in the donor's subcollection. Cloud Function computes DonorRecord.currentConsent from event history. Not built &mdash; 15 days unassigned.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">B</span><span class="step-title">IP Address Capture (#610)</span><span class="step-badge badge-gap">UNASSIGNED</span>
+          <div class="step-detail">HMRC audit trail requires IP address on every declaration. Server-side capture needed on the /api/link/[token]/complete endpoint. Not implemented.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">C</span><span class="step-title">Donor Reconciliation (#611)</span><span class="step-badge badge-gap">UNASSIGNED</span>
+          <div class="step-detail">Link magic link declarations back to donor profiles. Handle merge/dedup when same email appears across multiple donations.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">D</span><span class="step-title">QR-to-Submit Analytics (#612)</span><span class="step-badge badge-gap">UNASSIGNED</span>
+          <div class="step-detail">Track: QR displayed count, QR scanned count, form started, form completed, drop-off points. Essential for proving magic link ROI to charities.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">E</span><span class="step-title">Fresh Checkout Path (not just post-payment)</span><span class="step-badge badge-new">NOT BUILT</span>
+          <div class="step-detail">Flow 2 currently only handles post-payment follow-up (Gift Aid only, no second payment). A fresh checkout path where QR leads to full Payment Element checkout is not yet built &mdash; that's Flow 3.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">F</span><span class="step-title">Confirmation Email (GA-04)</span><span class="step-badge badge-new">NOT BUILT</span>
+          <div class="step-detail">SendGrid not set up (#605, 16+ days unassigned). Cannot send Gift Aid confirmation emails until email infrastructure exists.</div></div>
+
+        <div style="margin-top:16px; background:var(--amber-light); border:1px solid var(--amber); border-radius:8px; padding:12px;">
+          <strong style="color:var(--amber); font-size:12px;">The core flow works. The compliance layer (consent ledger, IP capture, reconciliation) does not. These are the gating items for GTM.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FLOW 3: WEB PORTAL ═══════════ -->
+<div id="flow3" class="panel">
+  <h2>Flow 3: Web Portal Checkout</h2>
+  <p class="section-desc">Direct URL to /donate/[campaignId] &mdash; shared via email, social media, or charity website. Responsive page serving both desktop and mobile. Uses the same Payment Element + Gift Aid form components as Flow 2. <strong>This flow is still not built &mdash; no change since 30 March.</strong></p>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header as-is">AS-IS &mdash; What Exists Today</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Campaign Page (app/campaign/[id])</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Public campaign detail page exists. Shows title, description, progress bar.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">2</span><span class="step-title">Payment Page (app/payment/[id])</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Payment route exists BUT currently routes to kiosk-bound flow (requires kiosk context, Stripe Terminal).</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap" style="text-align:center; padding:30px 20px;">
+          <span class="step-title" style="color:var(--red);">No web checkout capability</span>
+          <div class="step-detail" style="margin-top:8px;">No Payment Element integration. No way to pay without a physical kiosk terminal. No Gift Aid capture on web. This is unchanged since 30 March.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header to-be">TO-BE &mdash; Target State</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Campaign Landing Page</span><span class="step-badge badge-exists">EXISTS</span>
+          <div class="step-detail">Same public campaign page. Add &ldquo;Donate Online&rdquo; CTA button.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">2</span><span class="step-title">Web Checkout: Amount + Gift Aid</span><span class="step-badge badge-new">NEW BUILD</span>
+          <div class="step-detail">/donate/[campaignId] &mdash; responsive page. Amount selector, one-time/recurring toggle, Gift Aid boost panel, full declaration form. Can reuse components from PR #622.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">3</span><span class="step-title">Stripe Payment Element</span><span class="step-badge badge-new">NEW BUILD</span>
+          <div class="step-detail">Payment Element with requestPayerName + requestPayerEmail. Supports Apple Pay, Google Pay, card entry. Wallet pre-fills donor identity into Gift Aid form.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">4</span><span class="step-title">createWebPaymentIntent</span><span class="step-badge badge-new">NEW BACKEND</span>
+          <div class="step-detail">New Cloud Function. Creates PaymentIntent with automatic_payment_methods. For recurring: creates Stripe customer + subscription.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num green">5</span><span class="step-title">Webhook Processing</span><span class="step-badge badge-exists">EXISTING</span>
+          <div class="step-detail">Same handlePaymentCompletedStripeWebhook (now hardened via PR #615). Reads declarationId from metadata.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">6</span><span class="step-title">Web Thank You + Email</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Confirmation page with Gift Aid summary. Confirmation email (blocked by #605 SendGrid). Social sharing prompt.</div></div>
+
+        <div style="margin-top:16px;">
+          <div class="outcome">
+            <span class="outcome-tag gift-aid">Gift Aid: Full inline capture</span>
+            <span class="outcome-tag recurring">Recurring: Yes, via Payment Element</span>
+            <span class="outcome-tag anon">Identity: Full (wallet + typed)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:var(--blue-light); border:1px solid var(--blue); border-radius:10px; padding:16px; margin-top:12px;">
+    <strong style="color:var(--blue);">Architecture Note:</strong> <span style="font-size:13px; color:var(--slate-700);">Flows 2 and 3 share 90% of their codebase. The Gift Aid form, validation logic, and confirmation page from PR #622 can be reused. They differ only in entry point: Flow 2 validates a follow-up token; Flow 3 looks up a campaign by ID and adds Payment Element. Build once, route twice.</span>
+  </div>
+</div>
+
+<!-- ═══════════ FLOW 4: RECURRING ═══════════ -->
+<div id="flow4" class="panel">
+  <h2>Flow 4: Recurring Donations</h2>
+  <p class="section-desc">Recurring donations require a stored payment method, which Stripe Terminal cannot provide. Recurring is only possible through Payment Element flows (web portal). One Gift Aid declaration with declarationType: &ldquo;past_and_future&rdquo; covers all future invoices. <strong>No change since 30 March &mdash; recurring + Gift Aid linking is still unhandled.</strong></p>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header as-is">AS-IS &mdash; What Exists Today</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Kiosk Recurring Selection</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Campaign config has enableRecurring, recurringIntervals (monthly/quarterly/yearly). Donor selects on kiosk.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">2</span><span class="step-title">Stripe Subscription Creation</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">createKioskPaymentIntent creates Stripe customer, attaches payment method, creates subscription.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">3</span><span class="step-title">handleInvoicePaid Webhook</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Processes each recurring invoice. Creates donation doc per invoice. Now with idempotency (PR #615).</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step gap"><span class="step-num red">!</span><span class="step-title">Gift Aid + Recurring = Unhandled</span><span class="step-badge badge-gap">GAP</span>
+          <div class="step-detail">handleInvoicePaid doesn&rsquo;t check for existing Gift Aid declarations. Each invoice would create a new declaration instead of reusing the original. No declarationType support. <strong>No change since 30 March.</strong></div></div>
+
+        <div style="margin-top:16px;">
+          <div class="outcome">
+            <span class="outcome-tag recurring">Recurring: Works on kiosk</span>
+            <span class="outcome-tag anon">Gift Aid + Recurring: Still Broken</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header to-be">TO-BE &mdash; Target State (Deferred to Phase 3)</div>
+      <div class="flow-col-body">
+        <div class="step new"><span class="step-num blue">1</span><span class="step-title">Web/QR Recurring Selection</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">On Payment Element checkout (Flow 3), donor selects &ldquo;Make this recurring&rdquo; with interval selector.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">2</span><span class="step-title">Gift Aid Form with declarationType</span><span class="step-badge badge-changed">UPDATED</span>
+          <div class="step-detail">If recurring selected, declarationType defaults to &ldquo;past_and_future&rdquo;. Single declaration covers all future invoices.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">3</span><span class="step-title">Subscription via Payment Element</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Payment Element stores payment method for future charges.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">4</span><span class="step-title">handleInvoicePaid (Updated)</span><span class="step-badge badge-changed">UPDATED</span>
+          <div class="step-detail">On each invoice: check for existing active Gift Aid declaration with past_and_future type. Link donation to existing declaration. No duplicates.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">5</span><span class="step-title">Per-Invoice Gift Aid Tracking</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Each recurring invoice creates a donation doc with giftAidDeclarationId pointing to the original declaration. CSV export includes all linked invoices.</div></div>
+
+        <div style="margin-top:16px;">
+          <div class="outcome">
+            <span class="outcome-tag gift-aid">Gift Aid: One declaration, all invoices</span>
+            <span class="outcome-tag recurring">Recurring: Payment Element only</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ FLOW 5: RETURNING DONOR ═══════════ -->
+<div id="flow5" class="panel">
+  <h2>Flow 5: Returning Donor Recognition</h2>
+  <p class="section-desc">When a donor who has previously completed a Gift Aid declaration returns, the system should recognise them by email and pre-fill their details. The current implementation has a smart shortcut that auto-submits, but it has a legal risk. <strong>No change since 30 March.</strong></p>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header as-is">AS-IS &mdash; What Exists Today</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Email Gate Screen</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">GiftAidPage.tsx shows email input after donor taps &ldquo;Yes, Boost.&rdquo;</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">2</span><span class="step-title">Profile Lookup</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">getReusableGiftAidProfileByEmail() queries giftAidDeclarations by normalized email.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="decision"><span class="step-title">Profile found with consent?</span></div>
+        <div class="branch-container">
+          <div class="branch"><div class="branch-label yes">Yes &mdash; Returning Donor</div>
+            <div class="step" style="margin:6px 0; border-color:var(--red); background:var(--red-light);">
+              <span class="step-num red">!</span><span class="step-title">Auto-Submit (Legal Risk)</span><span class="step-badge badge-gap">RISK</span>
+              <div class="step-detail">GiftAidPage.tsx auto-creates GiftAidDetails from profile and calls onAcceptGiftAid() directly. Hardcodes dataProcessingConsent: true, homeAddressConfirmed: true. <strong>No confirmation screen. No &ldquo;still correct?&rdquo; prompt.</strong></div>
+            </div>
+          </div>
+          <div class="branch"><div class="branch-label no">No &mdash; New Donor</div>
+            <div style="font-size:12px;color:var(--slate-500);padding:8px 0;">Falls through to full Gift Aid details form.</div>
+          </div>
+        </div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">3</span><span class="step-title">Details Form Pre-Fill</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">GiftAidDetailsPanel.tsx also has its own email-blur lookup. If profile found, pre-fills all fields.</div></div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header to-be">TO-BE &mdash; Target State (with OTP — 13 Apr decision)</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Email Gate Screen</span><span class="step-badge badge-exists">NO CHANGE</span></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">2</span><span class="step-title">Email OTP Verification</span><span class="step-badge badge-new">NEW — 13 Apr</span>
+          <div class="step-detail"><strong>6-digit OTP sent to entered email</strong> (Firebase Auth). Donor enters code on same page. If verified → proceed to profile lookup. If skipped → treat as new donor (blank form only, no stored data shown). Gift Aid still claimable without OTP — HMRC doesn't require email verification.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step active"><span class="step-num green">3</span><span class="step-title">Profile Lookup (verified email only)</span><span class="step-badge badge-exists">UPDATED</span>
+          <div class="step-detail">Only runs after email OTP verified. Prevents data exposure to unverified users.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="decision"><span class="step-title">Profile found with consent?</span></div>
+        <div class="branch-container">
+          <div class="branch"><div class="branch-label yes">Yes &mdash; Returning Donor (verified)</div>
+            <div class="step new" style="margin:6px 0">
+              <span class="step-num blue">!</span><span class="step-title">Confirmation Screen</span><span class="step-badge badge-new">NEW</span>
+              <div class="step-detail">&ldquo;We have your Gift Aid details from [date]. Is this still correct?&rdquo; Shows name + address summary. Two options: <strong>&ldquo;Yes, use these details&rdquo;</strong> or <strong>&ldquo;Update my details&rdquo;</strong>.</div>
+            </div>
+          </div>
+          <div class="branch"><div class="branch-label no">No &mdash; New Donor</div>
+            <div style="font-size:12px;color:var(--slate-500);padding:8px 0;">Same: full details form.</div>
+          </div>
+        </div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">3</span><span class="step-title">Details Form (if updating)</span><span class="step-badge badge-changed">UPDATED</span>
+          <div class="step-detail">Pre-filled from saved profile. Donor can edit any field. Old declaration marked as superseded.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">4</span><span class="step-title">Donor Profile Updated</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">If details changed, update donorProfiles collection. Future lookups return latest address.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ADMIN FLOWS ═══════════ -->
+<div id="admin" class="panel">
+  <h2>Admin Flows</h2>
+  <p class="section-desc">Charity treasurers and SwiftCause admins need visibility into Gift Aid declarations, HMRC claim status, and GASDS tracking. Since 30 March, <strong>three key admin improvements shipped</strong>: server-side donation export (PR #623), CSV formula injection hardening (PR #626), and admin panel pagination (PR #617). But Gift Aid admin screens remain unbuilt.</p>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header as-is">AS-IS &mdash; Admin Today (12 Apr 2026)</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Admin Dashboard</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Basic overview. Campaign stats, donation totals.</div></div>
+        <div class="step active"><span class="step-num green">2</span><span class="step-title">Campaign Management</span><span class="step-badge badge-exists">BUILT</span>
+          <div class="step-detail">Create/edit campaigns. giftAidEnabled toggle exists but no flow config.</div></div>
+        <div class="step active"><span class="step-num green">3</span><span class="step-title">Donations List</span><span class="step-badge badge-shipped">UPDATED PR #617</span>
+          <div class="step-detail">View donations with pagination (PR #617). No Gift Aid status column yet. No HMRC claim tracking.</div></div>
+        <div class="step shipped"><span class="step-num green">4</span><span class="step-title">Server-Side Donation Export</span><span class="step-badge badge-shipped">NEW PR #623</span>
+          <div class="step-detail">Server-side CSV export for all donations (not just visible page). Export batches + history + re-download. CSV formula injection hardened (PR #626).</div></div>
+        <div class="step active"><span class="step-num green">5</span><span class="step-title">Kiosk Management</span><span class="step-badge badge-exists">BUILT</span></div>
+        <div class="step active"><span class="step-num green">6</span><span class="step-title">User Management</span><span class="step-badge badge-exists">BUILT</span></div>
+        <div class="step gap" style="margin-top:16px; text-align:center; padding:24px;">
+          <span style="color:var(--red); font-weight:700;">No Gift Aid admin screens</span>
+          <div class="step-detail" style="margin-top:6px;">No declaration viewer. No HMRC batch generator UI. No GASDS tracker. No flow configuration. Gift Aid CSV lib function exists but no admin UI wrapping it.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header to-be">TO-BE &mdash; Admin Target</div>
+      <div class="flow-col-body">
+        <div class="step active"><span class="step-num green">1</span><span class="step-title">Admin Dashboard</span><span class="step-badge badge-changed">UPDATED</span>
+          <div class="step-detail">Add Gift Aid summary cards: total claimed, pending, GASDS pool, conversion rate.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">2</span><span class="step-title">Gift Aid Dashboard (GA-07)</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Declarations table with filters (status, date, campaign). Validation flags. GASDS tab.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">3</span><span class="step-title">HMRC Claim Batches (GA-08)</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Select period &rarr; preview &rarr; generate R68 CSV &rarr; download &rarr; mark submitted &rarr; mark paid. Server-side export infrastructure (PR #623) can be extended for this.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">4</span><span class="step-title">Flow Configuration (GA-14)</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Per-campaign: flow type (Option A / B+ / Hybrid), Thank You screen timeout (Issue #627), QR toggle, custom messaging.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">5</span><span class="step-title">GASDS Insights</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Annual cap tracker (&pound;8,000). 10&times; matching rule calculator. &ldquo;Lost money&rdquo; figure for donors who could convert to full Gift Aid.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step new"><span class="step-num blue">6</span><span class="step-title">Donor Management (DI-01)</span><span class="step-badge badge-new">NEW</span>
+          <div class="step-detail">Donor profiles list. Declaration history per donor. Address update workflow. Depends on #611 (donor reconciliation).</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>HMRC Claim Submission Flow (Treasurer)</h3>
+  <div class="flow-full">
+    <div class="flow-full-header">Treasurer: Quarterly HMRC Claim Workflow</div>
+    <div class="flow-full-body">
+      <div class="step new"><span class="step-num blue">1</span><span class="step-title">Open HMRC Claims tab</span>
+        <div class="step-detail">See pending declarations count and estimated claim value.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">2</span><span class="step-title">Select claim period</span>
+        <div class="step-detail">Tax year filter + date range. System pre-selects declarations with hmrcClaimStatus: &ldquo;pending&rdquo;.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">3</span><span class="step-title">Preview &amp; validate</span>
+        <div class="step-detail">Validation flags: missing postcode, invalid name, suspicious amounts. Treasurer can exclude individual records.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step shipped"><span class="step-num green">4</span><span class="step-title">Generate R68 CSV</span><span class="step-badge badge-shipped">PARTIALLY SHIPPED</span>
+        <div class="step-detail">giftAidCsv.ts exists and is HMRC-compliant. CSV formula injection hardened (PR #626). Server-side export infrastructure built (PR #623). But no admin UI for triggering Gift Aid-specific export yet.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">5</span><span class="step-title">Upload to Charities Online</span>
+        <div class="step-detail">Treasurer uploads CSV to HMRC Charities Online portal manually.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">6</span><span class="step-title">Mark as submitted</span>
+        <div class="step-detail">Updates all declarations in batch to hmrcClaimStatus: &ldquo;submitted&rdquo;.</div></div>
+      <div class="arrow">&darr;</div>
+      <div class="step new"><span class="step-num blue">7</span><span class="step-title">Mark as paid</span>
+        <div class="step-detail">When HMRC payment arrives (5&ndash;6 weeks), mark paid with actual amount received.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ DATA CAPTURE MATRIX ═══════════ -->
+<div id="matrix" class="panel">
+  <h2>Data Capture Matrix</h2>
+  <p class="section-desc">What each flow captures vs what HMRC requires. Updated 12 April 2026 to reflect shipped code. The QR Follow-Up column now shows actual state from PR #622 (not aspirational).</p>
+
+  <table class="matrix">
+    <tr>
+      <th>Data Field</th>
+      <th>HMRC Required?</th>
+      <th>Kiosk Option A<br>(as-is)</th>
+      <th>Kiosk Option B+<br>(as-is via QR)</th>
+      <th>QR Follow-Up<br>(SHIPPED PR #622)</th>
+      <th>Web Portal<br>(to-be)</th>
+    </tr>
+    <tr><td><strong>First Name</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form + Wallet</td></tr>
+    <tr><td><strong>Surname</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form + Wallet</td></tr>
+    <tr><td><strong>Email</strong></td><td class="partial-cell">Recommended</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form + Wallet</td></tr>
+    <tr><td><strong>House Number</strong></td><td class="partial-cell">Recommended</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Address Line 1</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Address Line 2</strong></td><td class="na-cell">Optional</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Town</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Postcode</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Form</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Form &mdash; SHIPPED</td><td class="yes-cell">Form</td></tr>
+    <tr><td><strong>Gift Aid Consent</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Checkbox</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Checkbox &mdash; SHIPPED</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>UK Taxpayer Confirm</strong></td><td class="yes-cell">Yes</td><td class="yes-cell">Combined</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Checkbox &mdash; SHIPPED</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>HMRC Declaration Text</strong></td><td class="yes-cell">Yes (Ch.3)</td><td class="yes-cell">Shown</td><td class="yes-cell">Via QR form</td><td class="yes-cell">Shown &mdash; SHIPPED</td><td class="yes-cell">Shown</td></tr>
+    <tr><td><strong>Declaration Type</strong></td><td class="yes-cell">Yes</td><td class="no-cell">Missing</td><td class="no-cell">Missing</td><td class="partial-cell">Needs verification</td><td class="yes-cell">Radio</td></tr>
+    <tr><td><strong>GDPR Consent</strong></td><td class="yes-cell">GDPR req.</td><td class="no-cell">Missing</td><td class="no-cell">Missing</td><td class="partial-cell">Needs verification</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>Future Consent</strong></td><td class="na-cell">Optional</td><td class="no-cell">Missing</td><td class="no-cell">Missing</td><td class="partial-cell">Needs verification</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>Home Address Confirmed</strong></td><td class="yes-cell">Yes</td><td class="no-cell">Missing</td><td class="no-cell">Missing</td><td class="partial-cell">Needs verification</td><td class="yes-cell">Checkbox</td></tr>
+    <tr><td><strong>IP Address</strong></td><td class="yes-cell">Audit trail</td><td class="no-cell">Missing</td><td class="no-cell">Missing</td><td class="no-cell">Missing &mdash; #610 unassigned</td><td class="yes-cell">Server-side</td></tr>
+    <tr><td><strong>Capture Method</strong></td><td class="partial-cell">Audit trail</td><td class="no-cell">Missing</td><td class="yes-cell">POST_DONATION_QR</td><td class="yes-cell">POST_DONATION_QR &mdash; SHIPPED</td><td class="yes-cell">ON_SCREEN</td></tr>
+    <tr><td><strong>Donation Amount</strong></td><td class="yes-cell">Yes (pence)</td><td class="yes-cell">Auto</td><td class="yes-cell">Auto</td><td class="yes-cell">Auto &mdash; SHIPPED</td><td class="yes-cell">Auto</td></tr>
+    <tr><td><strong>Tax Year</strong></td><td class="yes-cell">Yes</td><td class="partial-cell">Bug (GA-01)</td><td class="partial-cell">Bug</td><td class="partial-cell">Needs verification</td><td class="yes-cell">Fixed helper</td></tr>
+  </table>
+
+  <div style="background:var(--amber-light); border:1px solid var(--amber); border-radius:10px; padding:16px; margin-top:12px;">
+    <strong style="color:var(--amber);">Key Takeaway (Updated 12 Apr):</strong> <span style="font-size:13px; color:var(--slate-700);">The QR Follow-Up flow now captures most HMRC-required fields (PR #622 shipped). The critical remaining gaps are: IP address capture (#610, unassigned), and verification needed on whether declarationType, GDPR consent, and homeAddressConfirmed fields are included in the PR #622 form. The consent ledger (#609) is the compliance gating item &mdash; without it, declarations exist but aren't properly tracked in the donor record.</span>
+  </div>
+</div>
+
+<!-- ═══════════ APK REVIEW ═══════════ -->
+<div id="apk" class="panel">
+  <h2>APK Build Review &mdash; 12 April 2026</h2>
+  <p class="section-desc">Jitesh Singh delivered the first Android APK (app-debug.apk, 70.1 MB) to #charity_project at 10:35 BST. This review is based on PM screen recording analysis of the complete donation flow. Kiosk credentials: ID <code>hz0vffcVAQELv4NoAo5I</code>, access code <code>12345</code>.</p>
+
+  <div style="background:var(--green-light); border:1px solid var(--green); border-radius:10px; padding:16px; margin-bottom:20px;">
+    <strong style="color:var(--green);">Overall Verdict: PASS</strong> <span style="font-size:13px; color:var(--slate-700);">&mdash; The core donation flow works end-to-end on Android device. This is the first time kiosk &rarr; payment &rarr; QR &rarr; Gift Aid has been validated on real hardware. Ready for internal alpha testing with cleanup items noted below.</span>
+  </div>
+
+  <h3>7-Step Flow Walkthrough</h3>
+  <p class="section-desc">Each step observed in the screen recording, mapped to the donor journey.</p>
+
+  <div class="apk-flow-strip">
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 1</div>
+      <div class="apk-step-title">Kiosk Login</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 2</div>
+      <div class="apk-step-title">Campaign List</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 3</div>
+      <div class="apk-step-title">Amount Select</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 4</div>
+      <div class="apk-step-title">Payment</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 5</div>
+      <div class="apk-step-title">QR + Thank You</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step pass">
+      <div class="apk-step-num">Step 6</div>
+      <div class="apk-step-title">Gift Aid Form</div>
+      <div class="apk-step-status" style="color:var(--green);">Pass</div>
+    </div>
+    <div class="apk-flow-step warn">
+      <div class="apk-step-num">Step 7</div>
+      <div class="apk-step-title">Auto-Return</div>
+      <div class="apk-step-status" style="color:var(--amber);">Timer Issue</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:24px;">Detailed Step Analysis</h3>
+
+  <div class="flow-comparison">
+    <div class="flow-col">
+      <div class="flow-col-header" style="background:var(--green);">Steps 1&ndash;4: Login &rarr; Campaign &rarr; Amount &rarr; Payment</div>
+      <div class="flow-col-body">
+        <div class="step shipped"><span class="step-num green">1</span><span class="step-title">Kiosk Login Screen</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">SwiftCause branded splash. Kiosk ID + access code entry. Clean UI, responsive input fields. Successfully authenticates to Firebase.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">2</span><span class="step-title">Campaign List</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">Displays campaigns from Firebase. Card layout with campaign images, titles, progress bars. Includes test campaign &ldquo;Feed the devs&rdquo; (needs removal before demo). Skeleton loaders working (PR #618).</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">3</span><span class="step-title">Campaign Detail + Amount Selection</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">Campaign description with rich text rendering. Amount presets: &pound;5, &pound;10, &pound;25, &pound;50, Other (custom). Sticky amount panel at bottom. &ldquo;Donate Now&rdquo; CTA prominent. Amount validation working.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">4</span><span class="step-title">Stripe Tap-to-Pay Payment</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">&ldquo;Processing your donation...&rdquo; screen shown during Stripe Terminal interaction. Payment simulation completes successfully. Spinner animation smooth. Transitions cleanly to Thank You screen.</div></div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="flow-col-header" style="background:var(--green);">Steps 5&ndash;7: QR Code &rarr; Gift Aid &rarr; Auto-Return</div>
+      <div class="flow-col-body">
+        <div class="step shipped"><span class="step-num green">5</span><span class="step-title">Thank You Screen with QR Code</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">Celebration header: &ldquo;Thank you for your donation!&rdquo; QR code rendered clearly at centre of screen. Encodes magic link URL (/link/[token]). &ldquo;I've scanned the QR code&rdquo; button below QR. Auto-return countdown visible at bottom.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step shipped"><span class="step-num green">6</span><span class="step-title">Gift Aid Declaration Form (on phone)</span><span class="step-badge badge-shipped">PASS</span>
+          <div class="step-detail">Donor scans QR with phone camera. /link/[token] page loads. Token validated via API. Gift Aid form displays with: first name, surname, email, house number, address, town, postcode, declaration checkbox. Form submits successfully &rarr; declaration created in Firestore.</div></div>
+        <div class="arrow">&darr;</div>
+        <div class="step changed"><span class="step-num amber">7</span><span class="step-title">Auto-Return to Campaign List</span><span class="step-badge badge-changed">TIMER WARNING</span>
+          <div class="step-detail">Kiosk detects QR scan completion and shows countdown. Auto-returns to campaign list after countdown expires. <strong>Issue:</strong> Countdown is 29 seconds &mdash; too long for a shared kiosk. Donor stands watching a timer instead of walking away. <a href="https://github.com/YNVSolutions/SwiftCause_Mono/issues/627" style="color:var(--blue);">Issue #627</a> proposes configurable timer (org + campaign level, 15s default). Pending PM agreement.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:24px;">Findings</h3>
+
+  <div class="finding-card good">
+    <h4><span class="finding-tag pass">GOOD</span> End-to-End Flow Works</h4>
+    <p>First time the full kiosk &rarr; payment &rarr; QR &rarr; Gift Aid &rarr; return flow has been validated on real Android hardware. This is a major milestone. The donation journey from campaign selection to Gift Aid capture works without errors.</p>
+  </div>
+
+  <div class="finding-card good">
+    <h4><span class="finding-tag pass">GOOD</span> Stripe Tap-to-Pay Integration Solid</h4>
+    <p>Payment processing via Stripe SDK on Android works cleanly (PR #619). Processing screen, spinner, and success transition are smooth. No payment failures observed during testing.</p>
+  </div>
+
+  <div class="finding-card good">
+    <h4><span class="finding-tag pass">GOOD</span> Magic Link QR &rarr; Phone Handoff Works</h4>
+    <p>QR code on Thank You screen encodes the correct magic link URL. Phone camera scans it successfully. /link/[token] page loads, validates the token, and displays the Gift Aid form. The cross-device handoff (kiosk &rarr; phone) works as designed (PR #622).</p>
+  </div>
+
+  <div class="finding-card good">
+    <h4><span class="finding-tag pass">GOOD</span> UI Quality Strong for Alpha</h4>
+    <p>Skeleton loaders (PR #618), image caching, rich text campaign descriptions, sticky amount panel. Polish is above typical alpha level. Branding consistent. Animations smooth.</p>
+  </div>
+
+  <div class="finding-card warning">
+    <h4><span class="finding-tag warn">WARNING</span> Test Data Visible &mdash; &ldquo;Feed the devs&rdquo; Campaign</h4>
+    <p>The campaign list includes a test campaign titled &ldquo;Feed the devs&rdquo; with casual copy. This must be removed or hidden before any external demo. Consider adding a campaign visibility flag (draft/published) or using a separate demo Firebase project. Impact: demo readiness.</p>
+  </div>
+
+  <div class="finding-card warning">
+    <h4><span class="finding-tag warn">WARNING</span> 29-Second Auto-Return Countdown Too Long</h4>
+    <p>After QR scan completion, the kiosk shows a 29-second countdown before returning to the campaign list. In a high-footfall charity shop, this means the kiosk is unavailable for nearly 30 seconds between donors. Recommendation: reduce to 15 seconds default, make configurable per org/campaign. <a href="https://github.com/YNVSolutions/SwiftCause_Mono/issues/627" style="color:var(--blue);">Issue #627</a> created with 2-tier Firestore config proposal.</p>
+  </div>
+
+  <div class="finding-card warning">
+    <h4><span class="finding-tag warn">WARNING</span> Payment Simulation Mode &mdash; Stripe Live Key Toggle Needed</h4>
+    <p>Current build uses Stripe test mode (simulated payments). Before any production or customer demo with real cards, must verify the Stripe live/test key toggle works correctly. Need environment config that switches cleanly between test and production Stripe keys.</p>
+  </div>
+
+  <div class="finding-card critical">
+    <h4><span class="finding-tag action">ACTION REQUIRED</span> Known Issues from Jitesh</h4>
+    <p>Jitesh flagged three known issues in his Slack post: (1) YouTube video playback restricted in-app, (2) auto-refresh kiosk data mechanism not implemented, (3) no secure logout mechanism (can't have a simple logout button as any donor could tap it). These are acknowledged and non-blocking for alpha testing, but items 2&ndash;3 need resolution before production.</p>
+  </div>
+
+  <div class="finding-card critical">
+    <h4><span class="finding-tag action">ACTION REQUIRED</span> Gift Aid Form Missing Compliance Fields</h4>
+    <p>The Gift Aid declaration form captures core HMRC fields (name, address, postcode, declaration). However, the following compliance fields need verification against PR #622 code: <strong>declarationType</strong> (past_only / past_and_future radio), <strong>GDPR consent checkbox</strong>, <strong>future contact consent</strong>, <strong>home address confirmation checkbox</strong>, and <strong>IP address capture</strong> (#610, unassigned). Without these, declarations are usable but not fully HMRC-compliant.</p>
+  </div>
+
+  <h3 style="margin-top:24px;">APK Review Summary</h3>
+  <table class="matrix">
+    <tr><th>Area</th><th>Status</th><th>Notes</th></tr>
+    <tr><td>Kiosk Login</td><td class="yes-cell">Pass</td><td>Firebase auth working</td></tr>
+    <tr><td>Campaign List</td><td class="yes-cell">Pass</td><td>Test data needs cleanup</td></tr>
+    <tr><td>Amount Selection</td><td class="yes-cell">Pass</td><td>Presets + custom working</td></tr>
+    <tr><td>Stripe Tap-to-Pay</td><td class="yes-cell">Pass</td><td>Test mode &mdash; live key toggle needed</td></tr>
+    <tr><td>QR Code Generation</td><td class="yes-cell">Pass</td><td>Magic link URL encoded correctly</td></tr>
+    <tr><td>Phone Handoff</td><td class="yes-cell">Pass</td><td>Cross-device flow works</td></tr>
+    <tr><td>Gift Aid Form</td><td class="yes-cell">Pass</td><td>Core fields &mdash; compliance fields need verification</td></tr>
+    <tr><td>Auto-Return Timer</td><td class="partial-cell">Warning</td><td>29s too long &mdash; Issue #627 created</td></tr>
+    <tr><td>Demo Readiness</td><td class="partial-cell">Warning</td><td>Test data + payment mode need cleanup</td></tr>
+    <tr><td>Consent Ledger</td><td class="no-cell">Not Built</td><td>#609&ndash;#612 unassigned 15 days</td></tr>
+    <tr><td>IP Capture</td><td class="no-cell">Not Built</td><td>#610 unassigned</td></tr>
+    <tr><td>Production Hardening</td><td class="no-cell">Not Done</td><td>Firestore rules, indexes, TTL, deployment</td></tr>
+  </table>
+
+  <div style="background:var(--blue-light); border:1px solid var(--blue); border-radius:10px; padding:16px; margin-top:16px;">
+    <strong style="color:var(--blue);">PM Recommendation:</strong> <span style="font-size:13px; color:var(--slate-700);">Acknowledge this milestone publicly in #charity_project &mdash; the team needs to see PM engagement after delivering a working end-to-end flow. Then focus on the three cleanup items (test data, timer, Stripe keys) and the four unassigned consent ledger tasks. The APK proves the architecture works; now it needs the compliance layer to be production-ready.</span>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
