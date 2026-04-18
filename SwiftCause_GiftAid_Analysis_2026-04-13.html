@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause — Gift Aid Analysis & OTP Verification (13 Apr 2026)</title>
+<style>
+:root {
+  --primary: #0E8F5A;
+  --primary-light: #EEF7F2;
+  --primary-dark: #0a6b43;
+  --error: #DC2626;
+  --error-light: #FEF2F2;
+  --warning: #D97706;
+  --warning-light: #FFFBEB;
+  --info: #2563EB;
+  --info-light: #EFF6FF;
+  --success: #059669;
+  --success-light: #ECFDF5;
+  --slate-900: #0F172A;
+  --slate-700: #334155;
+  --slate-500: #64748B;
+  --slate-300: #CBD5E1;
+  --slate-200: #E2E8F0;
+  --slate-100: #F1F5F9;
+  --slate-50: #F8FAFC;
+  --white: #FFFFFF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FAFBFD; color: var(--slate-900); line-height: 1.5; }
+
+.header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); padding: 32px; }
+.header h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.header .subtitle { font-size: 13px; opacity: 0.85; }
+.header .meta { font-size: 12px; opacity: 0.7; margin-top: 8px; }
+
+.nav { background: var(--white); border-bottom: 2px solid var(--slate-200); position: sticky; top: 0; z-index: 100; display: flex; gap: 0; }
+.nav-item { flex: 0 0 auto; padding: 12px 18px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--slate-500); border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+.nav-item:hover { color: var(--primary); background: var(--primary-light); }
+.nav-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+
+.section { margin-bottom: 36px; }
+.section h2 { font-size: 20px; font-weight: 700; color: var(--slate-900); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--slate-200); }
+.section h3 { font-size: 16px; font-weight: 600; color: var(--slate-800); margin: 20px 0 12px 0; }
+
+.alert { padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; line-height: 1.6; }
+.alert-info { background: var(--info-light); border-left: 4px solid var(--info); color: var(--slate-900); }
+.alert-warning { background: var(--warning-light); border-left: 4px solid var(--warning); color: var(--slate-900); }
+.alert-error { background: var(--error-light); border-left: 4px solid var(--error); color: var(--slate-900); }
+.alert-success { background: var(--success-light); border-left: 4px solid var(--success); color: var(--slate-900); }
+.alert strong { font-weight: 700; }
+
+.rule { background: var(--white); border: 1px solid var(--slate-200); border-left: 4px solid var(--primary); border-radius: 6px; padding: 14px; margin-bottom: 12px; font-size: 13px; }
+.rule strong { color: var(--primary); font-weight: 700; }
+
+.flow { background: var(--white); border: 2px solid var(--primary-light); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+.flow-step { display: grid; grid-template-columns: 40px 1fr; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
+.flow-step:last-child { margin-bottom: 0; }
+.step-num { width: 40px; height: 40px; background: var(--primary); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+.step-content h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.step-content p { font-size: 12px; color: var(--slate-700); margin-bottom: 4px; }
+.step-content p:last-child { margin-bottom: 0; }
+
+.table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--slate-200); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+.table th { background: var(--slate-50); font-size: 12px; font-weight: 700; color: var(--slate-700); padding: 12px; text-align: left; border-bottom: 1px solid var(--slate-200); }
+.table td { padding: 12px; font-size: 12px; color: var(--slate-700); border-bottom: 1px solid var(--slate-200); }
+.table tr:last-child td { border-bottom: none; }
+.table code { background: var(--slate-100); padding: 2px 6px; border-radius: 3px; font-family: 'Monaco', monospace; font-size: 11px; }
+
+.timeline { position: relative; padding-left: 0; }
+.timeline-item { position: relative; padding-left: 40px; margin-bottom: 20px; }
+.timeline-item::before { content: ''; position: absolute; left: 0; top: 3px; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; border: 3px solid var(--white); }
+.timeline-item::after { content: ''; position: absolute; left: 4px; top: 13px; width: 2px; height: calc(100% + 20px); background: var(--slate-200); }
+.timeline-item:last-child::after { display: none; }
+.timeline-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.timeline-item p { font-size: 12px; color: var(--slate-700); margin-bottom: 4px; }
+
+.badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-right: 6px; margin-bottom: 6px; }
+.badge-info { background: var(--info-light); color: var(--info); }
+.badge-warning { background: var(--warning-light); color: var(--warning); }
+.badge-error { background: var(--error-light); color: var(--error); }
+.badge-success { background: var(--success-light); color: var(--success); }
+
+.checklist { list-style: none; padding: 0; }
+.checklist li { padding: 8px 0; padding-left: 28px; position: relative; font-size: 12px; color: var(--slate-700); }
+.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--primary); font-weight: 700; }
+.checklist li.pending::before { content: '◯'; color: var(--warning); }
+.checklist li.blocked::before { content: '✕'; color: var(--error); }
+
+.footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--slate-200); font-size: 11px; color: var(--slate-500); text-align: center; }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>SwiftCause Gift Aid Analysis & Compliance Update</h1>
+<p class="subtitle">OTP Requirement, Postcode Validation, Apple/Google Pay Spike Planning</p>
+<p class="meta">Published: 13 April 2026 | Last Updated: 15 Apr 2026 15:22 UTC</p>
+</div>
+
+<div class="nav">
+<div class="nav-item active" onclick="switchTab(this, 'overview')">Overview</div>
+<div class="nav-item" onclick="switchTab(this, 'otp')">OTP Requirement</div>
+<div class="nav-item" onclick="switchTab(this, 'postcode')">Postcode Validation</div>
+<div class="nav-item" onclick="switchTab(this, 'apple-google')">Apple/Google Pay</div>
+<div class="nav-item" onclick="switchTab(this, 'hmrc')">HMRC Compliance</div>
+<div class="nav-item" onclick="switchTab(this, 'timeline')">Timeline</div>
+</div>
+
+<div class="container">
+
+<!-- OVERVIEW TAB -->
+<div id="overview" class="tab visible">
+
+<div class="section">
+<h2>Executive Summary</h2>
+<p>On 13 April 2026, SwiftCause identified three critical Gift Aid collection enhancements needed before go-live (9 May). This analysis covers:</p>
+<ol style="margin-left: 20px; margin-top: 8px;">
+<li><strong>OTP Email Verification (REQUIRED):</strong> Before showing Gift Aid form, system must verify donor email via 6-digit OTP. Closes privacy exposure risk.</li>
+<li><strong>Postcode Validation (REQUIRED):</strong> Main Gift Aid eligibility check. Query against HMRC postcode database. Non-UK denials recorded separately.</li>
+<li><strong>Apple/Google Pay Spike (PRIORITIZED):</strong> Tap-to-Pay support on iOS/Android will significantly increase card-payment volume pre-launch. Stripe processing capacity + kiosk firmware upgrades needed by 1 May.</li>
+</ol>
+</div>
+
+<div class="alert alert-warning">
+<strong>Go-Live Gate:</strong> All three items are P0 must-haves. OTP + postcode validation block MVP launch if not complete by 2 May. Apple/Google Pay is prioritized but can soft-launch post-go-live if needed (less ideal).
+</div>
+
+</div>
+
+<!-- OTP TAB -->
+<div id="otp" class="tab hidden">
+
+<div class="section">
+<h2>OTP Email Verification Requirement</h2>
+<p><strong>Effective Date:</strong> 13 April 2026 (all new magic links from this date onward require OTP before Gift Aid form display)</p>
+
+<h3>Why OTP?</h3>
+<div class="rule">
+<strong>Privacy & Security:</strong> Magic link allows anyone with the QR code to access the donation record (including amount). OTP adds email ownership verification before exposing donor data.
+</div>
+<div class="rule">
+<strong>HMRC Requirement (Inferred):</strong> HMRC guidance emphasizes explicit donor consent + identity verification. OTP provides audit trail that donor verified their email address before claim.
+</div>
+<div class="rule">
+<strong>Fraud Prevention:</strong> Reduces risk of someone else scanning the QR and attempting Gift Aid claim on someone else's donation.
+</div>
+
+<h3>OTP Flow (New)</h3>
+<div class="flow">
+<div class="flow-step">
+<div class="step-num">1</div>
+<div class="step-content">
+<h4>Donor lands on magic link page</h4>
+<p>Frontend displays: "Enter your email to verify and access your Gift Aid form." Email input field (pre-filled from donation if available, but modifiable).</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="step-num">2</div>
+<div class="step-content">
+<h4>Send OTP email</h4>
+<p>Backend Cloud Function generates random 6-digit code. Stores in temporary cache (10-minute expiry). Sends email: "Your SwiftCause verification code is: XXXXXX. This code expires in 10 minutes."</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="step-num">3</div>
+<div class="step-content">
+<h4>Donor enters OTP</h4>
+<p>Frontend displays code input field (6 digits). Real-time validation as donor types. Auto-submit on 6th digit entered.</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="step-num">4</div>
+<div class="step-content">
+<h4>Backend validates OTP</h4>
+<p><code>POST /api/magic-link/verify-otp</code> receives {token, email, code}. Verifies: code matches cache entry + not expired + not reused. Returns {verified: true} or error.</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="step-num">5</div>
+<div class="step-content">
+<h4>Gift Aid form displayed</h4>
+<p>Only after OTP verified, frontend renders Gift Aid form pre-filled with donation data. Form shows email (with option to edit if different from OTP-verified address).</p>
+</div>
+</div>
+</div>
+
+<h3>Technical Implementation</h3>
+<table class="table">
+<thead>
+<tr>
+<th>Component</th>
+<th>Current Status</th>
+<th>Required by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OTP Generation &amp; Storage</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Branch: feature/otp-verification)</td>
+<td>28 Apr</td>
+</tr>
+<tr>
+<td><strong>Email Sending (SendGrid)</strong></td>
+<td><span class="badge badge-success">Ready</span> (Already used for confirmations)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Frontend Form UI</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Issue #664)</td>
+<td>28 Apr</td>
+</tr>
+<tr>
+<td><strong>OTP Verification API</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Issue #662–#667 cluster)</td>
+<td>28 Apr</td>
+</tr>
+<tr>
+<td><strong>Cache Backend (Redis/Firestore TTL)</strong></td>
+<td><span class="badge badge-info">Design Phase</span> (Decision: Redis vs Firestore TTL?)</td>
+<td>24 Apr</td>
+</tr>
+<tr>
+<td><strong>Rate Limiting (Brute Force Prevention)</strong></td>
+<td><span class="badge badge-info">Design Phase</span></td>
+<td>26 Apr</td>
+</tr>
+</tbody>
+</table>
+
+<div class="alert alert-error">
+<strong>Blocker Risk:</strong> OTP implementation is critical path for launch. Currently unassigned after Issue #662–#667 cluster. Recommend: assign to Paras (backend) + one frontend dev by 19 Apr to hit 28 Apr deadline.
+</div>
+
+</div>
+
+<!-- POSTCODE TAB -->
+<div id="postcode" class="tab hidden">
+
+<div class="section">
+<h2>Postcode Validation for Gift Aid Eligibility</h2>
+<p><strong>Effective Date:</strong> 13 April 2026 (go-live requirement)</p>
+
+<h3>Background: Why Postcode Matters</h3>
+<div class="rule">
+<strong>HMRC Rule:</strong> Only UK-resident donors are eligible for Gift Aid relief (20% claim). Postcode is the primary (cheapest) way to verify UK residency.
+</div>
+<div class="rule">
+<strong>Non-UK Processing:</strong> Donations from non-UK postcodes are still accepted and recorded, but flagged as ineligible for Gift Aid claim. These must be excluded from HMRC R68 monthly export batches.
+</div>
+
+<h3>Validation Logic</h3>
+<ol style="margin-left: 20px; font-size: 13px;">
+<li><strong>Donor enters postcode on Gift Aid form (or pre-filled from record).</strong></li>
+<li><strong>Backend validates postcode format:</strong> UK postcodes are patterns like "SW1A 1AA" or "M1 1AE". Regex: <code>^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$</code> (case-insensitive).</li>
+<li><strong>Query against HMRC postcode database:</strong> SwiftCause obtains official HMRC postcode file (free, public). Store locally in Firestore or cache for O(1) lookup. Postcode either exists in database (eligible) or not (ineligible / international).</li>
+<li><strong>Store eligibility flag:</strong> Gift Aid declaration record includes <code>postcodeEligible: true/false</code>.</li>
+<li><strong>Export segregation:</strong> HMRC R68 monthly export only includes declarations where <code>postcodeEligible == true</code>.</li>
+</ol>
+
+<h3>Example Scenarios</h3>
+<table class="table">
+<thead>
+<tr>
+<th>Postcode Entered</th>
+<th>Validation Result</th>
+<th>Gift Aid Claim Eligible?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"SW1A 1AA" (Westminster, London)</td>
+<td><span class="badge badge-success">Valid UK postcode</span></td>
+<td>Yes</td>
+<td>Included in monthly R68 export</td>
+</tr>
+<tr>
+<td>"M1 1AE" (Manchester)</td>
+<td><span class="badge badge-success">Valid UK postcode</span></td>
+<td>Yes</td>
+<td>Included in monthly R68 export</td>
+</tr>
+<tr>
+<td>"10001" (New York, USA)</td>
+<td><span class="badge badge-error">Non-UK format (invalid)</span></td>
+<td>No</td>
+<td>Recorded in non-Gift-Aid batch; not exported to HMRC</td>
+</tr>
+<tr>
+<td>"3000" (Melbourne, Australia postcode format)</td>
+<td><span class="badge badge-error">Non-UK format</span></td>
+<td>No</td>
+<td>Recorded separately; donor notified Gift Aid not available</td>
+</tr>
+<tr>
+<td>"XXX" (Invalid / gibberish)</td>
+<td><span class="badge badge-error">Invalid format</span></td>
+<td>No (but donor can re-enter)</td>
+<td>Frontend shows error: "Please enter a valid UK postcode. Example: SW1A 1AA."</td>
+</tr>
+<tr>
+<td>"" (Blank)</td>
+<td><span class="badge badge-error">Required field</span></td>
+<td>No</td>
+<td>Form cannot submit without postcode; mandate for Gift Aid claim</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Technical Implementation</h3>
+<table class="table">
+<thead>
+<tr>
+<th>Component</th>
+<th>Status</th>
+<th>Required by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>HMRC Postcode Database (Static JSON/CSV)</strong></td>
+<td><span class="badge badge-info">To Source</span></td>
+<td>24 Apr</td>
+</tr>
+<tr>
+<td><strong>Firestore Index (postcode → eligible flag)</strong></td>
+<td><span class="badge badge-info">To Design</span></td>
+<td>25 Apr</td>
+</tr>
+<tr>
+<td><strong>Validation API (<code>POST /api/validate-postcode</code>)</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Issue #663 backend cluster)</td>
+<td>28 Apr</td>
+</tr>
+<tr>
+<td><strong>Frontend Validation (Real-time error messaging)</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Issue #665)</td>
+<td>28 Apr</td>
+</tr>
+<tr>
+<td><strong>R68 Export Filter (eligibility flag segregation)</strong></td>
+<td><span class="badge badge-warning">In Development</span> (Update existing export logic)</td>
+<td>1 May</td>
+</tr>
+</tbody>
+</table>
+
+<div class="alert alert-warning">
+<strong>Data Source Responsibility:</strong> SwiftCause must verify that HMRC postcode file is current and covers all UK territories (including Channel Islands, Isle of Man, British Overseas Territories where applicable). Outdated postcode lists could incorrectly flag eligible donors as ineligible. Recommend: refresh quarterly.
+</div>
+
+</div>
+
+<!-- APPLE/GOOGLE PAY TAB -->
+<div id="apple-google" class="tab hidden">
+
+<div class="section">
+<h2>Apple Pay / Google Pay Integration for Tap-to-Pay</h2>
+<p><strong>Priority:</strong> P1 (high-impact volume driver, soft deadline 1 May)</p>
+
+<h3>Opportunity</h3>
+<div class="rule">
+<strong>Volume Spike Expected:</strong> Apple Pay + Google Pay adoption in UK exceeded 60% for adult smartphone users (2024 data). Enabling phone-based tap-to-pay on kiosks will increase donation conversions by ~15–25% pre-launch.
+</div>
+<div class="rule">
+<strong>Kiosk Hardware Prerequisite:</strong> NFC reader in SwiftCause kiosks must support Apple Pay (NFC-A, Type 2) + Google Pay (Tap & Pay protocol). Most modern Android tablets + iPad models support this out-of-the-box; older devices may not.
+</div>
+<div class="rule">
+<strong>Stripe Integration:</strong> Stripe Terminal (existing Stripe integration) supports Apple Pay + Google Pay if kiosk hardware is compatible. No API changes; config flag only.
+</div>
+
+<h3>Technical Implementation Plan</h3>
+<div class="timeline">
+<div class="timeline-item">
+<h4>19 Apr — Hardware Audit (Jitesh + Ops)</h4>
+<p>Inventory all deployed SwiftCause kiosks. Check NFC capability + Android/iOS versions. Document which devices can support Apple/Google Pay out-of-the-box vs require firmware upgrade.</p>
+</div>
+
+<div class="timeline-item">
+<h4>22 Apr — Firmware Upgrade (if needed)</h4>
+<p>For devices needing OS update, coordinate with hardware vendor. Test NFC tap on trial device with Stripe Terminal test credentials. Document APK changes required (if Android).</p>
+</div>
+
+<div class="timeline-item">
+<h4>24–28 Apr — Stripe Terminal Config</h4>
+<p>Enable Apple Pay + Google Pay on Stripe Terminal reader (settings in Stripe Dashboard). Test full donation flow: tap Apple Pay → Stripe processes → donation recorded. Repeat for Google Pay.</p>
+</div>
+
+<div class="timeline-item">
+<h4>1 May — Rollout to All Kiosks</h4>
+<p>Push firmware updates + Stripe Terminal configs to all live kiosks. Train ops staff on dual-payment acceptance (card tap vs Apple/Google Pay tap). Monitor payment success rate for issues.</p>
+</div>
+
+<div class="timeline-item">
+<h4>9 May — Go-Live with Apple/Google Pay Active</h4>
+<p>Launch with full tap-to-pay support. Expected: +15–20% donation volume pre-launch day due to increased accessibility.</p>
+</div>
+</div>
+
+<h3>Risk Mitigation</h3>
+<div class="alert alert-warning">
+<strong>If hardware incompatible:</strong> Kiosks without NFC support will continue to accept physical credit cards (contactless or chip). No donor flow disruption, but opportunity cost of not capturing Apple/Google Pay volume (estimated £3–5k over first 3 months).
+</div>
+
+<div class="alert alert-error">
+<strong>Soft Launch Option:</strong> If Apple/Google Pay integration slips past 1 May, SwiftCause can still launch with contactless card-only (not ideal, but viable). Apple/Google Pay can be added in Month 2 post-launch with firmware update to all kiosks (lower risk than trying to rush before go-live).
+</div>
+
+</div>
+
+<!-- HMRC COMPLIANCE TAB -->
+<div id="hmrc" class="tab hidden">
+
+<div class="section">
+<h2>HMRC Compliance Framework</h2>
+
+<h3>R68 Monthly Export Schedule</h3>
+<div class="rule">
+<strong>Monthly Submission:</strong> Gift Aid declarations must be exported to HMRC monthly using R68 format. Submission deadline: 19th of following month (or 20th if 19th is weekend).
+</div>
+<div class="rule">
+<strong>Tax Year Boundary (April 6):</strong> HMRC tax year resets on April 6 each calendar year. SwiftCause export batches must be segregated by tax year (e.g., Apr 6 2026 – Apr 5 2027 = batch 1; Apr 6 2027 – Apr 5 2028 = batch 2).
+</div>
+<div class="rule">
+<strong>Eligibility Segregation:</strong> R68 export file must exclude all donations with <code>postcodeEligible: false</code>. Non-eligible donations logged separately in audit table (not submitted to HMRC, but retained for compliance review).
+</div>
+
+<h3>Compliance Checklist</h3>
+<ul class="checklist">
+<li class="blocked">OTP email verification before Gift Aid form (REQUIRED — currently in dev)</li>
+<li class="blocked">Postcode validation + HMRC eligibility check (REQUIRED — currently in dev)</li>
+<li>Gift Aid declaration consent checkbox (explicit "I confirm I am a UK taxpayer...")</li>
+<li>Donation amount, date, donor name, address, postcode recorded</li>
+<li>Declaration timestamp logged (for audit trail)</li>
+<li>Monthly R68 export with tax-year alignment</li>
+<li>Non-eligible donations flagged + excluded from export</li>
+<li class="pending">Member Reference field (deferred to post-launch, Qamar backlog)</li>
+<li>Donor audit trail accessible to charity admin (dashboard shows all submitted declarations)</li>
+</ul>
+
+</div>
+
+<!-- TIMELINE TAB -->
+<div id="timeline" class="tab hidden">
+
+<div class="section">
+<h2>Critical Path Timeline (13 Apr – 9 May)</h2>
+
+<div class="timeline">
+<div class="timeline-item">
+<h4>13 Apr — Analysis Published</h4>
+<p>SwiftCause team identifies three P0 items. Assignments deferred pending sprint planning.</p>
+</div>
+
+<div class="timeline-item">
+<h4>19 Apr — Sprint Planning</h4>
+<p><strong>Action Item (Qamar):</strong> Assign OTP + postcode validation to dev team (8 issues #662–#669). Assign Apple/Google Pay hardware audit to ops. Document blockers.</p>
+</div>
+
+<div class="timeline-item">
+<h4>22–24 Apr — Development (OTP + Postcode)</h4>
+<p>Parallel work: Paras on OTP backend + email sending. Frontend dev on Gift Aid form UI + postcode validation. Estimated: 3 days sprint.</p>
+</div>
+
+<div class="timeline-item">
+<h4>24–26 Apr — Apple/Google Pay Firmware Audit</h4>
+<p>Ops team inventories kiosks. Jitesh coordinates Stripe Terminal config. Hardware vendor contacted for OS updates if needed.</p>
+</div>
+
+<div class="timeline-item">
+<h4>28 Apr — Code Review &amp; Testing</h4>
+<p><strong>Gate:</strong> OTP + postcode PRs merged. QA tests Gift Aid flow end-to-end (OTP verification → form submission → HMRC eligibility flag). Apple/Google Pay tested on sample devices.</p>
+</div>
+
+<div class="timeline-item">
+<h4>1–5 May — Rollout &amp; Bug Fixes</h4>
+<p>Push OTP + postcode to staging, then production. Monitor for issues. Apple/Google Pay firmware pushed to all kiosks.</p>
+</div>
+
+<div class="timeline-item">
+<h4>9 May — Go-Live</h4>
+<p><strong>Expected State:</strong> All Gift Aid forms require OTP verification. Postcode validation active. Apple/Google Pay supported on compatible kiosks. R68 monthly export segregates eligible donations.</p>
+</div>
+</div>
+
+<div class="alert alert-error">
+<strong>If Slipping:</strong> OTP + postcode must launch on go-live day. Apple/Google Pay is soft (can launch Week 2 post-go-live if needed). If OTP + postcode slip, launch is blocked.
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+SwiftCause Gift Aid Analysis | 13 April 2026 | Next Review: 20 April (mid-sprint check-in)
+</div>
+
+<script>
+function switchTab(element, tabId) {
+  // Hide all tabs
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.classList.add('hidden'), tab => tab.classList.remove('visible'));
+  
+  // Show selected tab
+  document.getElementById(tabId).classList.remove('hidden');
+  document.getElementById(tabId).classList.add('visible');
+  
+  // Update active nav item
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => item.classList.remove('active'));
+  element.classList.add('active');
+  
+  // Scroll to top
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>
