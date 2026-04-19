@@ -3,527 +3,1961 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SwiftCause — Gift Aid Analysis & OTP Verification (13 Apr 2026)</title>
+<title>SwiftCause Gift Aid — Problem, Flows, Blockers & Solutions</title>
 <style>
-:root {
-  --primary: #0E8F5A;
-  --primary-light: #EEF7F2;
-  --primary-dark: #0a6b43;
-  --error: #DC2626;
-  --error-light: #FEF2F2;
-  --warning: #D97706;
-  --warning-light: #FFFBEB;
-  --info: #2563EB;
-  --info-light: #EFF6FF;
-  --success: #059669;
-  --success-light: #ECFDF5;
-  --slate-900: #0F172A;
-  --slate-700: #334155;
-  --slate-500: #64748B;
-  --slate-300: #CBD5E1;
-  --slate-200: #E2E8F0;
-  --slate-100: #F1F5F9;
-  --slate-50: #F8FAFC;
-  --white: #FFFFFF;
-}
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card-hover: #22263a;
+    --accent: #6c5ce7;
+    --accent2: #00cec9;
+    --warn: #fdcb6e;
+    --danger: #e17055;
+    --success: #00b894;
+    --text: #dfe6e9;
+    --muted: #8395a7;
+    --border: #2d3436;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FAFBFD; color: var(--slate-900); line-height: 1.5; }
+  header { text-align: center; padding: 40px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+  header h1 { font-size: 2rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  header .subtitle { color: var(--muted); font-size: 0.95rem; }
+  header .date { color: var(--accent); font-size: 0.85rem; margin-top: 6px; }
 
-.header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: var(--white); padding: 32px; }
-.header h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-.header .subtitle { font-size: 13px; opacity: 0.85; }
-.header .meta { font-size: 12px; opacity: 0.7; margin-top: 8px; }
+  /* Tab navigation */
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 28px; flex-wrap: wrap; }
+  .tab { padding: 12px 20px; background: transparent; border: none; color: var(--muted); font-size: 0.9rem; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; font-weight: 500; }
+  .tab:hover { color: var(--text); background: rgba(108,92,231,0.08); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(108,92,231,0.1); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
 
-.nav { background: var(--white); border-bottom: 2px solid var(--slate-200); position: sticky; top: 0; z-index: 100; display: flex; gap: 0; }
-.nav-item { flex: 0 0 auto; padding: 12px 18px; cursor: pointer; font-size: 13px; font-weight: 600; color: var(--slate-500); border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
-.nav-item:hover { color: var(--primary); background: var(--primary-light); }
-.nav-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+  .card h3 { color: #fff; font-size: 1.15rem; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .card p, .card li { color: var(--text); font-size: 0.92rem; line-height: 1.7; }
+  .card ul { padding-left: 20px; }
+  .card li { margin-bottom: 6px; }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
+  /* Status badges */
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-danger { background: rgba(225,112,85,0.15); color: var(--danger); }
+  .badge-warn { background: rgba(253,203,110,0.15); color: var(--warn); }
+  .badge-success { background: rgba(0,184,148,0.15); color: var(--success); }
+  .badge-info { background: rgba(108,92,231,0.15); color: var(--accent); }
+  .badge-teal { background: rgba(0,206,201,0.15); color: var(--accent2); }
 
-.section { margin-bottom: 36px; }
-.section h2 { font-size: 20px; font-weight: 700; color: var(--slate-900); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--slate-200); }
-.section h3 { font-size: 16px; font-weight: 600; color: var(--slate-800); margin: 20px 0 12px 0; }
+  /* Flow diagrams */
+  .flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 16px 0; }
+  .flow-step { background: rgba(108,92,231,0.12); border: 1px solid rgba(108,92,231,0.3); padding: 10px 16px; border-radius: 8px; font-size: 0.85rem; color: #fff; text-align: center; min-width: 100px; }
+  .flow-arrow { color: var(--accent); font-size: 1.2rem; padding: 0 6px; }
+  .flow-step.danger { background: rgba(225,112,85,0.12); border-color: rgba(225,112,85,0.3); }
+  .flow-step.success { background: rgba(0,184,148,0.12); border-color: rgba(0,184,148,0.3); }
+  .flow-step.warn { background: rgba(253,203,110,0.12); border-color: rgba(253,203,110,0.3); }
 
-.alert { padding: 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; line-height: 1.6; }
-.alert-info { background: var(--info-light); border-left: 4px solid var(--info); color: var(--slate-900); }
-.alert-warning { background: var(--warning-light); border-left: 4px solid var(--warning); color: var(--slate-900); }
-.alert-error { background: var(--error-light); border-left: 4px solid var(--error); color: var(--slate-900); }
-.alert-success { background: var(--success-light); border-left: 4px solid var(--success); color: var(--slate-900); }
-.alert strong { font-weight: 700; }
+  /* Decision table */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+  th { background: rgba(108,92,231,0.15); color: var(--accent); text-align: left; padding: 10px 14px; font-weight: 600; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: rgba(255,255,255,0.02); }
 
-.rule { background: var(--white); border: 1px solid var(--slate-200); border-left: 4px solid var(--primary); border-radius: 6px; padding: 14px; margin-bottom: 12px; font-size: 13px; }
-.rule strong { color: var(--primary); font-weight: 700; }
+  /* Sections */
+  .section-title { font-size: 1.3rem; color: #fff; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
 
-.flow { background: var(--white); border: 2px solid var(--primary-light); border-radius: 8px; padding: 20px; margin-bottom: 16px; }
-.flow-step { display: grid; grid-template-columns: 40px 1fr; gap: 12px; margin-bottom: 16px; align-items: flex-start; }
-.flow-step:last-child { margin-bottom: 0; }
-.step-num { width: 40px; height: 40px; background: var(--primary); color: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-.step-content h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.step-content p { font-size: 12px; color: var(--slate-700); margin-bottom: 4px; }
-.step-content p:last-child { margin-bottom: 0; }
+  /* Highlight boxes */
+  .highlight { padding: 16px 20px; border-radius: 8px; margin: 16px 0; font-size: 0.9rem; }
+  .highlight-danger { background: rgba(225,112,85,0.08); border-left: 3px solid var(--danger); }
+  .highlight-warn { background: rgba(253,203,110,0.08); border-left: 3px solid var(--warn); }
+  .highlight-success { background: rgba(0,184,148,0.08); border-left: 3px solid var(--success); }
+  .highlight-info { background: rgba(108,92,231,0.08); border-left: 3px solid var(--accent); }
 
-.table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--slate-200); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
-.table th { background: var(--slate-50); font-size: 12px; font-weight: 700; color: var(--slate-700); padding: 12px; text-align: left; border-bottom: 1px solid var(--slate-200); }
-.table td { padding: 12px; font-size: 12px; color: var(--slate-700); border-bottom: 1px solid var(--slate-200); }
-.table tr:last-child td { border-bottom: none; }
-.table code { background: var(--slate-100); padding: 2px 6px; border-radius: 3px; font-family: 'Monaco', monospace; font-size: 11px; }
+  /* Two column */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
 
-.timeline { position: relative; padding-left: 0; }
-.timeline-item { position: relative; padding-left: 40px; margin-bottom: 20px; }
-.timeline-item::before { content: ''; position: absolute; left: 0; top: 3px; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; border: 3px solid var(--white); }
-.timeline-item::after { content: ''; position: absolute; left: 4px; top: 13px; width: 2px; height: calc(100% + 20px); background: var(--slate-200); }
-.timeline-item:last-child::after { display: none; }
-.timeline-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-.timeline-item p { font-size: 12px; color: var(--slate-700); margin-bottom: 4px; }
+  .rec-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
 
-.badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-right: 6px; margin-bottom: 6px; }
-.badge-info { background: var(--info-light); color: var(--info); }
-.badge-warning { background: var(--warning-light); color: var(--warning); }
-.badge-error { background: var(--error-light); color: var(--error); }
-.badge-success { background: var(--success-light); color: var(--success); }
+  .metric { text-align: center; padding: 20px; }
+  .metric .value { font-size: 2rem; font-weight: 700; color: var(--accent); }
+  .metric .label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 
-.checklist { list-style: none; padding: 0; }
-.checklist li { padding: 8px 0; padding-left: 28px; position: relative; font-size: 12px; color: var(--slate-700); }
-.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--primary); font-weight: 700; }
-.checklist li.pending::before { content: '◯'; color: var(--warning); }
-.checklist li.blocked::before { content: '✕'; color: var(--error); }
-
-.footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--slate-200); font-size: 11px; color: var(--slate-500); text-align: center; }
-
-.hidden { display: none; }
-.visible { display: block; }
-
+  .timeline-item { display: flex; gap: 16px; margin-bottom: 20px; }
+  .timeline-dot { width: 12px; height: 12px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .timeline-dot.done { background: var(--success); }
+  .timeline-dot.blocked { background: var(--danger); }
+  .timeline-dot.pending { background: var(--warn); }
+  .timeline-dot.idea { background: var(--accent); }
 </style>
 </head>
 <body>
 
-<div class="header">
-<h1>SwiftCause Gift Aid Analysis & Compliance Update</h1>
-<p class="subtitle">OTP Requirement, Postcode Validation, Apple/Google Pay Spike Planning</p>
-<p class="meta">Published: 13 April 2026 | Last Updated: 15 Apr 2026 15:22 UTC</p>
-</div>
-
-<div class="nav">
-<div class="nav-item active" onclick="switchTab(this, 'overview')">Overview</div>
-<div class="nav-item" onclick="switchTab(this, 'otp')">OTP Requirement</div>
-<div class="nav-item" onclick="switchTab(this, 'postcode')">Postcode Validation</div>
-<div class="nav-item" onclick="switchTab(this, 'apple-google')">Apple/Google Pay</div>
-<div class="nav-item" onclick="switchTab(this, 'hmrc')">HMRC Compliance</div>
-<div class="nav-item" onclick="switchTab(this, 'timeline')">Timeline</div>
-</div>
-
 <div class="container">
 
-<!-- OVERVIEW TAB -->
-<div id="overview" class="tab visible">
+<header>
+  <h1>SwiftCause Gift Aid & Donor Identity</h1>
+  <div class="subtitle">Problem Statement, Flows, Blockers & Recommended Solutions</div>
+  <div class="date">Based on 13 April 2026 standup + full project context | Prepared for Qamar Waraich</div>
+</header>
 
-<div class="section">
-<h2>Executive Summary</h2>
-<p>On 13 April 2026, SwiftCause identified three critical Gift Aid collection enhancements needed before go-live (9 May). This analysis covers:</p>
-<ol style="margin-left: 20px; margin-top: 8px;">
-<li><strong>OTP Email Verification (REQUIRED):</strong> Before showing Gift Aid form, system must verify donor email via 6-digit OTP. Closes privacy exposure risk.</li>
-<li><strong>Postcode Validation (REQUIRED):</strong> Main Gift Aid eligibility check. Query against HMRC postcode database. Non-UK denials recorded separately.</li>
-<li><strong>Apple/Google Pay Spike (PRIORITIZED):</strong> Tap-to-Pay support on iOS/Android will significantly increase card-payment volume pre-launch. Stripe processing capacity + kiosk firmware upgrades needed by 1 May.</li>
-</ol>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('problem')">The Problem</button>
+  <button class="tab" onclick="showTab('flows')">The Flows</button>
+  <button class="tab" onclick="showTab('asis-tobe')">As-Is &rarr; To-Be</button>
+  <button class="tab" onclick="showTab('blockers')">Blockers</button>
+  <button class="tab" onclick="showTab('solutions')">Solutions</button>
+  <button class="tab" onclick="showTab('musthaves')">Must-Haves (P0)</button>
+  <button class="tab" onclick="showTab('gasds')">GASDS & Locations</button>
+  <button class="tab" onclick="showTab('competitors')">Competitors</button>
+  <button class="tab" onclick="showTab('positioning')">Sales Positioning</button>
+  <button class="tab" onclick="showTab('decisions')">Open Decisions</button>
 </div>
 
-<div class="alert alert-warning">
-<strong>Go-Live Gate:</strong> All three items are P0 must-haves. OTP + postcode validation block MVP launch if not complete by 2 May. Apple/Google Pay is prioritized but can soft-launch post-go-live if needed (less ideal).
+<!-- ==================== TAB 1: THE PROBLEM ==================== -->
+<div id="problem" class="tab-content active">
+  <h2 class="section-title">What Are We Trying to Achieve?</h2>
+
+  <div class="card">
+    <h3>The Core Value Proposition</h3>
+    <p>SwiftCause turns every &pound;1 donated into &pound;1.25 by capturing Gift Aid declarations digitally. The entire platform is built around one idea: <strong>a donor taps their card or phone, and we capture enough information — securely, compliantly, with minimal friction — to let the charity reclaim 25% from HMRC.</strong></p>
+    <p style="margin-top:12px;">For donations &pound;30 and under, GASDS lets charities claim the same 25% <em>without</em> donor details — but only if they meet two prerequisites: (1) the 10x matching rule (GASDS cannot exceed 10x standard Gift Aid), and (2) the <strong>2-year Gift Aid history rule</strong> — the charity must have made successful Gift Aid claims in at least 2 of the last 4 tax years before GASDS becomes available. So Gift Aid capture is the engine that powers everything, and it takes at least 2 years before GASDS kicks in for charities new to Gift Aid.</p>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <h3>What SwiftCause Does Differently</h3>
+      <ul>
+        <li><strong>Any device, zero hardware cost</strong> — competitors (Dona, GoodBox, Hibabox, CollecTin) sell &pound;135–&pound;350+ hardware; we turn any phone or tablet into a collection point</li>
+        <li><strong>Magic link post-tap recovery</strong> — unique in the market. When a donor taps and walks away, every other platform loses that Gift Aid forever. SwiftCause gives the donor 30 days to come back via QR/magic link on their own phone</li>
+        <li><strong>30-day token window</strong> — not 72 hours like competitors, giving charities &pound;4,500/yr more recovered Gift Aid per charity</li>
+        <li><strong>Two-pile logic</strong> — separates donations (Gift Aid eligible) from activity fees (not eligible), crucial for religious institutions. No competitor has this.</li>
+        <li><strong>GASDS tracking as a system</strong> — community building doubled cap (&pound;16k vs &pound;8k), 10x matching alerts, year-end pool dashboard. No competitor tracks any of this — but the dashboard alone is copiable. The moat is the combination: magic link recovery feeds the Gift Aid base, Gift Aid base feeds the GASDS multiplier, location tagging maximises the cap. A competitor needs all three layers to match.</li>
+        <li><strong>3% Gift Aid commission</strong> — less than half the industry standard (Dona/Swiftaid/GoodBox all charge 5%)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>The Identity Gap Problem</h3>
+      <p>The fundamental tension surfaced in the 13 April meeting:</p>
+      <div class="highlight highlight-danger" style="margin-top:12px;">
+        <strong>At tap time, the donor is anonymous.</strong> They tap a card, Apple Pay, or Google Pay. Payment goes through Stripe. We have a successful transaction but <em>zero identity</em> — no name, no address, no email. Gift Aid requires name, home address, and full postcode. It does NOT require email — that's a SwiftCause system concern, not an HMRC one.
+      </div>
+      <p style="margin-top:12px;">The magic link bridges this gap: donor scans a QR code, opens a page on their own phone, and provides their details. <strong>This happens off the collection point — there is no queue impact.</strong> The only risk is donor abandonment (closing the tab).</p>
+      <p style="margin-top:12px;">Competitors solve the identity problem differently: Dona, Hibabox, and CollecTin use <strong>card token recognition</strong> — the physical card is the identity, and same card tapping again auto-applies Gift Aid. Swiftaid operates a separate donor network matched by card token. None of them use email verification or OTP. SwiftCause's magic link flow is architecturally different because the payment device and the donor's phone are separate — the card token and the phone session are disconnected.</p>
+
+      <div class="highlight highlight-info" style="margin-top:12px;">
+        <strong>The emerging solution (Option C):</strong> Accept all Gift Aid details (name, address, postcode, email) on one form with zero verification at point of capture — matching industry norms (Dona does exactly this). Send a "thank you" email with a passive verification link. Verified donors get returning donor recognition on future visits (via email + OTP at that point only). Unverified donors' Gift Aid is still fully captured and HMRC-ready. Phase 2 adds Stripe card fingerprint matching for frictionless returning donor recognition — the same proven pattern used by Dona, Hibabox, and Swiftaid.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>The Three Things We Must Get Right</h3>
+    <p style="margin-bottom:12px;">Everything else is secondary to these three outcomes:</p>
+    <table>
+      <thead><tr><th>#</th><th>Objective</th><th>Why It Matters</th><th>Current Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><strong>Maximise Gift Aid capture rate on the magic link</strong></td>
+          <td>Every completed declaration = &pound;0.25 per &pound;1 for the charity + 3% commission for SwiftCause. It also feeds the 10x GASDS multiplier. This is the revenue engine.</td>
+          <td style="color:var(--warn);">Magic link shipped (PR #622). Gift Aid form flow design in progress — Option C (accept all, verify later) recommended. Pilot KPI target: &ge;50% completion.</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><strong>Protect donor data without killing the flow</strong></td>
+          <td>The 13 Apr meeting identified that the current magic link exposes stored donor data to anyone who enters an email. Must be fixed before launch — but the fix must not add friction that tanks the capture rate.</td>
+          <td style="color:var(--warn);">Solution: don't show stored data to unverified users. New donors always see a blank form (zero risk). Returning verified donors get OTP-gated prefill. Passive verification via thank-you email builds the verified account base over time.</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><strong>Build the Gift Aid base that unlocks GASDS</strong></td>
+          <td>GASDS is the "free money" pitch to treasurers — 25% back on anonymous &pound;30-and-under taps with no donor details needed. But it only works if the charity has enough standard Gift Aid (10x rule). The magic link recovery path and the Day 1 recurring subscription strategy both feed this base.</td>
+          <td style="color:var(--warn);">GASDS pool tracking and community building location tagging are post-launch Phase 2. The foundation (Gift Aid capture) must work first.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>The Revenue Impact</h3>
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:8px;">
+      <div class="metric"><div class="value">&pound;1,250</div><div class="label">Monthly HMRC reclaim per charity<br>(on &pound;5k/mo donations)</div></div>
+      <div class="metric"><div class="value">3%</div><div class="label">SwiftCause commission on<br>Gift Aid reclaimed<br><small>(vs 5% industry standard)</small></div></div>
+      <div class="metric"><div class="value">&pound;37.50</div><div class="label">Monthly platform revenue per charity<br>from GA commission alone</div></div>
+      <div class="metric"><div class="value">10x</div><div class="label">GASDS multiplier — every &pound;1<br>of Gift Aid unlocks &pound;10 of GASDS</div></div>
+    </div>
+    <p style="margin-top:16px; color: var(--muted); font-size:0.85rem;">If we don't solve Gift Aid capture properly, charities can't claim, GASDS stays locked, and the commercial model collapses. The flow design (Option A/B/C) directly determines the capture rate, which directly determines revenue — for the charity and for SwiftCause.</p>
+  </div>
 </div>
 
+<!-- ==================== TAB 2: THE FLOWS ==================== -->
+<div id="flows" class="tab-content">
+  <h2 class="section-title">Donation &amp; Gift Aid Capture Flows</h2>
+
+  <div class="card">
+    <h3><span class="badge badge-info">FLOW A</span> Full Gift Aid at Point of Donation (Slow Flow)</h3>
+    <p>Donor has time — church service, office collection, community hall. Gift Aid captured before or alongside payment.</p>
+    <div class="flow">
+      <div class="flow-step">Donor selects amount</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Gift Aid Boost Panel<br><small>"Add 25% at no cost"</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">UK Taxpayer?</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step warn">Name + HOME Address<br>+ Postcode + Consent</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Card Tap / Pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Declaration linked<br>to donation</div>
+    </div>
+    <p style="color:var(--muted); font-size:0.85rem; margin-top:8px;"><strong>Identity solved:</strong> Donor provides everything upfront. No gap. Postcode validated. Declaration created BEFORE payment (status: pending), upgraded to "active" by Stripe webhook.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="badge badge-teal">FLOW B+</span> Post-Tap QR / Magic Link (Fast Flow) <span class="badge badge-danger">ACTIVE BLOCKER</span></h3>
+    <p>High-traffic: Friday prayers, events, festivals. Speed matters — tap in under 15 seconds, Gift Aid captured later.</p>
+    <div class="flow">
+      <div class="flow-step">Donor taps card<br>/ Apple Pay / Google Pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Stripe processes<br>payment</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step warn">Thank You screen<br>with QR code</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Donor scans QR<br>on own phone</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Magic link page:<br>Email + Details</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Declaration linked<br>to token &rarr; donation</div>
+    </div>
+    <div class="highlight highlight-danger" style="margin-top:12px;">
+      <strong>This is where today's meeting problems live.</strong> The red steps above are where donor identity is captured — and where the email verification, returning donor autofill, and data security risks all converge.
+    </div>
+    <p style="margin-top:12px;">Token is valid for <strong>30 days</strong>. If the donor never scans the QR, the donation still exists but with <code>isGiftAidCaptured: false</code> — it goes into the GASDS-eligible pool if &pound;30 or under.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="badge badge-warn">HYBRID</span> Boost Panel + QR Fallback</h3>
+    <p>Collection point offers the full Gift Aid panel (Flow A). If the donor skips it, they get the QR follow-up path (Flow B+). Best of both worlds — catches willing donors immediately, recovers the rest via magic link.</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="badge badge-success">RETURNING DONORS</span> Recognition Flow (Not Yet Safe)</h3>
+    <div class="flow">
+      <div class="flow-step">Donor opens<br>magic link</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Enters email</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">System finds<br>existing profile</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Prefills name,<br>address, postcode</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Donor confirms<br>&amp; Gift Aid applied</div>
+    </div>
+    <div class="highlight highlight-warn" style="margin-top:12px;">
+      <strong>Today's meeting risk:</strong> Anyone can enter any email on the magic link page and see/edit another person's stored data. Without email verification, the returning donor flow is a data exposure vulnerability. The team agreed this must be gated by OTP or email verification before going live.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Apple Pay / Google Pay Data Question</h3>
+    <p>Raised in today's meeting: can we harvest payer identity (name, email, billing address) from Apple Pay or Google Pay via Stripe's payment data?</p>
+    <div class="highlight highlight-info">
+      <strong>Stripe reality:</strong> When a donor pays via Apple Pay or Google Pay, Stripe receives a <code>billing_details</code> object that <em>may</em> contain name, email, and billing address — but only if the wallet is configured with these details and the Stripe PaymentIntent requests them. This is a genuine shortcut: if the donor's wallet provides a verified billing address, we could pre-fill the Gift Aid form and just ask for confirmation + consent. <strong>This needs a feasibility spike — it could eliminate the identity gap for wallet-paying donors entirely.</strong>
+    </div>
+  </div>
 </div>
 
-<!-- OTP TAB -->
-<div id="otp" class="tab hidden">
+<!-- ==================== TAB 3: BLOCKERS ==================== -->
+<div id="blockers" class="tab-content">
+  <h2 class="section-title">Current Blockers (from 13 Apr meeting + project context)</h2>
 
-<div class="section">
-<h2>OTP Email Verification Requirement</h2>
-<p><strong>Effective Date:</strong> 13 April 2026 (all new magic links from this date onward require OTP before Gift Aid form display)</p>
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3><span class="badge badge-danger">CRITICAL</span> Email Verification Not Implemented</h3>
+    <p><strong>What:</strong> The magic link page currently lets anyone type any email address. If that email matches an existing donor profile, their full name and home address are displayed and editable. This is both a data protection risk and a GDPR violation.</p>
+    <p style="margin-top:8px;"><strong>Meeting outcome:</strong> Team agreed OTP or email-link verification is required before showing or editing any stored data. Approach not yet finalised (OTP vs email link vs defer email collection).</p>
+    <p style="margin-top:8px;"><strong>Impact:</strong> Cannot safely launch returning donor recognition. Cannot build trust with charities handling sensitive donor data.</p>
+  </div>
 
-<h3>Why OTP?</h3>
-<div class="rule">
-<strong>Privacy & Security:</strong> Magic link allows anyone with the QR code to access the donation record (including amount). OTP adds email ownership verification before exposing donor data.
-</div>
-<div class="rule">
-<strong>HMRC Requirement (Inferred):</strong> HMRC guidance emphasizes explicit donor consent + identity verification. OTP provides audit trail that donor verified their email address before claim.
-</div>
-<div class="rule">
-<strong>Fraud Prevention:</strong> Reduces risk of someone else scanning the QR and attempting Gift Aid claim on someone else's donation.
-</div>
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3><span class="badge badge-danger">CRITICAL</span> Over-£30 Donations Without Email = Lost Gift Aid</h3>
+    <p><strong>What:</strong> Donations over &pound;30 are NOT eligible for GASDS — they need full Gift Aid declarations with name, address, postcode. If the donor taps &pound;50 via Apple Pay, doesn't scan the QR, and never provides email — that &pound;12.50 Gift Aid is gone forever.</p>
+    <p style="margin-top:8px;"><strong>Meeting outcome:</strong> Action on Qamar to determine how to capture details when amount is over &pound;30 and email is missing. OTP route being assessed.</p>
+    <p style="margin-top:8px;"><strong>Impact:</strong> Every missed &pound;50+ donation costs the charity &pound;12.50+. At scale this is thousands per year.</p>
+  </div>
 
-<h3>OTP Flow (New)</h3>
-<div class="flow">
-<div class="flow-step">
-<div class="step-num">1</div>
-<div class="step-content">
-<h4>Donor lands on magic link page</h4>
-<p>Frontend displays: "Enter your email to verify and access your Gift Aid form." Email input field (pre-filled from donation if available, but modifiable).</p>
-</div>
-</div>
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">HIGH</span> Consent Ledger Tasks #609–#612 Still Unassigned</h3>
+    <p><strong>What:</strong> The Consent Ledger architecture was approved on 30 March. Magic link shipped (PR #622). But the sprint is on Day 16 and the core consent event tasks — token generation, Cloud Function trigger, IP capture, donor reconciliation — remain unassigned.</p>
+    <p style="margin-top:8px;"><strong>Impact:</strong> Without the consent ledger, Gift Aid declarations lack the audit provenance HMRC requires. The declaration exists but can't prove when, where, and how consent was given.</p>
+  </div>
 
-<div class="flow-step">
-<div class="step-num">2</div>
-<div class="step-content">
-<h4>Send OTP email</h4>
-<p>Backend Cloud Function generates random 6-digit code. Stores in temporary cache (10-minute expiry). Sends email: "Your SwiftCause verification code is: XXXXXX. This code expires in 10 minutes."</p>
-</div>
-</div>
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">HIGH</span> No Admin Anomaly Queue for Duplicates</h3>
+    <p><strong>What:</strong> Meeting discussed scenarios where wrong emails get attached to donations, or the same email appears on multiple conflicting records. No admin UI exists to flag, review, or resolve these.</p>
+    <p style="margin-top:8px;"><strong>Meeting outcome:</strong> Agreement to build a "duplicate email anomaly area" for treasurer/admin review with manual resolution and audit trail. Super-admin correction workflow needed for wrongly attributed records.</p>
+  </div>
 
-<div class="flow-step">
-<div class="step-num">3</div>
-<div class="step-content">
-<h4>Donor enters OTP</h4>
-<p>Frontend displays code input field (6 digits). Real-time validation as donor types. Auto-submit on 6th digit entered.</p>
-</div>
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">HIGH</span> Tax Year Bug (GA-01)</h3>
+    <p><code>GiftAidDetailsPanel.tsx</code> uses JavaScript's <code>getFullYear()</code> instead of the UK tax year boundary (6 April). Any donation between 1 January and 5 April gets assigned to the wrong tax year, which means the HMRC CSV export will have incorrect data.</p>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3><span class="badge badge-info">INVESTIGATION</span> Apple Pay / Google Pay Data Harvesting</h3>
+    <p><strong>What:</strong> Can we pull billing name, email, and address from wallet payment data via Stripe to pre-fill Gift Aid forms? This could dramatically reduce friction for the majority of tap-to-pay donors.</p>
+    <p style="margin-top:8px;"><strong>Status:</strong> Feasibility investigation assigned to team. Legal permissions and technical scope to be confirmed. If viable, this changes the entire identity strategy.</p>
+  </div>
 </div>
 
-<div class="flow-step">
-<div class="step-num">4</div>
-<div class="step-content">
-<h4>Backend validates OTP</h4>
-<p><code>POST /api/magic-link/verify-otp</code> receives {token, email, code}. Verifies: code matches cache entry + not expired + not reused. Returns {verified: true} or error.</p>
-</div>
-</div>
+<!-- ==================== TAB 4: SOLUTIONS ==================== -->
+<div id="solutions" class="tab-content">
+  <h2 class="section-title">Recommended Solutions</h2>
+  <p style="color:var(--muted); margin-bottom:24px;">These recommendations synthesise today's meeting discussion, HMRC compliance requirements, the SwiftCause architecture, and practical delivery constraints.</p>
 
-<div class="flow-step">
-<div class="step-num">5</div>
-<div class="step-content">
-<h4>Gift Aid form displayed</h4>
-<p>Only after OTP verified, frontend renders Gift Aid form pre-filled with donation data. Form shows email (with option to edit if different from OTP-verified address).</p>
-</div>
-</div>
-</div>
+  <!-- Solution 1 -->
+  <div class="card">
+    <h3><span class="rec-num">1</span> &nbsp;Implement "Verify-Then-Show" Email Flow</h3>
+    <p><strong>The problem it solves:</strong> Anyone can enter any email on the magic link page and access stored donor data.</p>
+    <div class="highlight highlight-success">
+      <strong>Recommended approach: Lightweight OTP (6-digit code via email)</strong>
+      <ol style="margin-top:8px; padding-left:20px;">
+        <li>Donor opens magic link → sees amount confirmed → enters email</li>
+        <li>System sends 6-digit OTP to that email (valid 10 minutes)</li>
+        <li>Donor enters OTP on the same page</li>
+        <li>Only AFTER verification: if returning donor, prefill name/address; if new, show blank form</li>
+        <li>Donor completes Gift Aid form → opt-in consent checkbox → submit</li>
+      </ol>
+    </div>
+    <p style="margin-top:12px;"><strong>Why OTP over email-link:</strong> The donor is already on their phone from scanning the QR. Sending another magic link creates confusion ("which link do I click?"). A 6-digit code they can see in their email notification banner and type in keeps them on the same page — no context switch. Firebase Auth supports this natively.</p>
+    <p style="margin-top:8px;"><strong>Fallback for donors who skip OTP:</strong> Allow Gift Aid form submission without email verification, but treat the record as "unverified" — it maps to the token/donation only, does NOT create or update a donor profile, and does NOT prefill on future visits. Gift Aid is still claimable (HMRC doesn't require email verification, just the declaration data).</p>
+  </div>
 
-<h3>Technical Implementation</h3>
-<table class="table">
-<thead>
-<tr>
-<th>Component</th>
-<th>Current Status</th>
-<th>Required by</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>OTP Generation &amp; Storage</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Branch: feature/otp-verification)</td>
-<td>28 Apr</td>
-</tr>
-<tr>
-<td><strong>Email Sending (SendGrid)</strong></td>
-<td><span class="badge badge-success">Ready</span> (Already used for confirmations)</td>
-<td>—</td>
-</tr>
-<tr>
-<td><strong>Frontend Form UI</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Issue #664)</td>
-<td>28 Apr</td>
-</tr>
-<tr>
-<td><strong>OTP Verification API</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Issue #662–#667 cluster)</td>
-<td>28 Apr</td>
-</tr>
-<tr>
-<td><strong>Cache Backend (Redis/Firestore TTL)</strong></td>
-<td><span class="badge badge-info">Design Phase</span> (Decision: Redis vs Firestore TTL?)</td>
-<td>24 Apr</td>
-</tr>
-<tr>
-<td><strong>Rate Limiting (Brute Force Prevention)</strong></td>
-<td><span class="badge badge-info">Design Phase</span></td>
-<td>26 Apr</td>
-</tr>
-</tbody>
-</table>
+  <!-- Solution 2 -->
+  <div class="card">
+    <h3><span class="rec-num">2</span> &nbsp;Spike: Stripe Wallet Data for Gift Aid Pre-fill</h3>
+    <p><strong>The problem it solves:</strong> The identity gap — donors are anonymous at tap time.</p>
+    <div class="highlight highlight-info">
+      <strong>What to investigate (1-2 day spike):</strong>
+      <ol style="margin-top:8px; padding-left:20px;">
+        <li>When a donor pays via Apple Pay or Google Pay, check what Stripe returns in <code>payment_intent.charges.data[0].billing_details</code></li>
+        <li>Fields to look for: <code>name</code>, <code>email</code>, <code>address.line1</code>, <code>address.postal_code</code></li>
+        <li>Test with real Apple Pay and Google Pay sandboxes — the data varies by wallet configuration</li>
+        <li>If billing address is available: present it on the magic link page as "We received these details from your payment — are they correct?" with a confirm + consent button</li>
+      </ol>
+    </div>
+    <p style="margin-top:12px;"><strong>If this works:</strong> The magic link page becomes a simple confirmation ("Is this your home address? Yes/No") rather than a full form. Gift Aid completion rates could jump from ~50% to 80%+. The email verification problem is also reduced because the wallet email is inherently verified by Apple/Google.</p>
+    <p style="margin-top:8px;"><strong>If this doesn't work:</strong> We proceed with OTP-gated manual entry (Solution 1). No time wasted — the spike proves/disproves the assumption quickly.</p>
+    <p style="margin-top:8px; color:var(--warn);"><strong>Legal note:</strong> Even if Stripe provides the data, we still need explicit opt-in consent to use it for Gift Aid purposes. The wallet consent covers payment, not tax reclaim. Add a clear "I confirm this is my home address and I want to Gift Aid this donation" checkbox.</p>
+  </div>
 
-<div class="alert alert-error">
-<strong>Blocker Risk:</strong> OTP implementation is critical path for launch. Currently unassigned after Issue #662–#667 cluster. Recommend: assign to Paras (backend) + one frontend dev by 19 Apr to hit 28 Apr deadline.
-</div>
+  <!-- Solution 3 -->
+  <div class="card">
+    <h3><span class="rec-num">3</span> &nbsp;Under-£30 / Over-£30 Bifurcated Flow</h3>
+    <p><strong>The problem it solves:</strong> Today's meeting identified confusion about what data is required at different donation amounts.</p>
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>Amount</th><th>Data Required</th><th>Gift Aid Path</th><th>Fallback</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Small anonymous tap</td>
+          <td>&pound;30 or under</td>
+          <td>None — payment only</td>
+          <td>GASDS pool (no declaration needed)</td>
+          <td>Charity claims at year-end, subject to 10x rule</td>
+        </tr>
+        <tr>
+          <td>Small tap + QR scanned</td>
+          <td>&pound;30 or under</td>
+          <td>Email + name + address (if donor engages)</td>
+          <td>Standard Gift Aid (better than GASDS — builds the 10x base)</td>
+          <td>Falls back to GASDS pool if donor doesn't complete</td>
+        </tr>
+        <tr>
+          <td>Larger donation, no QR</td>
+          <td>Over &pound;30</td>
+          <td>MUST have name + home address + postcode</td>
+          <td>Gift Aid only — NOT GASDS eligible</td>
+          <td style="color:var(--danger);">Gift Aid LOST. No reclaim possible.</td>
+        </tr>
+        <tr>
+          <td>Larger donation + QR scanned</td>
+          <td>Over &pound;30</td>
+          <td>Email (verified) + name + address + postcode</td>
+          <td>Standard Gift Aid via magic link</td>
+          <td>30-day token window to recover</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight highlight-warn" style="margin-top:12px;">
+      <strong>Key insight from today's meeting:</strong> For over-&pound;30 donations, the system should nudge harder. Consider making the QR/thank-you screen more persistent for larger amounts — e.g., "You donated &pound;50. The charity could receive &pound;62.50 if you take 30 seconds to complete Gift Aid" with a larger, more prominent QR code and the amount of the potential Gift Aid boost displayed.
+    </div>
+  </div>
 
-</div>
+  <!-- Solution 4 -->
+  <div class="card">
+    <h3><span class="rec-num">4</span> &nbsp;Token → Verified Email → Donor Profile Lifecycle</h3>
+    <p><strong>The problem it solves:</strong> Today's meeting asked "what is stored against the token vs. verified email, and when does the record become an identified donor?"</p>
+    <div class="highlight highlight-info">
+      <strong>Proposed three-stage lifecycle:</strong>
+    </div>
+    <table style="margin-top:12px;">
+      <thead><tr><th>Stage</th><th>State</th><th>What's Stored</th><th>Permissions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Anonymous</strong></td>
+          <td>Token created at payment</td>
+          <td>Stripe payment ID, amount, timestamp, device fingerprint, location</td>
+          <td>No donor data shown. QR code generated.</td>
+        </tr>
+        <tr>
+          <td><strong>2. Claimed</strong></td>
+          <td>Email entered + OTP verified</td>
+          <td>Above + verified email, opt-in consent event, IP, user agent</td>
+          <td>If returning: prefill shown (read-only until confirmed). If new: blank form.</td>
+        </tr>
+        <tr>
+          <td><strong>3. Declared</strong></td>
+          <td>Gift Aid form submitted</td>
+          <td>Above + full name, home address, postcode, declaration text, taxpayer confirmation</td>
+          <td>Donor profile created/updated. Declaration linked to donation. HMRC-ready.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px;">The critical rule: <strong>data never moves backwards.</strong> Once a declaration is timestamped and archived (as a PDF per today's meeting decision), it becomes immutable. Any correction requires a super-admin audit-trailed amendment — not an edit to the original record.</p>
+  </div>
 
-<!-- POSTCODE TAB -->
-<div id="postcode" class="tab hidden">
+  <!-- Solution 5 -->
+  <div class="card">
+    <h3><span class="rec-num">5</span> &nbsp;Admin Anomaly Queue & Super-Admin Corrections</h3>
+    <p><strong>The problem it solves:</strong> Wrong emails, duplicate records, conflicting donor data.</p>
+    <div class="highlight highlight-success">
+      <strong>Design:</strong>
+      <ul style="margin-top:8px; padding-left:20px;">
+        <li><strong>Anomaly triggers:</strong> Same email submitting from different devices within a short window; address mismatch on returning donor; multiple unverified submissions against same email</li>
+        <li><strong>Treasurer view:</strong> Dashboard queue showing flagged records with side-by-side comparison of conflicting data. Treasurer can mark as "resolved" or "escalate"</li>
+        <li><strong>Super-admin corrections:</strong> Can re-link a donation to a different donor profile, merge duplicate profiles, or void a declaration. Every action creates an audit event with timestamp, admin ID, reason, and before/after snapshot</li>
+        <li><strong>Auto-resolution:</strong> If the verified email donor confirms "yes, I made this donation," auto-resolve. If no response within 7 days, keep flagged for manual review</li>
+      </ul>
+    </div>
+  </div>
 
-<div class="section">
-<h2>Postcode Validation for Gift Aid Eligibility</h2>
-<p><strong>Effective Date:</strong> 13 April 2026 (go-live requirement)</p>
-
-<h3>Background: Why Postcode Matters</h3>
-<div class="rule">
-<strong>HMRC Rule:</strong> Only UK-resident donors are eligible for Gift Aid relief (20% claim). Postcode is the primary (cheapest) way to verify UK residency.
-</div>
-<div class="rule">
-<strong>Non-UK Processing:</strong> Donations from non-UK postcodes are still accepted and recorded, but flagged as ineligible for Gift Aid claim. These must be excluded from HMRC R68 monthly export batches.
-</div>
-
-<h3>Validation Logic</h3>
-<ol style="margin-left: 20px; font-size: 13px;">
-<li><strong>Donor enters postcode on Gift Aid form (or pre-filled from record).</strong></li>
-<li><strong>Backend validates postcode format:</strong> UK postcodes are patterns like "SW1A 1AA" or "M1 1AE". Regex: <code>^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$</code> (case-insensitive).</li>
-<li><strong>Query against HMRC postcode database:</strong> SwiftCause obtains official HMRC postcode file (free, public). Store locally in Firestore or cache for O(1) lookup. Postcode either exists in database (eligible) or not (ineligible / international).</li>
-<li><strong>Store eligibility flag:</strong> Gift Aid declaration record includes <code>postcodeEligible: true/false</code>.</li>
-<li><strong>Export segregation:</strong> HMRC R68 monthly export only includes declarations where <code>postcodeEligible == true</code>.</li>
-</ol>
-
-<h3>Example Scenarios</h3>
-<table class="table">
-<thead>
-<tr>
-<th>Postcode Entered</th>
-<th>Validation Result</th>
-<th>Gift Aid Claim Eligible?</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>"SW1A 1AA" (Westminster, London)</td>
-<td><span class="badge badge-success">Valid UK postcode</span></td>
-<td>Yes</td>
-<td>Included in monthly R68 export</td>
-</tr>
-<tr>
-<td>"M1 1AE" (Manchester)</td>
-<td><span class="badge badge-success">Valid UK postcode</span></td>
-<td>Yes</td>
-<td>Included in monthly R68 export</td>
-</tr>
-<tr>
-<td>"10001" (New York, USA)</td>
-<td><span class="badge badge-error">Non-UK format (invalid)</span></td>
-<td>No</td>
-<td>Recorded in non-Gift-Aid batch; not exported to HMRC</td>
-</tr>
-<tr>
-<td>"3000" (Melbourne, Australia postcode format)</td>
-<td><span class="badge badge-error">Non-UK format</span></td>
-<td>No</td>
-<td>Recorded separately; donor notified Gift Aid not available</td>
-</tr>
-<tr>
-<td>"XXX" (Invalid / gibberish)</td>
-<td><span class="badge badge-error">Invalid format</span></td>
-<td>No (but donor can re-enter)</td>
-<td>Frontend shows error: "Please enter a valid UK postcode. Example: SW1A 1AA."</td>
-</tr>
-<tr>
-<td>"" (Blank)</td>
-<td><span class="badge badge-error">Required field</span></td>
-<td>No</td>
-<td>Form cannot submit without postcode; mandate for Gift Aid claim</td>
-</tr>
-</tbody>
-</table>
-
-<h3>Technical Implementation</h3>
-<table class="table">
-<thead>
-<tr>
-<th>Component</th>
-<th>Status</th>
-<th>Required by</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>HMRC Postcode Database (Static JSON/CSV)</strong></td>
-<td><span class="badge badge-info">To Source</span></td>
-<td>24 Apr</td>
-</tr>
-<tr>
-<td><strong>Firestore Index (postcode → eligible flag)</strong></td>
-<td><span class="badge badge-info">To Design</span></td>
-<td>25 Apr</td>
-</tr>
-<tr>
-<td><strong>Validation API (<code>POST /api/validate-postcode</code>)</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Issue #663 backend cluster)</td>
-<td>28 Apr</td>
-</tr>
-<tr>
-<td><strong>Frontend Validation (Real-time error messaging)</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Issue #665)</td>
-<td>28 Apr</td>
-</tr>
-<tr>
-<td><strong>R68 Export Filter (eligibility flag segregation)</strong></td>
-<td><span class="badge badge-warning">In Development</span> (Update existing export logic)</td>
-<td>1 May</td>
-</tr>
-</tbody>
-</table>
-
-<div class="alert alert-warning">
-<strong>Data Source Responsibility:</strong> SwiftCause must verify that HMRC postcode file is current and covers all UK territories (including Channel Islands, Isle of Man, British Overseas Territories where applicable). Outdated postcode lists could incorrectly flag eligible donors as ineligible. Recommend: refresh quarterly.
+  <!-- Solution 6 -->
+  <div class="card">
+    <h3><span class="rec-num">6</span> &nbsp;Account Creation as a Gift Aid Side-Effect</h3>
+    <p><strong>From today's meeting:</strong> Once a donor has completed Gift Aid with a verified email and opted in, create a lightweight account. Future donations from this donor (via email match or wallet data match) auto-apply their existing Gift Aid declaration.</p>
+    <p style="margin-top:8px;">The OTP sent for email verification doubles as the account creation trigger. No separate signup flow needed. The donor's "account" is simply their verified email + their most recent declaration with <code>futureConsent: true</code>.</p>
+    <p style="margin-top:8px; color:var(--muted);">This directly supports the commercial model: once a donor has an account, they're on the path to recurring Gift Aided subscriptions — which builds the 10x GASDS base.</p>
+  </div>
 </div>
 
+<!-- ==================== TAB 5: GASDS & LOCATIONS ==================== -->
+<!-- ==================== TAB: MUST-HAVES (P0) ==================== -->
+<div id="musthaves" class="tab-content">
+  <h2 class="section-title">Phase 1 Must-Haves (P0) — Locked-In Compliance Architecture</h2>
+
+  <div class="highlight highlight-success">
+    <strong>Confirmed 14 April 2026:</strong> Phase 1 launch (9 May 2026 GTM) goes live with these compliance features locked in. Item-level tracking and inventory features are explicitly OUT of scope for launch — campaign-level architecture handles all HMRC compliance cleanly.
+  </div>
+
+  <!-- Must-Have 1: Campaign-Level Compliance Lock -->
+  <div class="card" style="border-left: 3px solid var(--success);">
+    <h3><span class="badge badge-success">P0</span> 1. Campaign-Level Compliance Lock</h3>
+    <p>Every campaign in SwiftCause is set to exactly one of two modes at the campaign level. This auto-enforces the Two-Pile Logic without item-level drill-down or inventory.</p>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div style="background: rgba(0,184,148,0.08); border-left: 3px solid var(--success); padding: 16px; border-radius: 6px;">
+        <strong style="color:var(--success);">Donation Mode</strong>
+        <p style="font-size:0.88rem; margin-top:6px;">e.g., "General Maintenance", "Roof Fund", "Sadaqah", "Tithe"</p>
+        <ul style="font-size:0.85rem; margin-top:8px;">
+          <li>System auto-triggers standard Gift Aid flow</li>
+          <li>Captures donor name + home address + UK taxpayer tick</li>
+          <li>Eligible for Gift Aid AND GASDS pool</li>
+        </ul>
+      </div>
+      <div style="background: rgba(225,112,85,0.08); border-left: 3px solid var(--danger); padding: 16px; border-radius: 6px;">
+        <strong style="color:var(--danger);">Activity Mode</strong>
+        <p style="font-size:0.88rem; margin-top:6px;">e.g., "Madrasah Fees", "Weekly Subs", "Class Fees", "Event Tickets"</p>
+        <ul style="font-size:0.85rem; margin-top:8px;">
+          <li>System <strong>HARD-LOCKS Gift Aid to OFF</strong></li>
+          <li>Skips GA prompt entirely</li>
+          <li>Excluded from GASDS pool</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Setup pattern:</strong> Charities create one campaign/button for pure donations and a separate campaign/button for activities. Auto-tagging happens instantly at the campaign level. Books stay clean and HMRC compliance is automatic from Day 1.
+    </div>
+
+    <div class="highlight highlight-success" style="margin-top:16px;">
+      <strong>LOCKED UX PRINCIPLE — Two-Button Front Door (confirmed 16 Apr 2026):</strong><br>
+      The entire donor experience distills to exactly two buttons at the point of tap: <strong>[Payment]</strong> and <strong>[Donation]</strong>. Compliance routing happens invisibly behind the scenes. The volunteer sees only: pick one of two &rarr; enter amount &rarr; tap card. Three taps for Donation (postcode is the extra), two for Payment.<br><br>
+      <strong>Non-negotiable for Phase 2:</strong> When donor IDs, classes, member categories, restricted fund codes land in phase 2, they are added to BACK-OFFICE routing logic, never to the front door. No third button. No picker lists in the donor's face. The magic is that the volunteer needs zero training and the Chair needs zero audit worry — that magic dies if we add choice fatigue at the tap moment.<br><br>
+      <strong>Stripe rates at each button:</strong> [Donation] = 1.2% + 20p charity rate | [Payment] = 1.5% + 20p standard rate.
+    </div>
+  </div>
+
+  <!-- Must-Have 2: Activity Mode = Primary Purpose Trading -->
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">HMRC</span> 2. Activity Mode = "Primary Purpose Trading"</h3>
+    <p>Under HMRC rules, Activity Mode payments are classified as <strong>Primary Purpose Trading</strong>, NOT charitable donations. The donor receives a direct benefit (a class for their child, an event ticket, a book) — so these payments are <strong>strictly ineligible for Gift Aid</strong>.</p>
+
+    <table style="margin-top:16px;">
+      <thead><tr><th>Activity Type</th><th>HMRC View</th><th>SwiftCause Treatment</th></tr></thead>
+      <tbody>
+        <tr><td>Weekly subs / membership (Scouts, afterschool clubs)</td><td>Trading income</td><td>Hard-lock GA OFF</td></tr>
+        <tr><td>Class fees (gymnastics, Arabic) — fixed fee, place tied to payment</td><td>Trading income</td><td>Hard-lock GA OFF</td></tr>
+        <tr style="background: rgba(0,184,148,0.05);"><td><strong>Madrasah — DEPENDS ON STRUCTURE</strong> (see below)</td><td>Varies</td><td>Varies — see carousel logic</td></tr>
+        <tr><td>Event tickets</td><td>Trading income</td><td>Hard-lock GA OFF</td></tr>
+        <tr><td>Book sales / physical goods</td><td>Trading income</td><td>Hard-lock GA OFF</td></tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-danger" style="margin-top:16px;">
+      <strong>Why it matters:</strong> Accidentally claiming Gift Aid on trading income triggers HMRC clawbacks and penalties. The Compliance Lock prevents this at the campaign level — no human error possible.
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Madrasah Structure Nuance (updated 18 Apr 2026):</strong> "Madrasah = Activity Mode" is NOT a blanket rule. HMRC tests the benefit link, not the label. Three common structures:<br><br>
+      <strong>Structure A — Fee-for-service (Activity Mode):</strong> "&pound;30/month per child, place tied to payment." Clear benefit = NOT Gift Aid eligible. Stripe 1.5% + 20p.<br>
+      <strong>Structure B — Voluntary donation (Donation Mode):</strong> "Suggested &pound;30/month to support the madrasah. Child attends regardless." No link between payment and benefit = <strong>Gift Aid eligible</strong>, Stripe 1.2% + 20p. Common in well-run mosque madrasahs precisely to stay GA-eligible.<br>
+      <strong>Structure C — Split / carousel (Phase 2):</strong> Small fixed admin fee (Activity) + voluntary top-up donation (Donation). Two Stripe price IDs, two compliance piles, one payment session. HMRC explicitly allows this if voluntary portion is genuinely voluntary.<br><br>
+      <strong>Sales impact:</strong> Discovery question: "Is your madrasah structured as fixed fees, voluntary contributions, or a split model?" Answer can <strong>double deal size</strong> at mosque prospects — &pound;60-100k/yr flows as GA-eligible instead of trading income.
+    </div>
+  </div>
+
+  <!-- Must-Have 3: Record-mode segregation -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3><span class="badge badge-info">P0 (Launch)</span> 3. Campaign-Level Record Segregation</h3>
+    <p><strong>Member Reference field is NOT required at launch.</strong> What IS required: the campaign-level lock must <strong>SEGREGATE and MARK records by mode</strong> so Activity Mode payments are clearly tagged as non-GA / trading income in the data.</p>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <strong style="color:var(--success);">Launch (P0)</strong>
+        <ul style="font-size:0.88rem; margin-top:8px;">
+          <li>Campaign mode stamped on every donation/payment record</li>
+          <li>Activity Mode income clearly tagged as non-GA</li>
+          <li>Books reconcile cleanly without manual intervention</li>
+        </ul>
+      </div>
+      <div>
+        <strong style="color:var(--accent);">Post-Launch Addition</strong>
+        <ul style="font-size:0.88rem; margin-top:8px;">
+          <li>Member Reference field for Activity Mode (Child's Name, Student Name, Family Name)</li>
+          <li>Solves "mystery money" reconciliation for Treasurers</li>
+          <li>Added on top — no re-architecture needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Architectural rationale:</strong> Stamping mode on records at launch gives the structural hook to layer Member Reference on top later as a small change rather than a re-architecture.
+    </div>
+  </div>
+
+  <!-- Must-Have 4: R68 Form Requirements -->
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3><span class="badge badge-danger">CRITICAL</span> 4. R68 Form Requirements</h3>
+    <p>R68 is the official HMRC document required to submit Gift Aid claims. Failure on any of these requirements can <strong>invalidate the entire claim</strong> and expose the charity to HMRC penalties.</p>
+
+    <table style="margin-top:16px;">
+      <thead><tr><th>Requirement</th><th>Detail</th><th>Risk if Wrong</th></tr></thead>
+      <tbody>
+        <tr style="background: rgba(225,112,85,0.05);">
+          <td><strong>HMRC April 6 Tax Year Boundary</strong></td>
+          <td>UK tax year strictly runs <strong>6 April → 5 April</strong>, NOT calendar year. A donation in January 2027 belongs to the tax year that began <strong>6 April 2026</strong> — it does NOT start a new tax year.</td>
+          <td><span class="badge badge-danger">Entire claim invalidated + penalties</span></td>
+        </tr>
+        <tr>
+          <td>Mandatory Donor Details</td>
+          <td>Full name, home address (with house number + postcode), UK taxpayer tick</td>
+          <td><span class="badge badge-danger">Claim rejected</span></td>
+        </tr>
+        <tr>
+          <td>Digital Audit Trail (6 years)</td>
+          <td>Paperless declarations require IP address, timestamp, unique Transaction ID linked to digital signature — kept for 6 years</td>
+          <td><span class="badge badge-warn">Audit failure</span></td>
+        </tr>
+        <tr>
+          <td><strong>Monthly Auto-Batching</strong></td>
+          <td>SwiftCause v2 auto-generates R68 forms, batches declarations, submits monthly to HMRC (not annually)</td>
+          <td><span class="badge badge-info">Cash flow + manual work</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-warn" style="margin-top:16px;">
+      <strong>April 6 boundary in plain language:</strong> If a system calculates the tax year on calendar boundaries, donations are grouped into the wrong year. Submit an R68 with calendar-year grouping → claim is invalid → charity faces HMRC penalties. This is the <strong>GA-01 bug fix</strong> referenced in the architecture doc.
+    </div>
+
+    <div class="highlight highlight-success" style="margin-top:12px;">
+      <strong>Why monthly batching wins:</strong> Most charities manually compile R68 claims annually using spreadsheets. SwiftCause's monthly auto-batching means the charity gets its 25% top-up every month instead of once a year — material cash flow improvement, especially for smaller causes.
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="card">
+    <h3>Why This Architecture Wins for Phase 1</h3>
+    <ul>
+      <li><strong>No item-level tracking required</strong> — campaign-level lock handles all HMRC compliance cleanly</li>
+      <li><strong>No inventory feature required</strong> — no need to map every donation to a SKU pre-launch</li>
+      <li><strong>Books are clean from Day 1</strong> — Donation pile and Activity pile auto-segregated</li>
+      <li><strong>HMRC compliance is automatic</strong> — human error designed out at the campaign level</li>
+      <li><strong>Launch ready, future-proof</strong> — Member Reference layers on top as a follow-up release without re-architecture</li>
+      <li><strong>Religious sector ready</strong> — sadaqah/tithe (Donation Mode) cleanly separates from Madrasah fees / event tickets (Activity Mode)</li>
+    </ul>
+  </div>
 </div>
 
-<!-- APPLE/GOOGLE PAY TAB -->
-<div id="apple-google" class="tab hidden">
+<!-- ==================== TAB 6: GASDS ==================== -->
+<div id="gasds" class="tab-content">
+  <h2 class="section-title">GASDS, Location Management & the Gift Aid Progression</h2>
 
-<div class="section">
-<h2>Apple Pay / Google Pay Integration for Tap-to-Pay</h2>
-<p><strong>Priority:</strong> P1 (high-impact volume driver, soft deadline 1 May)</p>
+  <div class="card">
+    <h3>The Gift Aid Progression Model</h3>
+    <p>This is the strategic sequence that makes SwiftCause's commercial pitch work. Each stage unlocks the next:</p>
+    <div style="margin-top:16px;">
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div>
+          <strong style="color:var(--success);">Stage 1: Anonymous Taps</strong>
+          <p style="font-size:0.88rem;">Charity starts taking contactless donations. Every tap under &pound;30 goes into the GASDS-eligible pool. But without standard Gift Aid claims, the GASDS pool is capped at &pound;0 (10x matching: 10 &times; &pound;0 = &pound;0).</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div>
+          <strong style="color:var(--success);">Stage 2: First Gift Aid Declarations</strong>
+          <p style="font-size:0.88rem;">Move regular supporters to recurring Gift Aided subscriptions. Even 10 donors at &pound;10/month = &pound;1,200/year in standard Gift Aid donations. This unlocks &pound;12,000/year of GASDS space (10x).</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot blocked"></div>
+        <div>
+          <strong style="color:var(--danger);">Stage 2b: 2-Year Gift Aid History (HMRC Prerequisite)</strong>
+          <p style="font-size:0.88rem;"><strong>CRITICAL RULE:</strong> A charity must have made successful Gift Aid claims in <strong>at least 2 of the previous 4 tax years</strong> before they can claim GASDS at all. Newly registered charities that have been claiming GA since registration are exempt. This means charities new to Gift Aid <strong>cannot claim GASDS for at least 2 years</strong>. Factor this into revenue projections — Year 1 GASDS revenue is &pound;0 for charities starting fresh.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot pending"></div>
+        <div>
+          <strong style="color:var(--warn);">Stage 3: GASDS Claiming</strong>
+          <p style="font-size:0.88rem;">Once the 2-year GA history is established, the charity's BBQ taps, event collections, and walk-in donations under &pound;30 can ALL be claimed. SwiftCause auto-calculates: "You have &pound;12,000 of GASDS space and &pound;8,000 in eligible taps. Claim 100%."</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot idea"></div>
+        <div>
+          <strong style="color:var(--accent);">Stage 4: Community Building Bonus</strong>
+          <p style="font-size:0.88rem;">Each qualifying community building (church, mosque, temple, village hall) unlocks a SEPARATE &pound;8,000 GASDS allowance on top of the base cap. To qualify under HMRC: charity must host at least <strong>6 events per year</strong> at that specific building with <strong>10+ donors per event</strong>. SwiftCause auto-tracks via Fleet Management and Green-Lights buildings the moment they qualify — a genuine differentiator no competitor offers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h3>Opportunity</h3>
-<div class="rule">
-<strong>Volume Spike Expected:</strong> Apple Pay + Google Pay adoption in UK exceeded 60% for adult smartphone users (2024 data). Enabling phone-based tap-to-pay on kiosks will increase donation conversions by ~15–25% pre-launch.
-</div>
-<div class="rule">
-<strong>Kiosk Hardware Prerequisite:</strong> NFC reader in SwiftCause kiosks must support Apple Pay (NFC-A, Type 2) + Google Pay (Tap & Pay protocol). Most modern Android tablets + iPad models support this out-of-the-box; older devices may not.
-</div>
-<div class="rule">
-<strong>Stripe Integration:</strong> Stripe Terminal (existing Stripe integration) supports Apple Pay + Google Pay if kiosk hardware is compatible. No API changes; config flag only.
+  <!-- ==================== Community Building Tracking Mechanics ==================== -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3><span class="badge badge-info">TECH</span> Community Building Tracking — How the Tagging Actually Works</h3>
+    <p>SwiftCause tracks and tags transactions to specific community buildings via the <strong>Fleet Management</strong> system to create the precise digital audit trail HMRC requires for the doubled GASDS allowance.</p>
+
+    <div style="margin-top:20px;">
+      <div class="timeline-item">
+        <div class="timeline-dot done"></div>
+        <div>
+          <strong style="color:var(--success);">Step 1: <code>kiosk_id</code> on every donation</strong> <span class="badge badge-success">BUILT</span>
+          <p style="font-size:0.88rem;">Every individual donation is automatically marked with a unique <code>kiosk_id</code> that identifies the specific tablet or volunteer phone that processed the payment. <strong>This is the only piece that exists today.</strong></p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot blocked"></div>
+        <div>
+          <strong style="color:var(--danger);">Step 2: <code>kiosk_id</code> &rarr; <code>Building_ID</code> mapping</strong> <span class="badge badge-danger">NOT BUILT</span>
+          <p style="font-size:0.88rem;">Admin screen where the charity maps each kiosk to a named building (e.g., "Main Hut", "Church Basement", "Madrasah Hall"). There is no Building_ID field in Firestore and no admin UI for this mapping. <strong>Growth/Scale tier feature — not a pilot blocker.</strong></p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot blocked"></div>
+        <div>
+          <strong style="color:var(--danger);">Step 3: The 6-Event Counter</strong> <span class="badge badge-danger">NOT BUILT</span>
+          <p style="font-size:0.88rem;">System counts unique event-days per building per tax year and unique donors per event-day per building. None of this exists. <strong>Growth/Scale tier feature.</strong></p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot blocked"></div>
+        <div>
+          <strong style="color:var(--danger);">Step 4: Automated "Green Light"</strong> <span class="badge badge-danger">NOT BUILT</span>
+          <p style="font-size:0.88rem;">Once the system detects that a kiosk has processed donations across <strong>6 events with 10+ donors</strong> at the same building, the dashboard automatically <strong>"Green Lights"</strong> that location. <strong>Growth/Scale tier feature.</strong></p>
+        </div>
+      </div>
+
+      <div class="highlight highlight-warn" style="margin-top:16px;">
+        <strong>Honest status (updated 18 Apr 2026):</strong> Only Step 1 (kiosk_id on donations) is built. Steps 2-4 are designed but entirely unbuilt. For the pilot, the base &pound;8k GASDS allowance doesn't require community building tracking — every charity gets &pound;8k regardless. The community building test only matters when a charity wants the <em>extra</em> &pound;8k per additional building. Position as "coming in Growth tier" not "we do this today."
+      </div>
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Tagging chain summary:</strong> <code>donation</code> &rarr; <code>kiosk_id</code> &rarr; <code>Building_ID</code> &rarr; <code>6-Event Counter</code> &rarr; <code>Green Light</code> &rarr; <strong>+&pound;8k GASDS allowance</strong>.
+    </div>
+  </div>
+
+  <!-- ==================== Dashboard Design Implications ==================== -->
+  <div class="card" style="border-left: 3px solid var(--accent2);">
+    <h3><span class="badge badge-teal">DESIGN</span> Dashboard Surfaces Required for Community Building Tracking</h3>
+    <p>The kiosk-to-building tagging mechanic creates five first-class surfaces the Admin Dashboard needs to expose:</p>
+
+    <table style="margin-top:16px;">
+      <thead><tr><th>Surface</th><th>What it shows</th><th>Audience</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Per-Building Progress Counter</strong></td>
+          <td>Events-to-date out of 6, donors-per-event out of 10. Visual progress bar toward Green Light threshold.</td>
+          <td>Treasurer / Admin</td>
+        </tr>
+        <tr>
+          <td><strong>Green Light Status Indicator</strong></td>
+          <td>Per-building badge: Not Qualified / Approaching / <span class="badge badge-success">GREEN LIGHT</span>. Date qualified shown.</td>
+          <td>Treasurer / Admin</td>
+        </tr>
+        <tr>
+          <td><strong>Treasurer Alerts / Notifications</strong></td>
+          <td>Notification fires the moment a building qualifies: "&pound;8,000 GASDS allowance unlocked at [Building Name]."</td>
+          <td>Treasurer</td>
+        </tr>
+        <tr>
+          <td><strong>GASDS Pool Reporting (per-building breakout)</strong></td>
+          <td>Total GASDS pool = base &pound;8k + (each qualified Community Building &times; &pound;8k). Per-building usage and remaining cap.</td>
+          <td>Treasurer / Finance</td>
+        </tr>
+        <tr>
+          <td><strong>Audit Trail Export</strong></td>
+          <td>Export linking each donation &rarr; <code>kiosk_id</code> &rarr; <code>Building_ID</code> &rarr; event date for HMRC scrutiny. 6-year retention.</td>
+          <td>HMRC / Auditor</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-success" style="margin-top:16px;">
+      <strong>Commercial wedge:</strong> A multi-site mosque or church can legitimately stack 2x, 3x or 4x the GASDS cap if they hit the threshold per location. Manual tracking is brutal &mdash; auto-Green-Light is the differentiator. Treat this as a <strong>first-class dashboard surface</strong>, not a hidden compliance afterthought.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Location Management for Gift Aid & GASDS</h3>
+    <p>This is the post-go-live feature that makes multi-site charities love SwiftCause:</p>
+    <table>
+      <thead><tr><th>Location Feature</th><th>Gift Aid Impact</th><th>GASDS Impact</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Tag location as "community building"</td>
+          <td>No direct impact</td>
+          <td>Doubles GASDS cap to &pound;16,000 for that location</td>
+          <td><span class="badge badge-warn">Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>Per-location flow configuration</td>
+          <td>Set default flow (A, B+, Hybrid) per venue</td>
+          <td>High-traffic locations default to B+ (more GASDS-eligible taps)</td>
+          <td><span class="badge badge-warn">Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>Location-level Gift Aid conversion dashboard</td>
+          <td>Shows % of donations with Gift Aid captured per venue, tracked by postcode/campaign</td>
+          <td>Shows per-location GASDS pool size vs. 10x cap — each venue tracked independently</td>
+          <td><span class="badge badge-warn">Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>GASDS pool tracker with "Gap Alert" (per-location)</td>
+          <td>Prompts charity to get more declarations at specific locations where GASDS pool exceeds that venue's 10x allowance</td>
+          <td>Prevents money being left on the table — pinpoints which venue needs more Gift Aid declarations</td>
+          <td><span class="badge badge-warn">Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>Donation mode vs Activity mode per campaign</td>
+          <td>Gift Aid hard-locked OFF for activity mode</td>
+          <td>Activity mode payments excluded from GASDS pool</td>
+          <td><span class="badge badge-info">In scope</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>The Religious Sector Pitch (Two-Pile + GASDS)</h3>
+    <p>This is where it all comes together for mosques, churches, and temples — SwiftCause's primary launch vertical:</p>
+    <div class="highlight highlight-success">
+      <strong>The treasurer conversation:</strong><br>
+      "Your regular community donates every Friday/Sunday. Move 20 of them to &pound;10/month Gift Aided subscriptions — that's &pound;2,400/year in standard Gift Aid, which unlocks &pound;24,000/year of GASDS space. Your Ramadan collection last year was &pound;15,000 in small donations — with SwiftCause, you'd claim &pound;3,750 back from HMRC that you're currently losing. Plus your mosque is a community building, so your GASDS cap is &pound;16,000 not &pound;8,000."
+    </div>
+    <p style="margin-top:12px;">The two-pile logic (donation mode vs activity mode) means madrasah fees, event tickets, and book sales are cleanly separated and never accidentally claimed for Gift Aid — which protects the charity from HMRC clawbacks.</p>
+    <div class="highlight highlight-warn" style="margin-top:12px;">
+      <strong>Pre-sales check:</strong> Before pitching GASDS revenue to a mosque/church, verify they've been claiming Gift Aid for at least 2 of the last 4 tax years. If they're new to Gift Aid, <strong>GASDS revenue is Year 3+ only</strong>. Adjust projections accordingly. Also ask about madrasah structure (fee vs voluntary vs split) — a voluntary structure can double the Gift Aid-eligible income. See the Pre-Sales Qualification Tool for the full discovery flow.
+    </div>
+  </div>
 </div>
 
-<h3>Technical Implementation Plan</h3>
-<div class="timeline">
-<div class="timeline-item">
-<h4>19 Apr — Hardware Audit (Jitesh + Ops)</h4>
-<p>Inventory all deployed SwiftCause kiosks. Check NFC capability + Android/iOS versions. Document which devices can support Apple/Google Pay out-of-the-box vs require firmware upgrade.</p>
+<!-- ==================== TAB 6: OPEN DECISIONS ==================== -->
+<div id="decisions" class="tab-content">
+  <h2 class="section-title">Open Decisions Requiring Resolution</h2>
+
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3><span class="badge badge-danger">DECIDE NOW</span> Email Verification Method</h3>
+    <table>
+      <thead><tr><th>Option</th><th>Pros</th><th>Cons</th><th>Recommendation</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>A. OTP (6-digit code)</strong></td>
+          <td>Same-page experience, no context switch, Firebase Auth native support</td>
+          <td>Requires email delivery (1-2 min delay), donor might abandon</td>
+          <td rowspan="3" style="vertical-align:middle; color:var(--success); font-weight:600;">Option A for launch.<br><br>Simple, proven, keeps donor on same page. Fallback: allow unverified Gift Aid (declaration-only, no profile update).</td>
+        </tr>
+        <tr>
+          <td><strong>B. Email verification link</strong></td>
+          <td>Standard pattern, very secure</td>
+          <td>Donor already followed one link (magic link) — asking them to click another creates confusion and drop-off</td>
+        </tr>
+        <tr>
+          <td><strong>C. Defer email entirely</strong></td>
+          <td>Zero friction</td>
+          <td>No returning donor recognition, no recovery path, no account creation. Defeats the purpose.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">SPIKE FIRST</span> Apple Pay / Google Pay Data Feasibility</h3>
+    <p><strong>Owner:</strong> Team (needs assigning)<br>
+    <strong>Timeframe:</strong> 1-2 days<br>
+    <strong>Deliverable:</strong> Test with Stripe sandbox — what fields come back from Apple Pay / Google Pay payments? Can we reliably get name + billing address + email?<br>
+    <strong>Decision gate:</strong> If yes → redesign magic link page as "confirm these details" rather than "enter your details". If no → proceed with OTP + manual form.</p>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3><span class="badge badge-warn">DEFINE</span> Consent Ledger Task Ownership</h3>
+    <p>Tasks #609–#612 have been unassigned for 16 days. These are the backbone of HMRC audit compliance. Without them, Gift Aid declarations are technically valid but lack provenance proof. Needs immediate assignment — ideally to the developer who built PR #622 (magic link infrastructure) since they have the most context.</p>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3><span class="badge badge-info">POST-LAUNCH</span> Postcode Lookup (PAF Integration)</h3>
+    <p>Today's meeting decided on postcode check as the main verification for Gift Aid. Currently it's manual entry only. Royal Mail PAF lookup would reduce errors and speed up form completion. Not a blocker for launch — postcode validation (format check) is sufficient — but a strong fast-follow for data quality.</p>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3><span class="badge badge-info">DEFINE</span> Data Retention & Auto-Delete Policy</h3>
+    <p>Meeting mentioned "six years after last payment" as the retention period. This aligns with HMRC's 6-year record retention requirement for Gift Aid. Needs to be formalised: auto-delete trigger, what counts as "last payment" (last donation? last recurring payment? last HMRC claim?), and how this interacts with GDPR data subject requests.</p>
+  </div>
 </div>
 
-<div class="timeline-item">
-<h4>22 Apr — Firmware Upgrade (if needed)</h4>
-<p>For devices needing OS update, coordinate with hardware vendor. Test NFC tap on trial device with Stripe Terminal test credentials. Document APK changes required (if Android).</p>
+<!-- ==================== TAB 7: COMPETITORS ==================== -->
+<div id="competitors" class="tab-content">
+  <h2 class="section-title">Competitor Approaches to Gift Aid &amp; Donor Identity</h2>
+  <p style="color:var(--muted); margin-bottom:24px;">How the UK contactless donation market solves (or doesn't solve) the same problems we're wrestling with. Updated April 2026.</p>
+
+  <!-- ── LANDSCAPE SUMMARY ── -->
+  <div class="card">
+    <h3>Market Landscape — Three Identity Models</h3>
+    <p>Every competitor faces the same core problem: a contactless tap is anonymous, but Gift Aid needs a name and address. The market has settled on three distinct approaches to bridging that gap:</p>
+    <table style="margin-top:16px;">
+      <thead><tr><th>Model</th><th>How It Works</th><th>Who Uses It</th><th>Email OTP?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--accent2);">Card Token Recognition</strong></td>
+          <td>Donor registers once on the device. Card is tokenised. Same card tapping again = same donor = Gift Aid auto-applied. Physical card is the proof of identity.</td>
+          <td>Dona, Hibabox, CollecTin, GoodBox (via Swiftaid)</td>
+          <td style="color:var(--danger); font-weight:600;">No</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent);">Donor Network</strong></td>
+          <td>Donor registers once with a third-party network. Any donation to any member charity is auto-matched via card token. Single authorisation covers all charities for the tax year.</td>
+          <td>Swiftaid (integrated by GoodBox, JustGiving, Give A Little)</td>
+          <td style="color:var(--danger); font-weight:600;">No</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--warn);">QR &rarr; Web Form</strong></td>
+          <td>Donor scans QR, opens a web page, fills in details. Form submitted = Gift Aid captured. No card token link — relies on the donor completing the form.</td>
+          <td>DonationPay, PayaCharity QR, GiveTap QR/NFC</td>
+          <td style="color:var(--danger); font-weight:600;">No</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Key finding: No competitor in the UK contactless donation space uses email OTP or any form of email verification for Gift Aid capture.</strong> The market treats the person providing the details as the legitimate donor. SwiftCause's returning-donor-prefill-via-email is a unique feature — and the vulnerability it creates is unique too.
+    </div>
+  </div>
+
+  <!-- ── INDIVIDUAL COMPETITORS ── -->
+  <div class="card" style="border-left: 3px solid #e84393;">
+    <h3><span style="color:#e84393;">Dona</span> &mdash; The Primary Competitor</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">WHAT THEY DO</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>Hardware:</strong> Dedicated terminals (digital collection plates) — must buy/lease device</li>
+          <li><strong>Gift Aid flow:</strong> On-device form (name, house number, postcode, email). One-time registration. Card tokenised.</li>
+          <li><strong>Returning donors:</strong> Same card tap = auto Gift Aid. Email confirmation sent after each donation with a link to update preferences.</li>
+          <li><strong>Email verification:</strong> None. Email collected but not verified.</li>
+          <li><strong>HMRC export:</strong> Management portal, download in HMRC-ready format</li>
+          <li><strong>40%+ Gift Aid rate</strong> on their donations</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">PRICING &amp; MODEL</h4>
+        <ul style="font-size:0.88rem;">
+          <li>Hardware purchase or lease required</li>
+          <li>Transaction fees on donations (exact % not public)</li>
+          <li>Gift Aid commission: 5% of reclaimed amount (via Swiftaid partnership)</li>
+          <li>No fixed term contracts — cancel with 1 month notice</li>
+          <li>2,000+ charities, &pound;60M+ raised</li>
+        </ul>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin: 12px 0 8px;">SWIFTCAUSE ADVANTAGE</h4>
+        <ul style="font-size:0.88rem;">
+          <li style="color:var(--success);">Zero hardware cost (any device)</li>
+          <li style="color:var(--success);">3% GA commission vs Dona's 5%</li>
+          <li style="color:var(--success);">Magic link recovery for missed donors</li>
+          <li style="color:var(--danger);">Dona's card-token returning donor is simpler than our email-based approach</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 3px solid #00b894;">
+    <h3><span style="color:#00b894;">Swiftaid</span> &mdash; The Infrastructure Layer</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">WHAT THEY DO</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>Not a collection device</strong> — a back-end Gift Aid automation network</li>
+          <li><strong>Donor registers once</strong> with Swiftaid (name, address, taxpayer status). Single authorisation covers all charities, all year.</li>
+          <li><strong>Card token matching:</strong> Any contactless donation via any Swiftaid-integrated platform is auto-matched. Donor never fills in a form again.</li>
+          <li><strong>HMRC partnership:</strong> Worked directly with HMRC on the automated declaration model</li>
+          <li><strong>Partners:</strong> GoodBox, JustGiving, Give A Little, and growing</li>
+          <li><strong>Email verification:</strong> None at point of donation. Registration is one-time.</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">PRICING</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>Free for charities</strong> up to &pound;6,000/year Gift Aid processed (from Jan 2026)</li>
+          <li>Over &pound;6k or early claims: <strong>5% + VAT</strong> of Gift Aid amount</li>
+          <li>Retrospective matches (Gift Aid Finder): <strong>10% + VAT</strong></li>
+          <li>Donors pay nothing</li>
+        </ul>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin: 12px 0 8px;">SWIFTCAUSE POSITION</h4>
+        <ul style="font-size:0.88rem;">
+          <li style="color:var(--warn);">Swiftaid is a potential integration partner, not just a competitor</li>
+          <li style="color:var(--success);">SwiftCause controls the full stack (collection + Gift Aid + GASDS). Swiftaid only does Gift Aid.</li>
+          <li style="color:var(--success);">SwiftCause's 3% < Swiftaid's 5%</li>
+          <li style="color:var(--accent);">Could integrate Swiftaid as a card-token matching layer while keeping our own declaration capture</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 3px solid #fdcb6e;">
+    <h3><span style="color:#fdcb6e;">GoodBox</span> &mdash; The Legacy Player</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">WHAT THEY DO</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>Hardware-first:</strong> GBx Mini (handheld), GBx Core (countertop with HD touchscreen), GBx Podium (free-standing for museums)</li>
+          <li><strong>GoodPlate:</strong> Traditional collection plate with contactless reader embedded — designed for churches</li>
+          <li><strong>Gift Aid:</strong> Via Swiftaid integration — 5% of Gift Aid claimed per donation</li>
+          <li><strong>Email verification:</strong> None</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">PRICING &amp; STATUS</h4>
+        <ul style="font-size:0.88rem;">
+          <li>Cheapest device: ~&pound;135 purchase</li>
+          <li>Rental from &pound;40/week</li>
+          <li>Takes a % of all money raised</li>
+          <li>Gift Aid: 5% via Swiftaid</li>
+        </ul>
+        <div class="highlight highlight-warn" style="margin-top:8px; padding:10px 14px;">
+          <strong>Went into administration</strong> — exited via court-backed restructuring (Part 26A plan) in early 2025. Debt of &pound;10M+ slashed by 90%. New board appointed. Operational but weakened — opportunity for SwiftCause to capture their displaced customers.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="border-left: 3px solid #6c5ce7;">
+    <h3><span style="color:#6c5ce7;">DonationPay</span> &mdash; Closest to SwiftCause Model</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">WHAT THEY DO</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>QR-based, no hardware:</strong> Charity prints QR codes, donor scans, pays via Apple/Google Pay in browser</li>
+          <li><strong>Gift Aid:</strong> "Single tap" declaration — name, home address, postcode captured on the web form</li>
+          <li><strong>Setup:</strong> Under 15 minutes to go live</li>
+          <li><strong>Payments:</strong> Stripe Connect, 7-day rolling payouts</li>
+          <li><strong>Email verification:</strong> None mentioned</li>
+          <li><strong>No returning donor recognition</strong> (no card-token matching)</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin-bottom:8px;">PRICING</h4>
+        <ul style="font-size:0.88rem;">
+          <li><strong>No monthly fees</strong></li>
+          <li>Transaction fees via Stripe (exact % not public)</li>
+          <li>Gift Aid: appears included (no separate commission stated)</li>
+        </ul>
+        <h4 style="font-size:0.85rem; color:var(--muted); margin: 12px 0 8px;">SWIFTCAUSE ADVANTAGE</h4>
+        <ul style="font-size:0.88rem;">
+          <li style="color:var(--success);">SwiftCause has card-tap AND QR (DonationPay is QR-only)</li>
+          <li style="color:var(--success);">Magic link recovery + 30-day token</li>
+          <li style="color:var(--success);">Returning donor recognition</li>
+          <li style="color:var(--success);">GASDS tracking + community building cap</li>
+          <li style="color:var(--success);">Two-pile logic for religious sector</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card" style="border-left: 3px solid #00cec9;">
+      <h3><span style="color:#00cec9;">Hibabox</span></h3>
+      <ul style="font-size:0.88rem;">
+        <li><strong>Niche:</strong> Mosques and Islamic charities</li>
+        <li><strong>Identity:</strong> Card token recognition — returning donors auto-identified without re-entering details</li>
+        <li><strong>Email verification:</strong> None</li>
+        <li><strong>Hardware:</strong> Dedicated device required</li>
+        <li><strong>Pricing:</strong> Not public</li>
+      </ul>
+      <p style="font-size:0.85rem; color:var(--success); margin-top:10px;"><strong>SwiftCause advantage:</strong> Software-only, any device, two-pile logic (sadaqah vs madrasah fees), GASDS community building tracking.</p>
+    </div>
+
+    <div class="card" style="border-left: 3px solid #a29bfe;">
+      <h3><span style="color:#a29bfe;">CollecTin</span></h3>
+      <ul style="font-size:0.88rem;">
+        <li><strong>Model:</strong> Hardware donation boxes (from &pound;320)</li>
+        <li><strong>Identity:</strong> Premium mode requests donor info post-donation; enduring declaration recognises same card</li>
+        <li><strong>Email verification:</strong> None</li>
+        <li><strong>Fees:</strong> 1.49% on UK transactions. Zero monthly fees.</li>
+        <li><strong>Gift Aid:</strong> HMRC-format download. Give A Little integration.</li>
+        <li><strong>Stats:</strong> Avg donation &pound;10+, avg unit &pound;3,184/year</li>
+      </ul>
+      <p style="font-size:0.85rem; color:var(--success); margin-top:10px;"><strong>SwiftCause advantage:</strong> Zero hardware cost, magic link recovery, multi-device deployment.</p>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card" style="border-left: 3px solid #fd79a8;">
+      <h3><span style="color:#fd79a8;">GiveTap</span></h3>
+      <ul style="font-size:0.88rem;">
+        <li><strong>Model:</strong> Mobile app + card readers + QR/NFC + Tap to Pay on smartphone</li>
+        <li><strong>Gift Aid:</strong> Captured in-app, bulk HMRC submission</li>
+        <li><strong>Email verification:</strong> None</li>
+        <li><strong>Pricing:</strong> Not public — "commitment-free"</li>
+        <li><strong>Strength:</strong> Tap to Pay turns a phone into a terminal (similar to SwiftCause)</li>
+      </ul>
+      <p style="font-size:0.85rem; color:var(--warn); margin-top:10px;"><strong>Watch this one:</strong> GiveTap's Tap to Pay on smartphone is the closest to SwiftCause's "any device" positioning.</p>
+    </div>
+
+    <div class="card" style="border-left: 3px solid #636e72;">
+      <h3><span style="color:#b2bec3;">PayaCharity</span></h3>
+      <ul style="font-size:0.88rem;">
+        <li><strong>Model:</strong> Donation boxes + QR codes + SMS links</li>
+        <li><strong>Identity:</strong> Donors register card with "MyGivingHub" for Gift Aid</li>
+        <li><strong>Email verification:</strong> None</li>
+        <li><strong>Fees:</strong> From 83p/day hire. 2.95% + VAT per transaction.</li>
+        <li><strong>Gift Aid:</strong> Free — no additional charge on amount recovered</li>
+      </ul>
+      <p style="font-size:0.85rem; color:var(--success); margin-top:10px;"><strong>SwiftCause advantage:</strong> No hardware cost, lower transaction fees, GASDS tracking, two-pile logic.</p>
+    </div>
+  </div>
+
+  <!-- ── COMPARISON TABLE ── -->
+  <div class="card">
+    <h3>Head-to-Head Feature Comparison</h3>
+    <div style="overflow-x:auto;">
+    <table style="font-size:0.82rem; white-space:nowrap;">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th style="color:#e84393;">Dona</th>
+          <th style="color:#00b894;">Swiftaid</th>
+          <th style="color:#fdcb6e;">GoodBox</th>
+          <th style="color:#6c5ce7;">DonationPay</th>
+          <th style="color:#00cec9;">Hibabox</th>
+          <th style="color:#a29bfe;">CollecTin</th>
+          <th style="color:#fd79a8;">GiveTap</th>
+          <th style="color:var(--success); font-weight:700;">SwiftCause</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Hardware required</strong></td><td>Yes</td><td>N/A</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td><td>Optional</td><td style="color:var(--success); font-weight:600;">No</td></tr>
+        <tr><td><strong>Card tap collection</strong></td><td>Yes</td><td>N/A</td><td>Yes</td><td>No</td><td>Yes</td><td>Yes</td><td>Yes</td><td style="color:var(--success); font-weight:600;">Yes</td></tr>
+        <tr><td><strong>QR code collection</strong></td><td>No</td><td>N/A</td><td>No</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td><td style="color:var(--success); font-weight:600;">Yes</td></tr>
+        <tr><td><strong>Gift Aid on-device</strong></td><td>Yes</td><td>N/A</td><td>Via Swiftaid</td><td>Web form</td><td>Yes</td><td>Yes</td><td>In-app</td><td style="color:var(--success); font-weight:600;">Yes + magic link</td></tr>
+        <tr><td><strong>Post-tap Gift Aid recovery</strong></td><td>No</td><td>N/A</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td style="color:var(--success); font-weight:600;">Yes (30-day)</td></tr>
+        <tr><td><strong>Returning donor recognition</strong></td><td>Card token</td><td>Card token</td><td>Via Swiftaid</td><td>No</td><td>Card token</td><td>Card token</td><td>Unknown</td><td style="color:var(--warn); font-weight:600;">Email (needs OTP)</td></tr>
+        <tr><td><strong>Email OTP verification</strong></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td style="color:var(--accent); font-weight:600;">Planned</td></tr>
+        <tr><td><strong>GASDS pool tracking</strong></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td style="color:var(--success); font-weight:600;">Yes (planned)</td></tr>
+        <tr><td><strong>Community building cap</strong></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td style="color:var(--success); font-weight:600;">Yes (planned)</td></tr>
+        <tr><td><strong>Two-pile (donation/activity)</strong></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td style="color:var(--success); font-weight:600;">Yes</td></tr>
+        <tr><td><strong>HMRC CSV export</strong></td><td>Yes</td><td>Auto-submit</td><td>Via Swiftaid</td><td>Yes</td><td>Unknown</td><td>Yes</td><td>Yes</td><td style="color:var(--success); font-weight:600;">Yes</td></tr>
+        <tr><td><strong>Gift Aid commission</strong></td><td>5%</td><td>5% (free &lt;&pound;6k)</td><td>5%</td><td>Incl.</td><td>Unknown</td><td>Via partner</td><td>Unknown</td><td style="color:var(--success); font-weight:600;">3%</td></tr>
+        <tr><td><strong>Multi-collector deployment</strong></td><td>Per device</td><td>N/A</td><td>Per device</td><td>QR only</td><td>Per device</td><td>Per device</td><td>Per phone</td><td style="color:var(--success); font-weight:600;">Unlimited devices</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ── STRATEGIC TAKEAWAYS ── -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3>Strategic Takeaways for SwiftCause</h3>
+
+    <div class="highlight highlight-info" style="margin-top:12px;">
+      <strong>1. Card token matching is the industry standard for returning donors.</strong><br>
+      Every competitor that recognises returning donors does it via the physical card, not email. SwiftCause's magic link flow breaks this pattern because the payment device and the donor's phone are separate. Consider adding Stripe card fingerprint matching as a <em>complementary</em> identity layer — if the same card has completed Gift Aid before, auto-apply it without needing the magic link at all.
+    </div>
+
+    <div class="highlight highlight-success" style="margin-top:12px;">
+      <strong>2. Nobody else does post-tap Gift Aid recovery.</strong><br>
+      The 30-day magic link token is genuinely unique. Dona, GoodBox, Hibabox — if the donor skips Gift Aid at the device, that's it. SwiftCause is the only platform that gives the donor a second chance on their own phone, on their own time. This is a real differentiator worth protecting and perfecting.
+    </div>
+
+    <div class="highlight highlight-success" style="margin-top:12px;">
+      <strong>3. Nobody tracks GASDS properly.</strong><br>
+      No competitor offers multi-location GASDS pool tracking by postcode, per-campaign 10x cap alerting, or community building doubled cap management. For charities with multiple venues (mosques with prayer halls + community centres, church networks, multi-site food banks), SwiftCause tracks each location's GASDS pool separately against its own cap. The treasurer pitch ("we show you exactly how much you can claim from HMRC, per venue, per tax year") has no answer from any competitor.
+    </div>
+
+    <div class="highlight highlight-warn" style="margin-top:12px;">
+      <strong>4. GiveTap is the one to watch.</strong><br>
+      Their "Tap to Pay on smartphone" positioning mirrors SwiftCause's "any device" story. They don't yet have QR codes, magic links, GASDS tracking, or two-pile logic — but the core "turn your phone into a donation terminal" message is the same. Monitor them closely.
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:12px;">
+      <strong>5. The revised flow (Gift Aid form first, email optional) aligns with market norms.</strong><br>
+      Every competitor collects Gift Aid details (name, address, postcode) without gating behind email. Our recommended approach — present the Gift Aid form immediately on the magic link, make email an optional second step for account creation — matches market behaviour while adding our unique security layer (OTP) only when stored data is at risk.
+    </div>
+
+    <div class="highlight highlight-warn" style="margin-top:12px;">
+      <strong>6. GoodBox's weakness is our opportunity.</strong><br>
+      GoodBox went through administration in 2023-25, emerged with 90% debt reduction and a new board. Their installed base of charities may be looking for alternatives. SwiftCause's zero-hardware, lower-commission pitch is perfectly positioned for GoodBox refugees.
+    </div>
+  </div>
 </div>
 
-<div class="timeline-item">
-<h4>24–28 Apr — Stripe Terminal Config</h4>
-<p>Enable Apple Pay + Google Pay on Stripe Terminal reader (settings in Stripe Dashboard). Test full donation flow: tap Apple Pay → Stripe processes → donation recorded. Repeat for Google Pay.</p>
+<!-- ==================== TAB 8: SALES POSITIONING ==================== -->
+<div id="positioning" class="tab-content">
+  <h2 class="section-title">Sales Positioning — Does the GASDS Pitch Actually Work?</h2>
+  <p style="color:var(--muted); margin-bottom:24px;">An honest pressure-test of SwiftCause's "we show you exactly how much you can claim" differentiator — and the conditions that must be true for it to land.</p>
+
+  <!-- ── THE CLAIM vs THE DEPENDENCY ── -->
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3>The Pitch vs The Reality Chain</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="font-size:0.9rem; color:var(--success); margin-bottom:10px;">THE PITCH TO TREASURERS</h4>
+        <p style="font-size:0.92rem;">"We show you exactly how much you can claim from HMRC — per venue, per tax year. Your GASDS pool at each location, tracked by postcode against its own cap. Your 10x allowance calculated per campaign. Your community building bonus tracked separately. One-click HMRC export. No other platform does this."</p>
+        <p style="margin-top:12px; font-size:0.88rem; color:var(--muted);">This is genuinely differentiated. No competitor — Dona, GoodBox, Hibabox, DonationPay — offers multi-location GASDS pool tracking by postcode, per-campaign 10x cap alerting, or community building doubled cap management. Charities with multiple venues get real visibility for the first time.</p>
+      </div>
+      <div>
+        <h4 style="font-size:0.9rem; color:var(--warn); margin-bottom:10px;">THE DEPENDENCY CHAIN</h4>
+        <p style="font-size:0.92rem;">The GASDS dashboard is only impressive when there's a healthy Gift Aid base underneath it. The pitch has a <strong>hidden dependency chain</strong> — each link must hold or the whole thing collapses:</p>
+        <div style="margin-top:12px;">
+          <div class="flow" style="flex-direction:column; align-items:stretch; gap:0;">
+            <div class="flow-step success" style="border-radius:8px 8px 0 0; text-align:left;">1. Donor taps &amp; pays &rarr; <small>This works. Stripe handles it.</small></div>
+            <div class="flow-step warn" style="border-radius:0; text-align:left; border-top:none;">2. Donor scans QR &amp; completes Gift Aid form &rarr; <small style="color:var(--warn);">Conversion rate is everything here</small></div>
+            <div class="flow-step warn" style="border-radius:0; text-align:left; border-top:none;">3. Enough Gift Aid captured to build 10x base &rarr; <small style="color:var(--warn);">If capture rate is low, GASDS stays locked</small></div>
+            <div class="flow-step" style="border-radius:0; text-align:left; border-top:none;">4. GASDS dashboard shows meaningful claimable amount &rarr; <small>Only works if step 3 delivered</small></div>
+            <div class="flow-step success" style="border-radius:0 0 8px 8px; text-align:left; border-top:none;">5. Treasurer sees the value, stays on platform, tells others &rarr; <small>The commercial outcome</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="highlight highlight-warn" style="margin-top:16px;">
+      <strong>The weak link is Step 2.</strong> If the magic link Gift Aid form has too much friction — too many fields, email gate before the form, OTP putting donors off — capture rates stay low, the 10x base stays small, and the GASDS pool tracker just shows the treasurer how much they <em>can't</em> claim. That's the opposite of the sales pitch.
+    </div>
+  </div>
+
+  <!-- ── NUMBERS THAT MAKE IT REAL ── -->
+  <div class="card">
+    <h3>Running the Numbers — When Does the GASDS Pitch Become Real?</h3>
+    <p style="margin-bottom:8px;">Let's take a typical mosque or church using SwiftCause:</p>
+    <p style="margin-bottom:16px; font-size:0.82rem; color:var(--warn);"><em>Note: The Gift Aid capture rates (15%, 40%, 60%) are illustrative scenarios, not measured data. Dona reports &gt;40% on-device. Actual rates for the magic link flow will be validated during the pilot — see Pilot Metrics section below.</em></p>
+    <table>
+      <thead><tr><th>Scenario</th><th>Monthly Donations</th><th>Gift Aid Capture Rate</th><th>Std Gift Aid Base (Annual)</th><th>GASDS Space Unlocked (10x)</th><th>Actual GASDS Pool (anonymous taps &le;&pound;30)</th><th>Claimable?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--danger);">Low friction fail</strong></td>
+          <td>&pound;3,000</td>
+          <td style="color:var(--danger);">15%</td>
+          <td>&pound;5,400</td>
+          <td>&pound;54,000</td>
+          <td>&pound;18,000</td>
+          <td style="color:var(--success);">Yes but barely — 15% capture means few recurring donors, weak pitch</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--warn);">Moderate capture</strong></td>
+          <td>&pound;3,000</td>
+          <td style="color:var(--warn);">40%</td>
+          <td>&pound;14,400</td>
+          <td>&pound;144,000</td>
+          <td>&pound;18,000</td>
+          <td style="color:var(--success);">Yes, fully — &pound;4,500 reclaim. Dashboard looks great.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--success);">High capture (target)</strong></td>
+          <td>&pound;3,000</td>
+          <td style="color:var(--success);">60%</td>
+          <td>&pound;21,600</td>
+          <td>&pound;216,000</td>
+          <td>&pound;18,000</td>
+          <td style="color:var(--success);">Yes, fully + massive headroom. 10x base far exceeds pool.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>The surprise:</strong> Even at a low 15% Gift Aid capture rate, the 10x maths often works out because the GASDS pool (anonymous taps &le;&pound;30) tends to be smaller than 10x the Gift Aid base. The real risk isn't the 10x cap — it's a charity with <em>very few</em> standard Gift Aid declarations. A mosque where only 5 people complete Gift Aid at &pound;10/month has a Gift Aid base of &pound;600/year and a GASDS cap of just &pound;6,000. If their Ramadan collection brings in &pound;10,000 in small taps, &pound;4,000 is unclaimed. <strong>The dashboard would show that gap clearly — and that's actually useful</strong>, because it tells the treasurer "get 5 more people to do Gift Aid and you unlock the remaining &pound;4,000."
+    </div>
+  </div>
+
+  <!-- ── THE REAL MOAT ── -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3>What's Actually Defensible (vs. What's Easily Copied)</h3>
+    <table>
+      <thead><tr><th>Feature</th><th>Defensibility</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>GASDS pool dashboard (multi-location)</td>
+          <td><span class="badge badge-info">MEDIUM</span></td>
+          <td>Not a simple filter+sum. Each charity location is tracked by postcode and mapped to a campaign. The dashboard must show per-location GASDS pools, aggregate across locations, and let treasurers see which venues are generating eligible donations vs. which are under-performing. Requires a location/campaign model that no competitor has.</td>
+        </tr>
+        <tr>
+          <td>10x cap alerting (per-location)</td>
+          <td><span class="badge badge-info">MEDIUM</span></td>
+          <td>The 10x rule must be calculated per location (postcode/campaign), not just globally. A charity with 5 venues needs 5 separate Gift Aid vs. GASDS pool comparisons, each checked against its own cap. Requires the same location infrastructure as the dashboard — compounds in complexity.</td>
+        </tr>
+        <tr>
+          <td>Community building doubled cap</td>
+          <td><span class="badge badge-success">MEDIUM-HIGH</span></td>
+          <td>Requires location tagging by postcode + per-location GASDS pool tracking + knowing which locations qualify as community buildings (&pound;16k cap) vs. standard (&pound;8k cap). The charity must register each building with HMRC — SwiftCause tracks this status per campaign. Competitors would need to build the entire location model from scratch.</td>
+        </tr>
+        <tr>
+          <td>30-day magic link Gift Aid recovery</td>
+          <td><span class="badge badge-success">HIGH</span></td>
+          <td>Unique in the market. Requires the token infrastructure, webhook integration, post-tap flow, and consent ledger. No competitor has any of this. Hard to retro-fit onto hardware-based systems.</td>
+        </tr>
+        <tr>
+          <td>Two-pile logic (donation vs activity)</td>
+          <td><span class="badge badge-success">HIGH</span></td>
+          <td>Campaign-level compliance lock, hard-coded Gift Aid off for activity mode, mandatory member reference. Requires deep domain knowledge of religious sector operations. None of the competitors have even attempted this.</td>
+        </tr>
+        <tr>
+          <td>Card fingerprint + magic link + GASDS tracking as a system</td>
+          <td><span class="badge badge-success">VERY HIGH</span></td>
+          <td>The combination of all three layers is the moat. Any one feature is copiable. All three together, with the religious sector domain expertise, is genuinely hard to replicate.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── NARRATIVE PROTECTION ── -->
+  <div class="card" style="border-left: 3px solid var(--success); background: rgba(0,206,209,0.03);">
+    <h3 style="color:var(--success);">Does the Solution Break Our Narrative?</h3>
+    <p style="margin-bottom:12px;">The sales story to treasurers is: <strong>"GASDS, Location Management &amp; the Gift Aid Progression."</strong></p>
+    <div class="highlight highlight-info" style="margin-bottom:16px;">
+      "Start taking contactless donations at your venues. We track each location by postcode, mapped to campaigns. As donors complete Gift Aid declarations, your 10x GASDS allowance grows <em>per venue</em>. Eventually you're claiming 25% back on everything &mdash; declared and anonymous."
+    </div>
+    <p>That story only works if <strong>Gift Aid declarations actually get captured at volume</strong>. The 10x rule means every declaration is worth 10&times; its value in GASDS unlocking. So the flow design choice directly controls whether the narrative holds up or collapses.</p>
+
+    <table style="margin-top:16px;">
+      <thead>
+        <tr>
+          <th style="width:20%;">Option</th>
+          <th style="width:25%;">Impact on Gift Aid Base</th>
+          <th style="width:25%;">Impact on Location Tracking</th>
+          <th style="width:30%;">Does It Break the Narrative?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--danger);">A: Email + OTP gate</strong></td>
+          <td style="color:var(--danger);">Lowest declaration volume. High friction kills completion rates &rarr; smallest 10x base per location.</td>
+          <td>Location tracking unaffected &mdash; postcode/campaign tagging happens at payment, not on the form.</td>
+          <td style="color:var(--danger);"><strong>YES &mdash; breaks the narrative.</strong> GASDS dashboards show treasurers how much they <em>can't</em> claim. The pitch becomes "look at all this money you're missing" instead of "look at all this money you're earning." That's the opposite of what we're selling.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--success);">B: Form first, email separate</strong></td>
+          <td style="color:var(--success);">Good declaration volume. Gift Aid data captured before email ask &rarr; healthy 10x base per venue.</td>
+          <td>Location tracking unaffected.</td>
+          <td><strong>Narrative holds.</strong> But without email, returning donor recognition is weaker &rarr; each visit is a fresh form. Repeat donors at the same venue (the exact pattern that builds location-level Gift Aid base fastest) face unnecessary friction on every return.</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--accent2);">C: Accept all, verify later</strong></td>
+          <td style="color:var(--accent2);">Highest declaration volume. Lowest friction &rarr; biggest 10x base per location. Returning verified donors get prefill &rarr; base compounds over time.</td>
+          <td>Location tracking unaffected. Postcode captured on form also validates the Gift Aid declaration &mdash; dual purpose.</td>
+          <td style="color:var(--success);"><strong>Strengthens the narrative.</strong> More declarations per venue &rarr; bigger 10x allowance per venue &rarr; more GASDS claimable per venue &rarr; dashboard shows green, not red &rarr; treasurer pitch lands. The passive email verification builds the returning-donor loop that accelerates the base over time.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-warn" style="margin-top:16px;">
+      <strong>The one thing to protect: data quality.</strong><br>
+      If Option C means accepting bad addresses that HMRC later rejects, we've inflated the Gift Aid base with claims that get clawed back. That's why <strong>postcode validation at point of capture</strong> matters &mdash; it's the integrity check that keeps the narrative honest without adding friction. The postcode does double duty: it validates the Gift Aid declaration for HMRC <em>and</em> it maps the donation to the correct location/campaign for GASDS tracking.
+    </div>
+
+    <div class="highlight highlight-success" style="margin-top:12px;">
+      <strong>Bottom line for the team:</strong> Whichever option we pick must not undermine the sales pitch. If the treasurer dashboard is mostly red warnings about insufficient 10x base, we've built a tool that proves our product doesn't work. Option C is the only option where the narrative, the technical flow, and the sales pitch all point in the same direction.
+    </div>
+  </div>
+
+  <!-- ── THE QUEUE REALITY ── -->
+  <div class="card" style="border-left: 3px solid var(--accent2);">
+    <h3>First: The Queue Is Not the Problem</h3>
+    <p>An important clarification that changes how we think about friction on the magic link page:</p>
+    <div class="highlight highlight-info">
+      <strong>The magic link opens on the donor's own phone, after they've already paid and walked away.</strong> There is no queue behind them. The collection point device has already moved on to the next donor. The magic link page could take 5 minutes and it wouldn't affect a single other transaction.<br><br>
+      The friction concern is purely about <strong>donor abandonment</strong> — the donor thinking "I can't be bothered" and closing the tab. Every extra step (email gate, OTP code, waiting for an email) is a chance to lose them. But it has <strong>zero impact</strong> on the throughput at the collection point.
+    </div>
+    <p style="margin-top:12px;">This reframes the entire email/OTP debate. We don't need to gate anything <em>before</em> the Gift Aid form. We can accept everything first and verify afterwards.</p>
+  </div>
+
+  <!-- ── THE FLOW DESIGN DECISION ── -->
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3>The Critical Design Decision — Three Options</h3>
+    <p>Today's meeting debated where email sits in the magic link flow. This directly determines Gift Aid capture rates and whether the GASDS pitch works.</p>
+
+    <!-- Option A -->
+    <div class="card" style="background: rgba(225,112,85,0.05); border-color: var(--danger); margin-top:16px;">
+      <h4 style="color:var(--danger); font-size:0.95rem;">Option A: Email + OTP First (Current Direction from Meeting)</h4>
+      <div class="flow" style="flex-direction:column; align-items:stretch; gap:0;">
+        <div class="flow-step" style="border-radius:8px 8px 0 0; text-align:left;">Open magic link</div>
+        <div class="flow-step danger" style="border-radius:0; text-align:left; border-top:none;">Enter email</div>
+        <div class="flow-step danger" style="border-radius:0; text-align:left; border-top:none;">Wait for OTP &rarr; enter code</div>
+        <div class="flow-step" style="border-radius:0; text-align:left; border-top:none;">Gift Aid form (name, address, postcode)</div>
+        <div class="flow-step" style="border-radius:0 0 8px 8px; text-align:left; border-top:none;">Submit</div>
+      </div>
+      <p style="font-size:0.85rem; margin-top:12px; color:var(--danger);"><strong>Risk:</strong> Two friction points before the donor even sees the Gift Aid form. Donor is standing in a car park after church — waiting for an OTP email, checking spam, typing a code. Many will abandon.</p>
+      <p style="font-size:0.85rem; margin-top:8px;"><strong>Estimated completion rate:</strong> ~30-40%</p>
+      <p style="font-size:0.85rem; margin-top:8px;"><strong>When this makes sense:</strong> If we absolutely must protect stored data before showing anything. But we don't — we can show a blank form.</p>
+    </div>
+
+    <!-- Option B -->
+    <div class="card" style="background: rgba(0,184,148,0.05); border-color: var(--success); margin-top:12px;">
+      <h4 style="color:var(--success); font-size:0.95rem;">Option B: Gift Aid First, Email Separate Step After</h4>
+      <div class="flow" style="flex-direction:column; align-items:stretch; gap:0;">
+        <div class="flow-step success" style="border-radius:8px 8px 0 0; text-align:left;">Open magic link &rarr; "Your &pound;20 could be &pound;25"</div>
+        <div class="flow-step success" style="border-radius:0; text-align:left; border-top:none;">Gift Aid form (name, address, postcode, consent) — no email required</div>
+        <div class="flow-step success" style="border-radius:0; text-align:left; border-top:none;">Submit &rarr; <strong>Gift Aid captured. HMRC-ready.</strong></div>
+        <div class="flow-step" style="border-radius:0; text-align:left; border-top:none; opacity:0.7;"><em>Optional next screen:</em> "Skip the form next time? Add your email"</div>
+        <div class="flow-step" style="border-radius:0 0 8px 8px; text-align:left; border-top:none; opacity:0.7;"><em>Optional:</em> OTP &rarr; account created</div>
+      </div>
+      <p style="font-size:0.85rem; margin-top:12px; color:var(--success);"><strong>Advantage:</strong> Zero friction before Gift Aid form. Email positioned as a benefit, not a gate.</p>
+      <p style="font-size:0.85rem; margin-top:8px;"><strong>Downside:</strong> Email is a separate step that many donors will skip. Lower account creation rate. OTP is still a friction point for those who do engage.</p>
+      <p style="font-size:0.85rem; margin-top:8px;"><strong>Estimated Gift Aid completion rate:</strong> ~50-65%</p>
+      <p style="font-size:0.85rem; margin-top:8px;"><strong>Estimated email capture rate:</strong> ~20-30% (separate optional step)</p>
+    </div>
+
+    <!-- Option C — NEW RECOMMENDATION -->
+    <div class="card" style="background: rgba(0,206,201,0.08); border: 2px solid var(--accent2); margin-top:12px;">
+      <h4 style="color:var(--accent2); font-size:1rem;">&#9733; Option C: Accept Everything, Verify Later (New Recommendation)</h4>
+      <p style="font-size:0.88rem; margin-bottom:12px; color:var(--text);">Collect all details including email on one form. No OTP at point of capture. Verify passively afterwards via a "thank you" email.</p>
+      <div class="flow" style="flex-direction:column; align-items:stretch; gap:0;">
+        <div class="flow-step success" style="border-radius:8px 8px 0 0; text-align:left; border-color: var(--accent2);">Open magic link &rarr; "Your &pound;20 could be &pound;25"</div>
+        <div class="flow-step success" style="border-radius:0; text-align:left; border-top:none; border-color: var(--accent2);">Single form: name, address, postcode, email, taxpayer tick, consent tick</div>
+        <div class="flow-step success" style="border-radius:0; text-align:left; border-top:none; border-color: var(--accent2);">Submit &rarr; <strong>Gift Aid captured. HMRC-ready. Email recorded.</strong></div>
+        <div class="flow-step" style="border-radius:0; text-align:left; border-top:none; border-color: var(--accent2);">System sends "Thank you" email with verification link inside</div>
+        <div class="flow-step" style="border-radius:0 0 8px 8px; text-align:left; border-top:none; border-color: var(--accent2);">Donor clicks link (in their own time) &rarr; email verified &rarr; account created</div>
+      </div>
+
+      <div style="margin-top:16px; padding:16px; background: rgba(0,206,201,0.06); border-radius:8px;">
+        <strong style="color:var(--accent2);">Why this is better:</strong>
+        <table style="margin-top:10px; font-size:0.85rem;">
+          <tbody>
+            <tr><td style="color:var(--success); width:30%;"><strong>Gift Aid capture</strong></td><td>Same as Option B — zero friction before the form. But email is collected on the same form (not a separate step), so we get higher email capture too.</td></tr>
+            <tr><td style="color:var(--success);"><strong>Email capture</strong></td><td>Email is just another field on the form, not a separate screen. Donors are already filling in name and address — adding email feels natural, not like an extra ask.</td></tr>
+            <tr><td style="color:var(--success);"><strong>No OTP at point of capture</strong></td><td>Zero waiting. Zero context switch. Zero checking spam. The donor fills in the form and hits submit. Done in 30 seconds.</td></tr>
+            <tr><td style="color:var(--success);"><strong>Verification happens passively</strong></td><td>The "thank you" email arrives in the donor's inbox. They click the link when they're home, sitting down, on wifi. No time pressure. No standing in a car park.</td></tr>
+            <tr><td style="color:var(--success);"><strong>Data exposure solved</strong></td><td>Stored data (prefill) is ONLY shown to donors whose email was previously verified via the confirmation link. Unverified emails always see a blank form.</td></tr>
+            <tr><td style="color:var(--success);"><strong>Market-aligned</strong></td><td>This is exactly how Dona works — collect everything on one form, no verification at point of capture. The industry norm.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:16px; padding:16px; background: rgba(253,203,110,0.06); border-radius:8px;">
+        <strong style="color:var(--warn);">Returning donor flow under Option C:</strong>
+        <table style="margin-top:10px; font-size:0.85rem;">
+          <thead><tr><th>Scenario</th><th>What Happens</th><th>Data Shown</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>New donor (no matching email)</td>
+              <td>Blank form. Fill in everything. Submit.</td>
+              <td>Nothing prefilled. Zero risk.</td>
+            </tr>
+            <tr>
+              <td>Returning donor, email NOT verified</td>
+              <td>Blank form. Fill in everything again. Submit.</td>
+              <td>Nothing prefilled — treated as new. System flags potential duplicate for admin review.</td>
+            </tr>
+            <tr>
+              <td>Returning donor, email previously verified</td>
+              <td>Email recognised &rarr; "We have your details. Check your email for a code to continue."<br>OTP sent. Verified &rarr; prefill shown.</td>
+              <td>Prefill only AFTER OTP. Data protected.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.85rem; margin-top:10px; color:var(--muted);">OTP only ever fires in the third scenario — a returning donor with a previously verified email. This is the minority of cases. Most donors most of the time see zero friction.</p>
+      </div>
+
+      <p style="font-size:0.85rem; margin-top:12px;"><strong>Estimated Gift Aid completion rate:</strong> ~55-65%</p>
+      <p style="font-size:0.85rem;"><strong>Estimated email capture rate:</strong> ~50-60% (same form, not separate step)</p>
+      <p style="font-size:0.85rem;"><strong>Estimated email verification rate:</strong> ~30-40% of those who gave email (passive, in own time)</p>
+    </div>
+  </div>
+
+  <!-- ── THE MATHS ── -->
+  <div class="card">
+    <h3>The Maths — All Three Options Compared</h3>
+
+    <div class="highlight highlight-warn" style="margin-bottom:16px;">
+      <strong>Important: These are estimates, not measured data.</strong><br>
+      The completion rates below are informed assumptions based on general web form conversion patterns and the one real data point we have (Dona reports 40%+ Gift Aid rate on their on-device capture). They are NOT sourced from SwiftCause live data (no live donors yet), published competitor benchmarks for magic link flows, or any specific study on charity donation form conversion. The relative differences between options (more friction = more drop-off) are directionally sound, but the absolute numbers will only be validated by the pilot. See "Pilot Metrics to Validate" below.
+    </div>
+
+    <p style="margin-bottom:12px; color:var(--muted);">A charity processing 200 donations/month where 40% scan the QR (80 magic link opens):</p>
+    <table>
+      <thead><tr><th>Metric</th><th style="color:var(--danger);">Option A<br><small>Email + OTP first</small></th><th style="color:var(--success);">Option B<br><small>Form first, email separate</small></th><th style="color:var(--accent2);">Option C<br><small>Accept all, verify later</small></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Gift Aid declarations / month</strong></td>
+          <td>80 &times; ~35% = <strong>28</strong></td>
+          <td>80 &times; ~57% = <strong>46</strong></td>
+          <td>80 &times; ~60% = <strong style="color:var(--accent2);">48</strong></td>
+        </tr>
+        <tr>
+          <td><strong>Emails captured / month</strong></td>
+          <td>28 (all have email — it was the gate)</td>
+          <td>46 &times; ~25% = <strong>12</strong> (separate step)</td>
+          <td>48 &times; ~55% = <strong style="color:var(--accent2);">26</strong> (same form)</td>
+        </tr>
+        <tr>
+          <td><strong>Verified accounts / month</strong></td>
+          <td>28 (OTP was already done)</td>
+          <td>12 &times; ~80% = <strong>10</strong> (OTP after)</td>
+          <td>26 &times; ~35% = <strong style="color:var(--accent2);">9</strong> (passive link click)</td>
+        </tr>
+        <tr>
+          <td><strong>Gift Aid value / year (at &pound;25 avg)</strong></td>
+          <td>~&pound;2,100</td>
+          <td>~&pound;3,450</td>
+          <td style="color:var(--accent2);"><strong>~&pound;3,600</strong></td>
+        </tr>
+        <tr>
+          <td><strong>SwiftCause commission / year (3%)</strong></td>
+          <td>~&pound;63</td>
+          <td>~&pound;104</td>
+          <td style="color:var(--accent2);"><strong>~&pound;108</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.8rem; color:var(--muted); margin-top:8px;">All percentages are estimates. "~" denotes approximate figures. The one external benchmark: Dona reports &gt;40% Gift Aid rate on their on-device (not magic link) capture.</p>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Key insight (directionally sound even if exact numbers shift):</strong> Option C captures significantly more Gift Aid declarations than Option A while still gathering emails because they're on the same form. The Gift Aid declarations are the revenue engine — they feed the 10x GASDS base and the HMRC reclaim. Verified accounts are a nice-to-have for returning donor UX, but they don't affect HMRC claims.<br><br>
+      <strong>The structural argument holds regardless of exact percentages:</strong> fewer friction steps before the Gift Aid form = more completed declarations. Email on the same form vs a separate screen = higher email capture. These are well-established UX patterns, not SwiftCause-specific claims.
+    </div>
+  </div>
+
+  <!-- ── PILOT METRICS ── -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3>Pilot Metrics to Validate</h3>
+    <p style="margin-bottom:12px;">The estimates above must be validated with real data from the first pilot charities. Instrument these five metrics from Day 1:</p>
+
+    <table>
+      <thead><tr><th>#</th><th>Metric</th><th>What It Tells Us</th><th>Target (from KPIs)</th><th>How to Measure</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>M1</strong></td>
+          <td>QR scan rate</td>
+          <td>What % of donors who see the thank-you screen actually scan the QR</td>
+          <td>No target set yet — baseline needed</td>
+          <td>Magic link opens &divide; total donations at that collection point</td>
+        </tr>
+        <tr>
+          <td><strong>M2</strong></td>
+          <td>Gift Aid form start rate</td>
+          <td>What % of magic link opens result in the donor starting to fill in the form</td>
+          <td>&ge;80% (low bar — if they opened the link they're interested)</td>
+          <td>First field interaction event &divide; magic link page loads</td>
+        </tr>
+        <tr>
+          <td><strong>M3</strong></td>
+          <td>Gift Aid form completion rate</td>
+          <td>What % of donors who start the form actually submit it</td>
+          <td><strong>&ge;50%</strong> (existing pilot KPI: Gift Aid completion 50%)</td>
+          <td>Successful form submissions &divide; first field interactions</td>
+        </tr>
+        <tr>
+          <td><strong>M4</strong></td>
+          <td>Form drop-off rate</td>
+          <td>Where in the form do donors abandon? Which field is the killer?</td>
+          <td><strong>&le;20%</strong> (existing pilot KPI: form drop-off &le;20%)</td>
+          <td>Track last field interacted with before page close, per field</td>
+        </tr>
+        <tr>
+          <td><strong>M5</strong></td>
+          <td>Email capture rate</td>
+          <td>What % of completed Gift Aid forms include an email address</td>
+          <td>No target set — baseline needed</td>
+          <td>Submissions with non-empty email &divide; total submissions</td>
+        </tr>
+        <tr>
+          <td><strong>M6</strong></td>
+          <td>Email verification rate</td>
+          <td>What % of captured emails are verified via the thank-you email link</td>
+          <td>No target set — baseline needed</td>
+          <td>Verification link clicks &divide; thank-you emails sent</td>
+        </tr>
+        <tr>
+          <td><strong>M7</strong></td>
+          <td>Over-&pound;30 Gift Aid recovery</td>
+          <td>What % of donations &gt;&pound;30 end up with a Gift Aid declaration (via any path)</td>
+          <td>Higher is better — each missed &pound;50 donation = &pound;12.50 lost</td>
+          <td>Gift Aid declarations on &gt;&pound;30 donations &divide; total &gt;&pound;30 donations</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight highlight-success" style="margin-top:16px;">
+      <strong>How this feeds back into design:</strong><br><br>
+      <strong>If M3 is below 50%:</strong> The form itself is the problem — too many fields, unclear wording, or the Gift Aid value proposition isn't landing. Simplify the form, test different boost messaging.<br><br>
+      <strong>If M4 shows address is the drop-off field:</strong> Prioritise PAF postcode lookup so donors type a postcode and select from a dropdown instead of typing a full address manually.<br><br>
+      <strong>If M5 is above 60%:</strong> Email on the same form works — donors are happy to provide it alongside their other details. Option C is validated.<br><br>
+      <strong>If M5 is below 30%:</strong> Donors are deliberately skipping email. Consider whether email should be required or whether card fingerprint matching (Phase 2) is the better path to returning donor recognition.<br><br>
+      <strong>If M6 is below 20%:</strong> Passive verification isn't working. Consider a more prominent CTA in the thank-you email, or test sending a reminder 24 hours later. If it stays low, OTP at a later touchpoint (e.g., when the donor visits the donor portal) may be the better verification trigger.<br><br>
+      <strong>If M7 is below 30% for &gt;&pound;30 donations:</strong> The QR nudge on the thank-you screen isn't strong enough for larger amounts. Test more aggressive messaging ("You donated &pound;50 — the charity is missing out on &pound;12.50") and a larger QR code.
+    </div>
+  </div>
+
+  <!-- ── CARD TOKEN DISCUSSION ── -->
+  <div class="card" style="border-left: 3px solid var(--accent2);">
+    <h3>Discussion: Should We Add Card Fingerprint Matching?</h3>
+    <p>Every competitor that recognises returning donors does it via the physical card token, not email. SwiftCause's magic link breaks this pattern because the payment device and the donor's phone are separate. But Stripe <em>does</em> return a card fingerprint on every payment.</p>
+
+    <div class="highlight highlight-info" style="margin-top:12px;">
+      <strong>The progression model that the market has proven works:</strong>
+    </div>
+
+    <table style="margin-top:12px;">
+      <thead><tr><th>Visit</th><th>What Happens</th><th>Identity Method</th><th>Gift Aid</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Tap 1</strong></td>
+          <td>Anonymous donation. Stripe records card fingerprint.</td>
+          <td>None — donor is anonymous</td>
+          <td>QR shown. If scanned: Gift Aid form (Option B). If not: GASDS pool.</td>
+        </tr>
+        <tr>
+          <td><strong>Tap 1 + Magic Link</strong></td>
+          <td>Donor completes Gift Aid form on phone. Card fingerprint from Stripe is linked to declaration.</td>
+          <td>Form data + card fingerprint linked</td>
+          <td>Full Gift Aid captured. Declaration stored with <code>futureConsent: true</code>.</td>
+        </tr>
+        <tr>
+          <td><strong>Tap 2 (same card)</strong></td>
+          <td>Same card fingerprint recognised. Existing declaration with future consent found.</td>
+          <td style="color:var(--success); font-weight:600;">Card fingerprint match</td>
+          <td style="color:var(--success); font-weight:600;">Gift Aid auto-applied. No QR needed. No form. No email.</td>
+        </tr>
+        <tr>
+          <td><strong>Tap N (different card)</strong></td>
+          <td>New card fingerprint, no match. Falls back to QR/magic link flow.</td>
+          <td>Magic link &rarr; form (or email + OTP if returning verified donor)</td>
+          <td>Gift Aid via form. New card fingerprint linked to existing declaration.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="two-col" style="margin-top:16px;">
+      <div>
+        <h4 style="font-size:0.9rem; color:var(--success); margin-bottom:8px;">WHY ADD CARD MATCHING</h4>
+        <ul style="font-size:0.88rem;">
+          <li>Returning donors at the same collection point get Gift Aid in zero taps — better than any competitor</li>
+          <li>Eliminates the email-verification debate for the most common returning donor case</li>
+          <li>Proven pattern — Dona, Hibabox, Swiftaid, CollecTin all use it successfully</li>
+          <li>Stripe card fingerprint is already available in every payment — no new integration needed</li>
+          <li>Massively boosts Gift Aid capture rates for regulars (which grows the 10x GASDS base)</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size:0.9rem; color:var(--warn); margin-bottom:8px;">RISKS &amp; CONSIDERATIONS</h4>
+        <ul style="font-size:0.88rem;">
+          <li>Card fingerprint changes if donor gets a new card (annual re-registration needed)</li>
+          <li>Shared cards (family members using same card) could misattribute Gift Aid</li>
+          <li>Adds complexity to the donation webhook logic</li>
+          <li>HMRC compliance question: is card fingerprint sufficient proof of identity for audit? (Dona and Swiftaid say yes, but we should confirm)</li>
+          <li>Scope creep risk — could delay go-live if added to critical path</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight highlight-info" style="margin-top:16px;">
+      <strong>Recommendation:</strong> Don't add card matching to go-live scope. Ship with the Gift Aid-first magic link flow (Option B). Add card fingerprint matching as a <strong>Phase 2 fast-follow</strong> — it's high value but not on the critical path, and the magic link flow needs to work properly first. Once card matching is live, returning donors get the best experience in the market: same-card = auto Gift Aid, new-card = magic link fallback, verified email = account access for history and receipts.
+    </div>
+  </div>
+
+  <!-- ── THE FULL SALES PITCH ── -->
+  <div class="card" style="border-left: 3px solid var(--success);">
+    <h3>The Defensible Pitch — The Full Chain</h3>
+    <p style="margin-bottom:16px;">The GASDS dashboard alone is copiable. The full chain is not. Here's how to pitch it:</p>
+
+    <div class="highlight highlight-success">
+      <strong style="font-size:1rem;">"Three things no other platform does together:"</strong>
+      <ol style="margin-top:12px; padding-left:20px; font-size:0.92rem;">
+        <li style="margin-bottom:12px;"><strong>We recover Gift Aid that other platforms lose.</strong><br>
+        <span style="color:var(--muted);">When a donor taps and walks away, every other platform loses that Gift Aid forever. SwiftCause gives the donor 30 days to come back via a magic link on their phone, fill in their details, and add Gift Aid to that donation. No one else does this. That alone is worth thousands per year.</span></li>
+
+        <li style="margin-bottom:12px;"><strong>Every Gift Aid declaration unlocks 10x its value in GASDS.</strong><br>
+        <span style="color:var(--muted);">Your regular donors' Gift Aid declarations don't just reclaim 25% on their own donations — they unlock up to 10 times that amount in claims on your anonymous contactless collections. 20 parents on &pound;10/month Gift Aided subscriptions = &pound;24,000 of GASDS space per year. We track this for you in real time and tell you exactly where you stand.</span></li>
+
+        <li style="margin-bottom:12px;"><strong>Your building doubles the cap, and we're the only ones who track it.</strong><br>
+        <span style="color:var(--muted);">Because your [church/mosque/village hall] is a community building, your GASDS cap is &pound;16,000 not &pound;8,000. That's up to &pound;4,000 back from HMRC instead of &pound;2,000. We tag your locations, track the separate pools, and generate the HMRC export with everything separated correctly. No other platform even knows this rule exists.</span></li>
+      </ol>
+    </div>
+
+    <p style="margin-top:16px; font-size:0.92rem;">The pitch works because each point depends on the one before it. The magic link feeds the Gift Aid base, the Gift Aid base feeds the GASDS multiplier, and the community building tracking maximises the cap. <strong>A competitor would need to build all three layers to match the claim — and none of them are even working on the first one.</strong></p>
+  </div>
+
+  <!-- ── DECISION LOG ── -->
+  <div class="card" style="border-left: 3px solid var(--warn);">
+    <h3>Decisions Needed from This Discussion</h3>
+    <table>
+      <thead><tr><th>#</th><th>Decision</th><th>Options</th><th>Recommendation</th><th>Owner</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Magic link flow order</td>
+          <td>Email+OTP first (A) / Form first, email separate (B) / Accept all, verify later (C)</td>
+          <td style="color:var(--accent2);"><strong>Option C:</strong> Single form with email, passive verification via thank-you email. Highest Gift Aid capture + good email capture.</td>
+          <td>Qamar</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>When does OTP trigger?</td>
+          <td>Always / Only when verified email matches / Never</td>
+          <td style="color:var(--accent2);"><strong>Only on verified match:</strong> New donors &amp; unverified donors see blank form (zero friction). OTP only fires when email matches a previously-verified account.</td>
+          <td>Qamar</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Card fingerprint matching</td>
+          <td>Go-live scope / Phase 2 fast-follow / Not planned</td>
+          <td style="color:var(--success);"><strong>Phase 2 fast-follow:</strong> High value, not on critical path</td>
+          <td>Qamar + Dev</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Apple/Google Pay data spike</td>
+          <td>This week / Next sprint / Defer</td>
+          <td style="color:var(--success);"><strong>This week:</strong> 1-2 day spike. Result changes the entire flow design.</td>
+          <td>Dev team</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>GASDS dashboard — when to build</td>
+          <td>Pre-launch / Post-launch Phase 2 / Post-launch Phase 3</td>
+          <td style="color:var(--success);"><strong>Post-launch Phase 2:</strong> Needs Gift Aid data flowing first to be meaningful. Ship after first charities are live and generating data.</td>
+          <td>Qamar</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Community building location tagging</td>
+          <td>Pre-launch / Post-launch</td>
+          <td style="color:var(--success);"><strong>Post-launch Phase 2:</strong> Ship with GASDS dashboard as a bundle. Tag-and-track as a feature.</td>
+          <td>Qamar + Dev</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="timeline-item">
-<h4>1 May — Rollout to All Kiosks</h4>
-<p>Push firmware updates + Stripe Terminal configs to all live kiosks. Train ops staff on dual-payment acceptance (card tap vs Apple/Google Pay tap). Monitor payment success rate for issues.</p>
+<!-- ==================== TAB 9: AS-IS → TO-BE ==================== -->
+<div id="asis-tobe" class="tab-content">
+  <h2 class="section-title">As-Is &rarr; To-Be: Gift Aid Donor Journey</h2>
+
+  <!-- ── AS-IS ── -->
+  <div class="card" style="border-left: 3px solid var(--danger);">
+    <h3 style="color:var(--danger);">AS-IS &mdash; Current State (13 April 2026)</h3>
+    <p style="margin-bottom:16px; color:var(--muted);">What the system does today, with all the gaps and risks surfaced in this week's standup.</p>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 20px 0 10px;">Flow 1: Donor Taps &amp; Walks Away (No QR Scan)</h4>
+    <div class="flow">
+      <div class="flow-step">Donor taps card /<br>Apple Pay / Google Pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Stripe processes<br>payment</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Thank-you screen<br>shows QR code</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Donor walks away<br><small>QR never scanned</small></div>
+    </div>
+    <div class="highlight highlight-danger" style="margin:10px 0;">
+      <strong>Result:</strong> Donation recorded. Zero donor identity. If &le;&pound;30 &rarr; sits in GASDS pool (only claimable if charity has standard Gift Aid base). If &gt;&pound;30 &rarr; <strong>Gift Aid lost entirely.</strong> No follow-up path exists because no email was captured.
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Flow 2: Donor Taps &amp; Scans QR (Magic Link)</h4>
+    <div class="flow">
+      <div class="flow-step">Donor taps to pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">QR on thank-you<br>screen</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Donor scans &rarr;<br>magic link opens</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">Email field shown<br><small>No verification</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step danger">If email matches<br>existing profile &rarr;<br>data shown &amp; editable</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step warn">Gift Aid form<br><small>No opt-in checkbox</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Submit</div>
+    </div>
+    <div class="highlight highlight-danger" style="margin:10px 0;">
+      <strong>Risks:</strong>
+      <ul style="padding-left:18px; margin-top:6px;">
+        <li><strong>Data exposure:</strong> Anyone can type any email and see/edit that person's stored name and home address</li>
+        <li><strong>No consent capture:</strong> No explicit opt-in checkbox at email entry; data retained without clear legal basis</li>
+        <li><strong>No email verification:</strong> Email is unverified — donor profile built on unproven identity</li>
+        <li><strong>No duplicate handling:</strong> Same email from different people silently overwrites data</li>
+        <li><strong>Returning donor autofill unsafe:</strong> Prefills data for whoever enters the email, not proven owner</li>
+      </ul>
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Flow 3: On-Screen Gift Aid (Slow Flow)</h4>
+    <div class="flow">
+      <div class="flow-step">Donor selects amount</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Gift Aid Boost<br>Panel</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step warn">Name + Address<br><small>Manual entry only<br>No postcode lookup</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Payment</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Declaration linked</div>
+    </div>
+    <div class="highlight highlight-warn" style="margin:10px 0;">
+      <strong>Works but limited:</strong> Identity captured upfront — no gap. But manual address entry only (no PAF postcode lookup), no <code>homeAddressConfirmed</code> checkbox, no <code>declarationType</code> selector, tax year bug (GA-01) assigns wrong year for Jan–5 Apr donations.
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Admin &amp; Compliance — Current Gaps</h4>
+    <table>
+      <thead><tr><th>Area</th><th>Current State</th><th>Risk</th></tr></thead>
+      <tbody>
+        <tr><td>Consent Ledger</td><td>Architecture approved, magic link shipped (PR #622), but core tasks #609–#612 unassigned</td><td>No audit provenance for HMRC</td></tr>
+        <tr><td>HMRC CSV Export</td><td>Shipped &amp; hardened (PR #626, formula injection fix)</td><td style="color:var(--success);">Low — functional</td></tr>
+        <tr><td>Admin Anomaly Queue</td><td>Does not exist</td><td>No way to flag/resolve duplicate emails or wrong attributions</td></tr>
+        <tr><td>Super-Admin Corrections</td><td>Does not exist</td><td>No audit-trailed path to fix misattributed records</td></tr>
+        <tr><td>Tax Year Calculation</td><td><code>getFullYear()</code> used instead of UK tax year boundary</td><td>Wrong tax year on Jan–5 Apr donations</td></tr>
+        <tr><td>Apple/Google Pay Data</td><td>Not investigated</td><td>Potential shortcut to identity sitting uninvestigated</td></tr>
+        <tr><td>GASDS Pool Tracking</td><td>Donations flagged but no dashboard or 10x cap alerting</td><td>Charities can't see what they can claim</td></tr>
+        <tr><td>Location Tagging</td><td>Not built</td><td>Community building doubled cap (&pound;16k) can't be tracked</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── TO-BE ── -->
+  <div class="card" style="border-left: 3px solid var(--success);">
+    <h3 style="color:var(--success);">TO-BE &mdash; Target State (Go-Live + Fast-Follows)</h3>
+    <p style="margin-bottom:16px; color:var(--muted);">The secure, compliant, friction-optimised flows we're building towards.</p>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 20px 0 10px;">Flow 1: Donor Taps &amp; Walks Away &mdash; Smarter Recovery</h4>
+    <div class="flow">
+      <div class="flow-step">Donor taps card /<br>Apple Pay / Google Pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Stripe webhook<br>captures wallet<br>billing_details</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">If wallet provided<br>email &rarr; send<br>follow-up link</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Donor opens email<br>on own time<br><small>(30-day window)</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Pre-filled form<br>from wallet data<br><small>Confirm + consent</small></div>
+    </div>
+    <div class="highlight highlight-success" style="margin:10px 0;">
+      <strong>Improvement:</strong> Even without QR scan, if Apple/Google Pay provided an email, we can proactively send the Gift Aid recovery link. Wallet billing address pre-fills the form. Donor just confirms and ticks consent. If no wallet data &rarr; falls to GASDS pool (same as today, but now the pool is properly tracked).
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Flow 2: Donor Taps &amp; Scans QR &mdash; Verified &amp; Secure</h4>
+    <div class="flow">
+      <div class="flow-step">Donor taps to pay</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">QR on thank-you<br>screen<br><small>&gt;&pound;30: shows boost<br>amount prominently</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Donor scans &rarr;<br>magic link opens</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Email entry +<br>OTP verification<br><small>6-digit code via email</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Verified?<br>Returning &rarr; prefill<br>New &rarr; blank form<br><small>+ wallet data if available</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Gift Aid form<br>+ opt-in consent<br>+ home address tick<br>+ postcode validation</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Submit &rarr;<br>Account created<br>Declaration archived</div>
+    </div>
+    <div class="highlight highlight-success" style="margin:10px 0;">
+      <strong>What's different:</strong>
+      <ul style="padding-left:18px; margin-top:6px;">
+        <li><strong>OTP gate:</strong> No data shown until email ownership is proven — eliminates the data exposure risk</li>
+        <li><strong>Wallet data merge:</strong> If Apple/Google Pay provided billing details, pre-fill form fields for confirmation (less typing)</li>
+        <li><strong>Explicit consent:</strong> Opt-in checkbox with clear retention policy (6 years after last payment) + home address confirmation</li>
+        <li><strong>Account creation:</strong> Verified email + completed Gift Aid = lightweight account. Future donations auto-apply declaration.</li>
+        <li><strong>Smarter &gt;&pound;30 nudge:</strong> Thank-you screen shows "Your &pound;50 donation could be worth &pound;62.50 — scan to add Gift Aid" with prominent QR</li>
+      </ul>
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Flow 3: On-Screen Gift Aid &mdash; Polished</h4>
+    <div class="flow">
+      <div class="flow-step">Donor selects amount</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Gift Aid Boost<br>Panel</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Name + Address<br><small>PAF postcode lookup<br>Home address confirmed</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Declaration type<br>selector<br><small>Single / Year / Future</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step">Payment<br><small>Correct UK tax year</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Declaration linked<br>+ consent event<br>+ timestamped PDF</div>
+    </div>
+    <div class="highlight highlight-success" style="margin:10px 0;">
+      <strong>What's different:</strong> PAF postcode lookup (fast-follow), explicit home address checkbox, declaration type selector, tax year bug fixed, consent event created in ledger with IP/device/timestamp, immutable PDF archived.
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Flow 4: Returning Donor &mdash; Safe &amp; Frictionless</h4>
+    <div class="flow">
+      <div class="flow-step">Donor opens<br>magic link</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Enters email<br>+ OTP verified</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">System finds<br>existing account<br>with futureConsent</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">"Welcome back!"<br>Details shown<br>(read-only)</div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Confirm address<br>still correct?<br><small>Yes &rarr; auto-apply<br>No &rarr; update form</small></div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-step success">Gift Aid applied<br>~10 seconds total</div>
+    </div>
+    <div class="highlight highlight-success" style="margin:10px 0;">
+      <strong>What's different:</strong> OTP proves identity before any data is shown. Prefilled data is read-only until confirmed. Address change triggers a new declaration (not an edit to the old one). The whole returning donor experience is under 30 seconds — type email, enter OTP from notification, confirm, done.
+    </div>
+
+    <h4 style="color:#fff; font-size:0.95rem; margin: 24px 0 10px;">Admin &amp; Compliance &mdash; Target State</h4>
+    <table>
+      <thead><tr><th>Area</th><th>As-Is</th><th>To-Be</th><th>Priority</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Email Verification</td>
+          <td style="color:var(--danger);">None — anyone can enter any email</td>
+          <td style="color:var(--success);">OTP (6-digit) before data shown/editable</td>
+          <td><span class="badge badge-danger">P0 — Go-Live</span></td>
+        </tr>
+        <tr>
+          <td>Consent Capture</td>
+          <td style="color:var(--danger);">No opt-in checkbox</td>
+          <td style="color:var(--success);">Explicit opt-in + retention policy + consent event in ledger</td>
+          <td><span class="badge badge-danger">P0 — Go-Live</span></td>
+        </tr>
+        <tr>
+          <td>Consent Ledger</td>
+          <td style="color:var(--warn);">Architecture approved, tasks unassigned</td>
+          <td style="color:var(--success);">ConsentEvents subcollection with Cloud Function trigger, IP capture, provenance ref</td>
+          <td><span class="badge badge-danger">P0 — Go-Live</span></td>
+        </tr>
+        <tr>
+          <td>Tax Year</td>
+          <td style="color:var(--danger);"><code>getFullYear()</code> — wrong for Jan–5 Apr</td>
+          <td style="color:var(--success);">UK tax year boundary (6 Apr) in all date logic</td>
+          <td><span class="badge badge-danger">P0 — Go-Live</span></td>
+        </tr>
+        <tr>
+          <td>Apple/Google Pay Data</td>
+          <td style="color:var(--warn);">Not investigated</td>
+          <td style="color:var(--success);">Spike complete; billing_details captured and used for pre-fill + proactive email follow-up</td>
+          <td><span class="badge badge-warn">P1 — Spike this week</span></td>
+        </tr>
+        <tr>
+          <td>Admin Anomaly Queue</td>
+          <td style="color:var(--danger);">Does not exist</td>
+          <td style="color:var(--success);">Dashboard queue: flagged duplicates, side-by-side comparison, resolve/escalate workflow</td>
+          <td><span class="badge badge-warn">P1 — Pre-launch</span></td>
+        </tr>
+        <tr>
+          <td>Super-Admin Corrections</td>
+          <td style="color:var(--danger);">Does not exist</td>
+          <td style="color:var(--success);">Re-link, merge, void with full audit trail (timestamp, admin ID, reason, before/after)</td>
+          <td><span class="badge badge-warn">P1 — Pre-launch</span></td>
+        </tr>
+        <tr>
+          <td>Postcode Lookup (PAF)</td>
+          <td style="color:var(--warn);">Manual entry only</td>
+          <td style="color:var(--success);">Royal Mail PAF: type postcode &rarr; select address from dropdown</td>
+          <td><span class="badge badge-info">P2 — Fast-follow</span></td>
+        </tr>
+        <tr>
+          <td>GASDS Pool Dashboard</td>
+          <td style="color:var(--warn);">Donations flagged, no visibility</td>
+          <td style="color:var(--success);">Per-location GASDS pool tracked by postcode/campaign, with per-venue 10x cap alerting, community building status (&pound;8k/&pound;16k), and one-click HMRC export</td>
+          <td><span class="badge badge-info">P2 — Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>Location Tagging</td>
+          <td style="color:var(--danger);">Not built</td>
+          <td style="color:var(--success);">Community building flag per location; doubled cap auto-tracked; per-location flow config</td>
+          <td><span class="badge badge-info">P2 — Post-launch</span></td>
+        </tr>
+        <tr>
+          <td>Declaration PDF Archive</td>
+          <td style="color:var(--warn);">Not implemented</td>
+          <td style="color:var(--success);">Timestamped immutable PDF per declaration; amendments via super-admin only</td>
+          <td><span class="badge badge-warn">P1 — Pre-launch</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── SUMMARY ── -->
+  <div class="card" style="border-left: 3px solid var(--accent);">
+    <h3>Net Change Summary</h3>
+    <div class="two-col">
+      <div>
+        <h4 style="color:var(--danger); font-size:0.9rem; margin-bottom:10px;">ELIMINATING</h4>
+        <ul style="font-size:0.88rem;">
+          <li>Unverified email accessing stored donor data</li>
+          <li>Silent data overwrites from duplicate emails</li>
+          <li>Missing consent capture at point of data entry</li>
+          <li>Wrong tax year assignment for Q1 donations</li>
+          <li>Over-&pound;30 donations lost with no recovery path</li>
+          <li>No admin visibility into data conflicts</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:var(--success); font-size:0.9rem; margin-bottom:10px;">INTRODUCING</h4>
+        <ul style="font-size:0.88rem;">
+          <li>OTP-gated donor identity &mdash; verify before you see</li>
+          <li>Wallet data pre-fill from Apple/Google Pay</li>
+          <li>Proactive email follow-up for wallet-paying donors who skip QR</li>
+          <li>Three-stage token lifecycle (anonymous &rarr; claimed &rarr; declared)</li>
+          <li>Immutable declaration PDFs with audit provenance</li>
+          <li>Admin anomaly queue + super-admin correction workflow</li>
+          <li>Automatic account creation from verified Gift Aid completion</li>
+          <li>Smarter &gt;&pound;30 nudge on thank-you screen</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="timeline-item">
-<h4>9 May — Go-Live with Apple/Google Pay Active</h4>
-<p>Launch with full tap-to-pay support. Expected: +15–20% donation volume pre-launch day due to increased accessibility.</p>
-</div>
-</div>
-
-<h3>Risk Mitigation</h3>
-<div class="alert alert-warning">
-<strong>If hardware incompatible:</strong> Kiosks without NFC support will continue to accept physical credit cards (contactless or chip). No donor flow disruption, but opportunity cost of not capturing Apple/Google Pay volume (estimated £3–5k over first 3 months).
-</div>
-
-<div class="alert alert-error">
-<strong>Soft Launch Option:</strong> If Apple/Google Pay integration slips past 1 May, SwiftCause can still launch with contactless card-only (not ideal, but viable). Apple/Google Pay can be added in Month 2 post-launch with firmware update to all kiosks (lower risk than trying to rush before go-live).
-</div>
-
-</div>
-
-<!-- HMRC COMPLIANCE TAB -->
-<div id="hmrc" class="tab hidden">
-
-<div class="section">
-<h2>HMRC Compliance Framework</h2>
-
-<h3>R68 Monthly Export Schedule</h3>
-<div class="rule">
-<strong>Monthly Submission:</strong> Gift Aid declarations must be exported to HMRC monthly using R68 format. Submission deadline: 19th of following month (or 20th if 19th is weekend).
-</div>
-<div class="rule">
-<strong>Tax Year Boundary (April 6):</strong> HMRC tax year resets on April 6 each calendar year. SwiftCause export batches must be segregated by tax year (e.g., Apr 6 2026 – Apr 5 2027 = batch 1; Apr 6 2027 – Apr 5 2028 = batch 2).
-</div>
-<div class="rule">
-<strong>Eligibility Segregation:</strong> R68 export file must exclude all donations with <code>postcodeEligible: false</code>. Non-eligible donations logged separately in audit table (not submitted to HMRC, but retained for compliance review).
-</div>
-
-<h3>Compliance Checklist</h3>
-<ul class="checklist">
-<li class="blocked">OTP email verification before Gift Aid form (REQUIRED — currently in dev)</li>
-<li class="blocked">Postcode validation + HMRC eligibility check (REQUIRED — currently in dev)</li>
-<li>Gift Aid declaration consent checkbox (explicit "I confirm I am a UK taxpayer...")</li>
-<li>Donation amount, date, donor name, address, postcode recorded</li>
-<li>Declaration timestamp logged (for audit trail)</li>
-<li>Monthly R68 export with tax-year alignment</li>
-<li>Non-eligible donations flagged + excluded from export</li>
-<li class="pending">Member Reference field (deferred to post-launch, Qamar backlog)</li>
-<li>Donor audit trail accessible to charity admin (dashboard shows all submitted declarations)</li>
-</ul>
-
-</div>
-
-<!-- TIMELINE TAB -->
-<div id="timeline" class="tab hidden">
-
-<div class="section">
-<h2>Critical Path Timeline (13 Apr – 9 May)</h2>
-
-<div class="timeline">
-<div class="timeline-item">
-<h4>13 Apr — Analysis Published</h4>
-<p>SwiftCause team identifies three P0 items. Assignments deferred pending sprint planning.</p>
-</div>
-
-<div class="timeline-item">
-<h4>19 Apr — Sprint Planning</h4>
-<p><strong>Action Item (Qamar):</strong> Assign OTP + postcode validation to dev team (8 issues #662–#669). Assign Apple/Google Pay hardware audit to ops. Document blockers.</p>
-</div>
-
-<div class="timeline-item">
-<h4>22–24 Apr — Development (OTP + Postcode)</h4>
-<p>Parallel work: Paras on OTP backend + email sending. Frontend dev on Gift Aid form UI + postcode validation. Estimated: 3 days sprint.</p>
-</div>
-
-<div class="timeline-item">
-<h4>24–26 Apr — Apple/Google Pay Firmware Audit</h4>
-<p>Ops team inventories kiosks. Jitesh coordinates Stripe Terminal config. Hardware vendor contacted for OS updates if needed.</p>
-</div>
-
-<div class="timeline-item">
-<h4>28 Apr — Code Review &amp; Testing</h4>
-<p><strong>Gate:</strong> OTP + postcode PRs merged. QA tests Gift Aid flow end-to-end (OTP verification → form submission → HMRC eligibility flag). Apple/Google Pay tested on sample devices.</p>
-</div>
-
-<div class="timeline-item">
-<h4>1–5 May — Rollout &amp; Bug Fixes</h4>
-<p>Push OTP + postcode to staging, then production. Monitor for issues. Apple/Google Pay firmware pushed to all kiosks.</p>
-</div>
-
-<div class="timeline-item">
-<h4>9 May — Go-Live</h4>
-<p><strong>Expected State:</strong> All Gift Aid forms require OTP verification. Postcode validation active. Apple/Google Pay supported on compatible kiosks. R68 monthly export segregates eligible donations.</p>
-</div>
-</div>
-
-<div class="alert alert-error">
-<strong>If Slipping:</strong> OTP + postcode must launch on go-live day. Apple/Google Pay is soft (can launch Week 2 post-go-live if needed). If OTP + postcode slip, launch is blocked.
-</div>
-
-</div>
-
-</div>
-
-<div class="footer">
-SwiftCause Gift Aid Analysis | 13 April 2026 | Next Review: 20 April (mid-sprint check-in)
-</div>
+</div><!-- /container -->
 
 <script>
-function switchTab(element, tabId) {
-  // Hide all tabs
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(tab => tab.classList.add('hidden'), tab => tab.classList.remove('visible'));
-  
-  // Show selected tab
-  document.getElementById(tabId).classList.remove('hidden');
-  document.getElementById(tabId).classList.add('visible');
-  
-  // Update active nav item
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(item => item.classList.remove('active'));
-  element.classList.add('active');
-  
-  // Scroll to top
-  window.scrollTo(0, 0);
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
 }
 </script>
 
