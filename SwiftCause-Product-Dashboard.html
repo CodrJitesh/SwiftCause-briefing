@@ -1,914 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SwiftCause Product Dashboard</title>
-    <style>
-        :root {
-            --bg-primary: #0a0d14;
-            --bg-secondary: #141823;
-            --bg-tertiary: #1f2536;
-            --accent: #6366f1;
-            --accent-light: #818cf8;
-            --text-primary: #e5e7eb;
-            --text-secondary: #9ca3af;
-            --border-color: #2d3748;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --gift-aid: #10b981;
-            --recurring: #3b82f6;
-            --payments: #f59e0b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* HEADER */
-        .header {
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header-title h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .header-subtitle {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .btn:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-light);
-            border-color: var(--accent-light);
-        }
-
-        /* TABS */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            overflow-x: auto;
-        }
-
-        .tab {
-            padding: 12px 16px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .tab:hover {
-            color: var(--text-primary);
-        }
-
-        .tab.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
-        }
-
-        /* CONTENT SECTIONS */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-icon {
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* KPI CARDS */
-        .kpi-strip {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .kpi-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .kpi-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent);
-        }
-
-        .kpi-label {
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .kpi-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .kpi-change {
-            font-size: 12px;
-            color: var(--success);
-        }
-
-        .kpi-change.negative {
-            color: var(--danger);
-        }
-
-        /* CHARTS & GRAPHS */
-        .chart-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .chart-placeholder {
-            height: 300px;
-            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        /* TABLES */
-        .table-container {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: var(--bg-tertiary);
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover {
-            background: var(--bg-tertiary);
-        }
-
-        /* STATUS BADGES */
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .badge-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .badge-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-        }
-
-        .badge-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--info);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .header-top {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .header-actions {
-                width: 100%;
-                margin-top: 15px;
-            }
-
-            .kpi-strip {
-                grid-template-columns: 1fr;
-            }
-
-            .tabs {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause Product Dashboard — Last Refreshed 19 Apr 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  :root {
+    --bg-primary:#0a0d14; --bg-secondary:#141823; --bg-tertiary:#1f2536;
+    --accent:#6366f1; --accent-light:#818cf8; --text-primary:#e5e7eb; --text-secondary:#9ca3af;
+    --border:#2d3748; --success:#10b981; --warning:#f59e0b; --danger:#ef4444; --info:#3b82f6;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);line-height:1.6}
+  .container{max-width:1600px;margin:0 auto;padding:20px}
+  .header{background:linear-gradient(135deg,#141823,#1f2536);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+  .header h1{font-size:24px;font-weight:800;color:#fff}
+  .header h1 span{background:linear-gradient(135deg,var(--accent),var(--accent-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .header-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:12px;text-transform:uppercase;letter-spacing:.5px}
+  .badge-live{background:rgba(16,185,129,.15);color:var(--success);border:1px solid rgba(16,185,129,.3)}
+  .badge-repo{background:rgba(99,102,241,.15);color:var(--accent-light);border:1px solid rgba(99,102,241,.3)}
+  .badge-gtm{background:rgba(245,158,11,.15);color:var(--warning);border:1px solid rgba(245,158,11,.3)}
+  .meta-text{font-size:12px;color:var(--text-secondary)}
+  .nav{display:flex;background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;overflow-x:auto;gap:2px}
+  .nav-tab{padding:10px 18px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;border-radius:8px;white-space:nowrap;transition:all .2s;text-align:center}
+  .nav-tab:hover{color:var(--text-primary);background:var(--bg-tertiary)}
+  .nav-tab.active{color:#fff;background:var(--accent)}
+  .panel{display:none}.panel.active{display:block}
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+  .kpi{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:20px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+  .kpi:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.12)}
+  .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+  .kpi.green::before{background:var(--success)}.kpi.amber::before{background:var(--warning)}.kpi.red::before{background:var(--danger)}.kpi.purple::before{background:var(--accent-light)}
+  .kpi-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+  .kpi-value{font-size:32px;font-weight:800;color:#fff}
+  .kpi.green .kpi-value{color:var(--success)}.kpi.amber .kpi-value{color:var(--warning)}.kpi.red .kpi-value{color:var(--danger)}.kpi.purple .kpi-value{color:var(--accent-light)}
+  .kpi-sub{font-size:11px;color:var(--text-secondary);margin-top:4px}
+  .card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+  .card-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;padding:12px;background:var(--bg-tertiary);color:var(--text-secondary);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)}
+  tbody td{padding:11px 12px;border-bottom:1px solid rgba(45,55,72,.5)}
+  tbody tr:hover td{background:rgba(99,102,241,.04)}
+  .pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:.3px}
+  .pill-done{background:rgba(16,185,129,.12);color:var(--success)}.pill-progress{background:rgba(59,130,246,.12);color:var(--info)}
+  .pill-merged{background:rgba(139,92,246,.12);color:#a78bfa}.pill-p0{background:rgba(239,68,68,.15);color:var(--danger)}
+  .pill-p1{background:rgba(245,158,11,.12);color:var(--warning)}.pill-pending{background:rgba(156,163,175,.12);color:var(--text-secondary)}
+  .pill-unassigned{background:rgba(239,68,68,.1);color:#fca5a5}
+  .progress{height:6px;background:var(--bg-tertiary);border-radius:3px;overflow:hidden;margin-top:6px}
+  .progress-bar{height:100%;border-radius:3px}
+  .pg-green{background:linear-gradient(90deg,#10b981,#34d399)}.pg-amber{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+  .pg-red{background:linear-gradient(90deg,#ef4444,#f87171)}.pg-purple{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+  .tl-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(45,55,72,.4)}
+  .tl-item:last-child{border-bottom:none}
+  .tl-date{min-width:72px;font-size:11px;color:var(--text-secondary);font-weight:600;padding-top:2px}
+  .tl-author{min-width:100px;font-size:12px;color:var(--accent-light);font-weight:600;padding-top:1px}
+  .tl-text{font-size:13px;color:var(--text-primary);line-height:1.55}
+  .section{font-size:18px;font-weight:800;color:#fff;margin:28px 0 16px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+  .modal-bg{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:200;justify-content:center;align-items:center}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:800px;width:92%;max-height:82vh;overflow-y:auto}
+  .modal h3{font-size:17px;font-weight:700;color:#fff;margin-bottom:16px}
+  .modal-x{float:right;background:none;border:none;color:var(--text-secondary);font-size:22px;cursor:pointer;padding:0 4px;line-height:1}
+  .modal-x:hover{color:#fff}
+  @media(max-width:768px){.container{padding:12px}.kpi-grid{grid-template-columns:repeat(2,1fr)}.header{flex-direction:column;align-items:flex-start}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-top">
-                <div class="header-title">
-                    <h1>Product Dashboard</h1>
-                    <div class="header-subtitle">Real-time product metrics and performance overview</div>
-                </div>
-                <div class="header-actions">
-                    <button class="btn">Last 30 Days</button>
-                    <button class="btn">Export</button>
-                    <button class="btn btn-primary">Refresh</button>
-                </div>
-            </div>
-        </div>
+<div class="container">
 
-        <!-- TABS -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab(event, 'overview')">Overview</button>
-            <button class="tab" onclick="switchTab(event, 'donations')">Donations</button>
-            <button class="tab" onclick="switchTab(event, 'giftaid')">Gift Aid</button>
-            <button class="tab" onclick="switchTab(event, 'recurring')">Recurring</button>
-            <button class="tab" onclick="switchTab(event, 'payments')">Payments</button>
-            <button class="tab" onclick="switchTab(event, 'users')">Users</button>
-        </div>
+<div class="header">
+  <div>
+    <h1><span>SwiftCause</span> Product Dashboard</h1>
+    <div class="meta-text">Repo: YNVSolutions/SwiftCause_Mono · Refreshed: Saturday 19 April 2026 10:00 UTC</div>
+  </div>
+  <div class="header-meta">
+    <span class="badge badge-live">Live Data</span>
+    <span class="badge badge-repo">SwiftCause_Mono</span>
+    <span class="badge badge-gtm">GTM: May 9</span>
+  </div>
+</div>
 
-        <!-- TAB: OVERVIEW -->
-        <div id="overview" class="tab-content active">
-            <!-- KPI STRIP -->
-            <div class="section">
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Total Donations</div>
-                        <div class="kpi-value">£847,320</div>
-                        <div class="kpi-change">+12.5% vs last period</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Active Donors</div>
-                        <div class="kpi-value">3,412</div>
-                        <div class="kpi-change">+8.2% vs last period</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Donation</div>
-                        <div class="kpi-value">£248.15</div>
-                        <div class="kpi-change">+4.1% vs last period</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Gift Aid Claimed</div>
-                        <div class="kpi-value">£211,830</div>
-                        <div class="kpi-change">+15.3% vs last period</div>
-                    </div>
-                </div>
-            </div>
+<div class="nav" id="nav">
+  <div class="nav-tab active" data-panel="overview">Overview</div>
+  <div class="nav-tab" data-panel="github">GitHub</div>
+  <div class="nav-tab" data-panel="prs">Pull Requests</div>
+  <div class="nav-tab" data-panel="issues">Open Issues</div>
+  <div class="nav-tab" data-panel="baseline">Solution Baseline</div>
+  <div class="nav-tab" data-panel="team">Team</div>
+  <div class="nav-tab" data-panel="slack">Slack</div>
+  <div class="nav-tab" data-panel="decisions">Decisions</div>
+  <div class="nav-tab" data-panel="risks">Risks &amp; P0s</div>
+  <div class="nav-tab" data-panel="dataflow">Data Flow &amp; Compliance</div>
+  <div class="nav-tab" data-panel="timeline">GTM Timeline</div>
+</div>
 
-            <!-- OVERVIEW CHARTS -->
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">📊</div>
-                    Donation Trends
-                </div>
-                <div class="chart-container">
-                    <div class="chart-placeholder">Donation Volume & Revenue Chart</div>
-                </div>
-            </div>
+<!-- OVERVIEW -->
+<div class="panel active" id="p-overview">
+  <div class="kpi-grid">
+    <div class="kpi green" onclick="showM('m-merged')"><div class="kpi-label">Merged PRs (Apr)</div><div class="kpi-value">12</div><div class="kpi-sub">Click for list</div></div>
+    <div class="kpi amber" onclick="showM('m-openpr')"><div class="kpi-label">Open PRs</div><div class="kpi-value">1</div><div class="kpi-sub">#669 org settings</div></div>
+    <div class="kpi purple" onclick="showM('m-issues')"><div class="kpi-label">Open Issues</div><div class="kpi-value">23</div><div class="kpi-sub">8 assigned · 15 unassigned</div></div>
+    <div class="kpi green"><div class="kpi-label">Commits (Apr 15-18)</div><div class="kpi-value">30</div><div class="kpi-sub">Yuvraj 13 · Jitesh 12 · Paras 4</div></div>
+    <div class="kpi red" onclick="showM('m-p0')"><div class="kpi-label">P0 Must-Haves</div><div class="kpi-value">7</div><div class="kpi-sub">Pre-launch critical</div></div>
+    <div class="kpi amber"><div class="kpi-label">Days to GTM</div><div class="kpi-value">20</div><div class="kpi-sub">May 9, 2026</div></div>
+    <div class="kpi amber"><div class="kpi-label">Standup Paused</div><div class="kpi-value">22d</div><div class="kpi-sub">Since 28 Mar</div></div>
+    <div class="kpi green"><div class="kpi-label">Slack Sync</div><div class="kpi-value">Live</div><div class="kpi-sub">19 Apr 2026</div></div>
+  </div>
+  <div class="section">Headlines</div>
+  <div class="card">
+    <div class="tl-item"><div class="tl-date">Apr 19</div><div class="tl-text"><strong>Android demo still pending</strong> — Dharmendra chased Jitesh twice. No video shared.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-text"><strong>PR #668 merged</strong> — tokenHash as document ID for O(1) magic link lookup. Architecture win.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-text"><strong>CI hardened</strong> — Backend Functions Jest tests wired into CI. All green.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>3 PRs merged</strong> — #668 (magic link), #661 (export perms), #652 (Android). High velocity.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>Permission migration</strong> — 161 users, 157 updated, 46 lost incorrect system_admin.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>PR #669 raised</strong> — Large: org settings, branding, authz, lint. Awaiting review.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-text"><strong>Export stack complete</strong> — All 4 exports server-side with dedicated permissions.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 12</div><div class="tl-text"><strong>Android alpha APK</strong> — First kiosk app released (70.1 MB). Full donation flow.</div></div>
+  </div>
+</div>
 
-            <!-- REVENUE BREAKDOWN -->
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">💰</div>
-                    Revenue Breakdown
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Card Tap</div>
-                        <div class="kpi-value">£524,680</div>
-                        <div class="kpi-change">61.9% of total</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">QR Code</div>
-                        <div class="kpi-value">£198,405</div>
-                        <div class="kpi-change">23.4% of total</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Magic Link</div>
-                        <div class="kpi-value">£124,235</div>
-                        <div class="kpi-change">14.7% of total</div>
-                    </div>
-                </div>
-            </div>
+<!-- GITHUB -->
+<div class="panel" id="p-github">
+  <div class="section">Recent Commits (Apr 15-18)</div>
+  <div class="card"><table><thead><tr><th>SHA</th><th>Date</th><th>Author</th><th>Message</th></tr></thead><tbody>
+    <tr><td><code>ce6dfdc</code></td><td>Apr 18</td><td>Jitesh</td><td>Merge PR #668 — refactor magic link token storage</td></tr>
+    <tr><td><code>8d2718b</code></td><td>Apr 17</td><td>Yuvraj</td><td>Merge PR #661 — export permissions</td></tr>
+    <tr><td><code>8bcc87a</code></td><td>Apr 17</td><td>Jitesh</td><td>Merge PR #652 — Android setup</td></tr>
+    <tr><td><code>f1f4615</code></td><td>Apr 16</td><td>Paras</td><td>refactor: tokenHash as doc ID for O(1) lookup</td></tr>
+    <tr><td><code>50de507</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(admin): expose new export permissions in UI</td></tr>
+    <tr><td><code>029155a</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_kiosks permission</td></tr>
+    <tr><td><code>583f5b2</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_campaigns permission</td></tr>
+    <tr><td><code>612fef3</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_subscriptions permission</td></tr>
+    <tr><td><code>d191940</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #660 — export button filter</td></tr>
+    <tr><td><code>6c06ea6</code></td><td>Apr 15</td><td>Yuvraj</td><td>fix(donations-export): include admin filters</td></tr>
+    <tr><td><code>79d1f2a</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #651 — campaign exceed 100%</td></tr>
+    <tr><td><code>eaac6ce</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #659 — gift aid phantom declarations</td></tr>
+    <tr><td><code>77113a3</code></td><td>Apr 15</td><td>Jitesh</td><td>fix: fallback to card details when NFC not working</td></tr>
+    <tr><td><code>6362068</code></td><td>Apr 15</td><td>Jitesh</td><td>added thank-you with donation amount + campaign name</td></tr>
+    <tr><td><code>7b65f02</code></td><td>Apr 15</td><td>Jitesh</td><td>fix: email logging null exception</td></tr>
+    <tr><td><code>0db8a52</code></td><td>Apr 15</td><td>Jitesh</td><td>added polling tracking + cancel on restart</td></tr>
+  </tbody></table></div>
+  <div class="section">Contributor Summary</div>
+  <div class="card"><table><thead><tr><th>Contributor</th><th>Commits</th><th>Focus</th></tr></thead><tbody>
+    <tr><td>Yuvraj Shishodia</td><td>13</td><td>Export permissions, filter fixes, CI, org settings</td></tr>
+    <tr><td>Jitesh Singh</td><td>12</td><td>Android NFC fallback, thank-you, polling, prefetch</td></tr>
+    <tr><td>Paras (prsrwt)</td><td>4</td><td>tokenHash refactor, campaign >100%, Gift Aid fix</td></tr>
+  </tbody></table></div>
+</div>
 
-            <!-- TOP CHARITIES -->
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">🎯</div>
-                    Top Performing Charities
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Charity Name</th>
-                                <th>Total Raised</th>
-                                <th>Donor Count</th>
-                                <th>Avg Gift</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>British Red Cross</td>
-                                <td>£156,230</td>
-                                <td>428</td>
-                                <td>£365</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>Save the Children</td>
-                                <td>£142,890</td>
-                                <td>387</td>
-                                <td>£369</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>UNICEF UK</td>
-                                <td>£128,450</td>
-                                <td>356</td>
-                                <td>£361</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>Oxfam GB</td>
-                                <td>£115,680</td>
-                                <td>312</td>
-                                <td>£371</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>World Vision UK</td>
-                                <td>£98,760</td>
-                                <td>289</td>
-                                <td>£342</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!-- PULL REQUESTS -->
+<div class="panel" id="p-prs">
+  <div class="section">Open PRs (1)</div>
+  <div class="card"><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Labels</th><th>Created</th></tr></thead><tbody>
+    <tr><td>#669</td><td>Org settings: identity/branding, authz, kiosk branding</td><td>Yuvraj</td><td><span class="pill pill-p1">size:large</span> <span class="pill pill-progress">Backend</span> <span class="pill pill-progress">Admin</span></td><td>Apr 17</td></tr>
+  </tbody></table></div>
+  <div class="section">Merged PRs — April 2026 (12)</div>
+  <div class="card"><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead><tbody>
+    <tr><td>#668</td><td>tokenHash as doc ID for O(1) magic link lookup</td><td>Paras</td><td>Apr 18</td></tr>
+    <tr><td>#661</td><td>Dedicated export permissions</td><td>Yuvraj</td><td>Apr 17</td></tr>
+    <tr><td>#652</td><td>Android complete payment flow</td><td>Jitesh</td><td>Apr 17</td></tr>
+    <tr><td>#660</td><td>Donation export admin filter fix</td><td>Yuvraj</td><td>Apr 15</td></tr>
+    <tr><td>#659</td><td>Gift Aid phantom declarations fix</td><td>Paras</td><td>Apr 15</td></tr>
+    <tr><td>#656</td><td>Operator Gift Aid export permission</td><td>Yuvraj</td><td>Apr 15</td></tr>
+    <tr><td>#655</td><td>Subscription export server-side</td><td>Yuvraj</td><td>Apr 15</td></tr>
+    <tr><td>#654</td><td>Kiosks export server-side</td><td>Yuvraj</td><td>Apr 15</td></tr>
+    <tr><td>#653</td><td>Campaign export server-side</td><td>Yuvraj</td><td>Apr 15</td></tr>
+    <tr><td>#651</td><td>Campaigns exceed 100% goal</td><td>Paras</td><td>Apr 15</td></tr>
+    <tr><td>#626</td><td>Gift Aid CSV injection fix + docs</td><td>Yuvraj</td><td>Apr 10</td></tr>
+    <tr><td>#623</td><td>Server-side donation export</td><td>Yuvraj</td><td>Apr 10</td></tr>
+  </tbody></table></div>
+</div>
 
-        <!-- TAB: DONATIONS -->
-        <div id="donations" class="tab-content">
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">💳</div>
-                    Donation Analytics
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Total Donations</div>
-                        <div class="kpi-value">847,320</div>
-                        <div class="kpi-change">+12.5%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Per Donation</div>
-                        <div class="kpi-value">£248.15</div>
-                        <div class="kpi-change">+4.1%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Conversion Rate</div>
-                        <div class="kpi-value">3.2%</div>
-                        <div class="kpi-change">+0.8%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Repeat Donors</div>
-                        <div class="kpi-value">1,245</div>
-                        <div class="kpi-change">+18.3%</div>
-                    </div>
-                </div>
-            </div>
+<!-- OPEN ISSUES -->
+<div class="panel" id="p-issues">
+  <div class="section">Open Issues (23)</div>
+  <div class="card"><table><thead><tr><th>#</th><th>Title</th><th>Assignee</th><th>Labels</th><th>Created</th></tr></thead><tbody>
+    <tr><td>667</td><td>[Frontend] Improve Thank You Page</td><td>Paras</td><td></td><td>Apr 16</td></tr>
+    <tr><td>666</td><td>[Frontend] Enhance Result Page QR</td><td>Paras</td><td></td><td>Apr 16</td></tr>
+    <tr><td>665</td><td>Frontend – Form Components</td><td>Paras</td><td></td><td>Apr 16</td></tr>
+    <tr><td>664</td><td>Frontend – Gift Aid Page</td><td>Paras</td><td></td><td>Apr 16</td></tr>
+    <tr><td>663</td><td>Backend – completeGiftAidFlow</td><td>Paras</td><td></td><td>Apr 16</td></tr>
+    <tr><td>658</td><td>Document export implementation</td><td>Yuvraj</td><td><span class="pill pill-progress">docs</span></td><td>Apr 14</td></tr>
+    <tr><td>649</td><td>Revamp Magic Link Flow</td><td>Paras</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 13</td></tr>
+    <tr><td>648</td><td>Org Settings Screen</td><td>Jitesh+Yuvraj</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 13</td></tr>
+    <tr><td>647</td><td>Micro-Transaction Shield</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>646</td><td>Super Admin: Stripe billing rates</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>641</td><td>Super Admin pause/unpause</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
+    <tr><td>640</td><td>Stripe KYC gating</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
+    <tr><td>639</td><td>Activity Mode member reference</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
+    <tr><td>638</td><td>Roaming volunteer mode</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
+    <tr><td>637</td><td>Location Gift Aid dashboard</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
+    <tr><td>636</td><td>Per-location capture flow config</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
+    <tr><td>635</td><td>SORP 2026 impact reporting</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
+    <tr><td>634</td><td>CIC validation on onboarding</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
+    <tr><td>633</td><td>Fee transparency disclosure</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
+    <tr><td>629</td><td>GO-LIVE: Location entity GASDS</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
+    <tr><td>610</td><td>declarationIpAddress + captureMethod</td><td>Paras</td><td></td><td>Mar 30</td></tr>
+    <tr><td>609</td><td>ConsentEvents → DonorRecord</td><td>Paras</td><td></td><td>Mar 30</td></tr>
+    <tr><td>583</td><td>Skeleton loading states</td><td>Raaaghav</td><td><span class="pill pill-progress">enhancement</span></td><td>Mar 24</td></tr>
+  </tbody></table></div>
+</div>
 
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">📈</div>
-                    Donation Distribution
-                </div>
-                <div class="chart-container">
-                    <div class="chart-placeholder">Donation Size Distribution Chart</div>
-                </div>
-            </div>
+<!-- SOLUTION BASELINE -->
+<div class="panel" id="p-baseline">
+  <div class="section">Go-Live Components</div>
+  <div class="card"><table><thead><tr><th>Component</th><th>Status</th><th>Progress</th><th>Notes</th></tr></thead><tbody>
+    <tr><td>Kiosk Display</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>Web + Android alpha</td></tr>
+    <tr><td>Tap-to-Pay</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:95%"></div></div></td><td>NFC fallback fixed</td></tr>
+    <tr><td>QR Code Payment</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:90%"></div></div></td><td>#666 enhancement open</td></tr>
+    <tr><td>Stripe Webhooks</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>PaymentIntent live</td></tr>
+    <tr><td>Magic Link Generation</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>#622 + #668 O(1)</td></tr>
+    <tr><td>Magic Link Donor UX</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:60%"></div></div></td><td>#649 + #664-667</td></tr>
+    <tr><td>Gift Aid Kiosk</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:70%"></div></div></td><td>Phantom fix done. Flow review Apr 18</td></tr>
+    <tr><td>Gift Aid Magic Link</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:50%"></div></div></td><td>#663 backend + #664 frontend</td></tr>
+    <tr><td>Consent Ledger</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:40%"></div></div></td><td>#609/#610 stale 20d</td></tr>
+    <tr><td>All Exports (server-side)</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>4/4 complete</td></tr>
+    <tr><td>Export Permissions</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>161 users migrated</td></tr>
+    <tr><td>Org Settings</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:85%"></div></div></td><td>PR #669 open</td></tr>
+    <tr><td>Kiosk Branding</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:80%"></div></div></td><td>In PR #669</td></tr>
+    <tr><td>Android App</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:75%"></div></div></td><td>Alpha out. Demo pending</td></tr>
+    <tr><td>Campaign >100%</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>#651 merged</td></tr>
+    <tr><td>HMRC R68 Export</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:60%"></div></div></td><td>Monthly batching needed</td></tr>
+    <tr><td>KYC Gate</td><td><span class="pill pill-p0">P0</span></td><td><div class="progress"><div class="progress-bar pg-red" style="width:5%"></div></div></td><td>#640 unassigned</td></tr>
+    <tr><td>Super Admin Panel</td><td><span class="pill pill-p0">P0</span></td><td><div class="progress"><div class="progress-bar pg-red" style="width:5%"></div></div></td><td>#641 unassigned</td></tr>
+    <tr><td>CIC Validation</td><td><span class="pill pill-p0">P0</span></td><td><div class="progress"><div class="progress-bar pg-red" style="width:5%"></div></div></td><td>#634 unassigned</td></tr>
+    <tr><td>Fee Transparency</td><td><span class="pill pill-p0">P0</span></td><td><div class="progress"><div class="progress-bar pg-red" style="width:5%"></div></div></td><td>#633 unassigned</td></tr>
+    <tr><td>Compliance Lock</td><td><span class="pill pill-p0">P0</span></td><td><div class="progress"><div class="progress-bar pg-red" style="width:5%"></div></div></td><td>No issue yet</td></tr>
+  </tbody></table></div>
+</div>
 
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">🔍</div>
-                    Recent Donations
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Donor</th>
-                                <th>Charity</th>
-                                <th>Amount</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>2026-04-19</td>
-                                <td>Anonymous</td>
-                                <td>Save the Children</td>
-                                <td>£500</td>
-                                <td>Card Tap</td>
-                                <td><span class="badge badge-success">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>2026-04-19</td>
-                                <td>John Smith</td>
-                                <td>British Red Cross</td>
-                                <td>£250</td>
-                                <td>QR Code</td>
-                                <td><span class="badge badge-success">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>2026-04-18</td>
-                                <td>Jane Doe</td>
-                                <td>UNICEF UK</td>
-                                <td>£150</td>
-                                <td>Magic Link</td>
-                                <td><span class="badge badge-success">Completed</span></td>
-                            </tr>
-                            <tr>
-                                <td>2026-04-18</td>
-                                <td>Robert Wilson</td>
-                                <td>Oxfam GB</td>
-                                <td>£300</td>
-                                <td>Card Tap</td>
-                                <td><span class="badge badge-warning">Pending</span></td>
-                            </tr>
-                            <tr>
-                                <td>2026-04-17</td>
-                                <td>Sarah Johnson</td>
-                                <td>World Vision UK</td>
-                                <td>£200</td>
-                                <td>QR Code</td>
-                                <td><span class="badge badge-success">Completed</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!-- TEAM -->
+<div class="panel" id="p-team">
+  <div class="section">Team Status</div>
+  <div class="card"><table><thead><tr><th>Member</th><th>Role</th><th>Last Activity</th><th>Focus</th><th>Status</th></tr></thead><tbody>
+    <tr><td><strong>Yuvraj</strong></td><td>Frontend + Backend</td><td>Apr 18</td><td>PR #669, CI fixes, export docs</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Paras</strong></td><td>Magic Link / Backend</td><td>Apr 18</td><td>Gift Aid flow, #649, #663-667</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Jitesh</strong></td><td>Lead Dev / Android</td><td>Apr 18</td><td>Android, PR merges. Demo overdue</td><td><span class="pill pill-p1">Pending</span></td></tr>
+    <tr><td><strong>Dharmendra</strong></td><td>Infrastructure</td><td>Apr 19</td><td>Chasing updates, PR review</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Qamar</strong></td><td>PM</td><td>Apr 15</td><td>Gift Aid analysis, decisions</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Shipra</strong></td><td>Coordinator</td><td>Apr 6</td><td>Tracking sheets</td><td><span class="pill pill-pending">Quiet</span></td></tr>
+    <tr><td><strong>Yash</strong></td><td>Dev</td><td>—</td><td>No recent activity</td><td><span class="pill pill-pending">Inactive</span></td></tr>
+  </tbody></table></div>
+</div>
 
-        <!-- TAB: GIFT AID -->
-        <div id="giftaid" class="tab-content">
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">🎁</div>
-                    Gift Aid Performance
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Total Gift Aid Claimed</div>
-                        <div class="kpi-value">£211,830</div>
-                        <div class="kpi-change">+15.3%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Gift Aid Eligible</div>
-                        <div class="kpi-value">2,847</div>
-                        <div class="kpi-change">+22.1% vs last period</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Gift Aid Per Donor</div>
-                        <div class="kpi-value">£74.47</div>
-                        <div class="kpi-change">+6.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Gift Aid %</div>
-                        <div class="kpi-value">25.0%</div>
-                        <div class="kpi-change">+2.3%</div>
-                    </div>
-                </div>
-            </div>
+<!-- SLACK -->
+<div class="panel" id="p-slack">
+  <div class="section">Slack #charity_project — Apr 12-19</div>
+  <div class="card">
+    <div class="tl-item"><div class="tl-date">Apr 19</div><div class="tl-author">Dharmendra</div><div class="tl-text">Chased Jitesh: "Still haven't seen the post?" re Android demo video.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Paras</div><div class="tl-text">Shared Meet link, asked Jitesh to review final Gift Aid flow.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Dharmendra</div><div class="tl-text">Chased Paras on PR #668. Asked Jitesh for demo. Shared openscreen tool.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Yuvraj</div><div class="tl-text">CI fixes: backend Jest tests wired in, Gift Aid CSV tests updated. All green.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-author">Yuvraj</div><div class="tl-text">3 demo videos. PR #669 raised (large). Permission migration: 161 users, 157 updated.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-author">Yuvraj</div><div class="tl-text">Working on #648 (Org Settings). Step 1 done: contract + validation.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-author">Qamar</div><div class="tl-text">Shared Gift Aid Analysis HTML.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 14</div><div class="tl-author">Qamar</div><div class="tl-text">Updated Gift Aid Analysis: Compliance Lock, R68, GASDS tracking.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 13</div><div class="tl-author">Yuvraj</div><div class="tl-text">Created export backend tickets. Working on #642.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 12</div><div class="tl-author">Jitesh</div><div class="tl-text">First Android APK alpha. Full donation flow. 70.1 MB.</div></div>
+  </div>
+</div>
 
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">📊</div>
-                    Gift Aid Trend
-                </div>
-                <div class="chart-container">
-                    <div class="chart-placeholder">Gift Aid Volume & Claim Rate Chart</div>
-                </div>
-            </div>
+<!-- DECISIONS -->
+<div class="panel" id="p-decisions">
+  <div class="section">PM Decisions</div>
+  <div class="card"><table><thead><tr><th>Date</th><th>Decision</th><th>By</th><th>Ref</th></tr></thead><tbody>
+    <tr><td>Apr 19</td><td>Token expiry: 30d confirmed. Masked email. Kiosk T&Cs.</td><td>Qamar</td><td>#587</td></tr>
+    <tr><td>Apr 19</td><td>Payment retry: session-scoped, editable, no re-declaration</td><td>Qamar</td><td>#596</td></tr>
+    <tr><td>Apr 18</td><td>tokenHash as doc ID merged — O(1) lookup</td><td>Jitesh</td><td>#668</td></tr>
+    <tr><td>Apr 17</td><td>Permission migration: 157 users updated</td><td>Yuvraj</td><td>—</td></tr>
+    <tr><td>Apr 14</td><td>Compliance Lock + record segregation + R68 batching = P0</td><td>Qamar</td><td>—</td></tr>
+    <tr><td>Apr 3</td><td>Token expiry: 30 days (not 72h)</td><td>Qamar</td><td>#587</td></tr>
+    <tr><td>Apr 3</td><td>Parallel track strategy confirmed</td><td>Qamar</td><td>—</td></tr>
+  </tbody></table></div>
+</div>
 
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">✅</div>
-                    Verification Status
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Verification Method</th>
-                                <th>Count</th>
-                                <th>Success Rate</th>
-                                <th>Avg Time</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Postcode Match</td>
-                                <td>2,156</td>
-                                <td>94.2%</td>
-                                <td>2.3 sec</td>
-                                <td><span class="badge badge-success">Optimal</span></td>
-                            </tr>
-                            <tr>
-                                <td>OTP Verification</td>
-                                <td>691</td>
-                                <td>87.5%</td>
-                                <td>4.8 sec</td>
-                                <td><span class="badge badge-success">Good</span></td>
-                            </tr>
-                            <tr>
-                                <td>Manual Review</td>
-                                <td>45</td>
-                                <td>100%</td>
-                                <td>2.5 min</td>
-                                <td><span class="badge badge-info">Review</span></td>
-                            </tr>
-                            <tr>
-                                <td>Failed Verification</td>
-                                <td>28</td>
-                                <td>0%</td>
-                                <td>3.1 sec</td>
-                                <td><span class="badge badge-danger">Failed</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!-- RISKS & P0s -->
+<div class="panel" id="p-risks">
+  <div class="section">P0 Must-Haves</div>
+  <div class="card"><table><thead><tr><th>Item</th><th>Issue</th><th>Assigned</th><th>Status</th></tr></thead><tbody>
+    <tr><td>Stripe KYC gating</td><td>#640</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>Super Admin panel</td><td>#641</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>CIC validation</td><td>#634</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>Fee transparency</td><td>#633</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>GASDS Location entity</td><td>#629</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>Campaign Compliance Lock</td><td>—</td><td>—</td><td><span class="pill pill-p0">No issue</span></td></tr>
+    <tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras</td><td><span class="pill pill-pending">Stale 20d</span></td></tr>
+  </tbody></table></div>
+  <div class="section">Risk Matrix</div>
+  <div class="card"><table><thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead><tbody>
+    <tr><td>5 P0 items unassigned, GTM 20 days away</td><td><span class="pill pill-p0">Critical</span></td><td>Assign KYC + Super Admin Monday</td></tr>
+    <tr><td>No charity qualification gates in onboarding — registered vs applying, GA history vs new to GA</td><td><span class="pill pill-p0">Critical</span></td><td>Build registration + GA history check into onboarding flow. Tier-aware dashboard for GASDS.</td></tr>
+    <tr><td>Consent ledger stale 20 days</td><td><span class="pill pill-p0">Critical</span></td><td>Check Paras capacity</td></tr>
+    <tr><td>PR #669 blocking org settings</td><td><span class="pill pill-p1">High</span></td><td>Dharmendra prioritise review</td></tr>
+    <tr><td>Android untested by team</td><td><span class="pill pill-p1">High</span></td><td>Jitesh share demo video</td></tr>
+    <tr><td>Standup paused 22 days</td><td><span class="pill pill-p1">High</span></td><td>Restart Geekbot</td></tr>
+    <tr><td>Yash, Shipra inactive</td><td><span class="pill pill-p1">Medium</span></td><td>PM check-in</td></tr>
+  </tbody></table></div>
+</div>
 
-        <!-- TAB: RECURRING -->
-        <div id="recurring" class="tab-content">
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">🔄</div>
-                    Recurring Donation Metrics
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Active Subscriptions</div>
-                        <div class="kpi-value">487</div>
-                        <div class="kpi-change">+14.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Recurring Revenue</div>
-                        <div class="kpi-value">£128,450</div>
-                        <div class="kpi-change">+19.7%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Churn Rate</div>
-                        <div class="kpi-value">3.8%</div>
-                        <div class="kpi-change">-1.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Monthly Gift</div>
-                        <div class="kpi-value">£26.35</div>
-                        <div class="kpi-change">+5.3%</div>
-                    </div>
-                </div>
-            </div>
+<!-- DATA FLOW & COMPLIANCE -->
+<div class="panel" id="p-dataflow">
 
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">📉</div>
-                    Churn Analysis
-                </div>
-                <div class="chart-container">
-                    <div class="chart-placeholder">Churn Rate & Retention Trend</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: PAYMENTS -->
-        <div id="payments" class="tab-content">
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">💳</div>
-                    Payment Processing
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Total Transactions</div>
-                        <div class="kpi-value">3,412</div>
-                        <div class="kpi-change">+8.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Success Rate</div>
-                        <div class="kpi-value">99.2%</div>
-                        <div class="kpi-change">+0.3%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Failed Transactions</div>
-                        <div class="kpi-value">27</div>
-                        <div class="kpi-change">-4 vs last period</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Processing Time</div>
-                        <div class="kpi-value">1.8 sec</div>
-                        <div class="kpi-change">-0.2 sec</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">⚠️</div>
-                    Payment Failures
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Error Type</th>
-                                <th>Count</th>
-                                <th>Percentage</th>
-                                <th>Recovery Rate</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Card Declined</td>
-                                <td>12</td>
-                                <td>44.4%</td>
-                                <td>75.0%</td>
-                                <td><span class="badge badge-warning">Monitor</span></td>
-                            </tr>
-                            <tr>
-                                <td>Timeout</td>
-                                <td>8</td>
-                                <td>29.6%</td>
-                                <td>62.5%</td>
-                                <td><span class="badge badge-warning">Monitor</span></td>
-                            </tr>
-                            <tr>
-                                <td>Network Error</td>
-                                <td>5</td>
-                                <td>18.5%</td>
-                                <td>100%</td>
-                                <td><span class="badge badge-success">Good</span></td>
-                            </tr>
-                            <tr>
-                                <td>Fraud Check</td>
-                                <td>2</td>
-                                <td>7.4%</td>
-                                <td>50.0%</td>
-                                <td><span class="badge badge-info">Review</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB: USERS -->
-        <div id="users" class="tab-content">
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">👥</div>
-                    User Analytics
-                </div>
-                <div class="kpi-strip">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Total Users</div>
-                        <div class="kpi-value">12,456</div>
-                        <div class="kpi-change">+31.2%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Active Users (30d)</div>
-                        <div class="kpi-value">8,234</div>
-                        <div class="kpi-change">+24.5%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">New Users</div>
-                        <div class="kpi-value">2,847</div>
-                        <div class="kpi-change">+18.6%</div>
-                    </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">Avg Session Duration</div>
-                        <div class="kpi-value">4m 23s</div>
-                        <div class="kpi-change">+45 seconds</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">📱</div>
-                    Device Breakdown
-                </div>
-                <div class="chart-container">
-                    <div class="chart-placeholder">Device Type Distribution</div>
-                </div>
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    <div class="section-icon">🌍</div>
-                    Geographic Distribution
-                </div>
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Country/Region</th>
-                                <th>Users</th>
-                                <th>Donations</th>
-                                <th>Avg Donation</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>United Kingdom</td>
-                                <td>10,234</td>
-                                <td>3,125</td>
-                                <td>£271.42</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>United States</td>
-                                <td>1,245</td>
-                                <td>187</td>
-                                <td>£305.28</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>Germany</td>
-                                <td>567</td>
-                                <td>82</td>
-                                <td>£287.19</td>
-                                <td><span class="badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                                <td>Other</td>
-                                <td>410</td>
-                                <td>18</td>
-                                <td>£219.50</td>
-                                <td><span class="badge badge-info">Growing</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <div class="section">End-to-End Donor Data Flow</div>
+  <div class="card" style="overflow-x:auto">
+    <div style="display:flex;gap:0;align-items:stretch;flex-wrap:nowrap;min-width:1100px">
+      <div style="flex:1;background:var(--bg-tertiary);border-radius:10px 0 0 10px;padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">📱</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">1. Kiosk / Device</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">Donor taps card or scans QR. Selects [Donation] or [Payment].</div>
+        <div style="font-size:9px;color:var(--accent-light);margin-top:6px">Two-Button Front Door<br>Compliance routing invisible</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">💳</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">2. Stripe Payment</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">PaymentIntent → Webhook → Firestore <code>donations</code></div>
+        <div style="font-size:9px;color:var(--success);margin-top:6px">PCI DSS: Stripe handles<br>1.2% charity / 1.5% activity</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">🔗</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">3. Magic Link</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">SHA-256 tokenHash = doc ID.<br>O(1) Firestore lookup. 30d expiry.</div>
+        <div style="font-size:9px;color:var(--warning);margin-top:6px">Collection: giftAidFollowUpTokens<br>OTP email verification first</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">📝</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">4. Gift Aid Capture</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">Name, HOME address, postcode, UK taxpayer ✓, declaration text</div>
+        <div style="font-size:9px;color:var(--accent-light);margin-top:6px">Collection: giftAidDeclarations<br>6-year HMRC retention</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">✅</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">5. Consent Ledger</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">ConsentEvents + IP + captureMethod → DonorRecord</div>
+        <div style="font-size:9px;color:var(--warning);margin-top:6px">Collection: donorProfiles<br>#609/#610 — WIP (stale 20d)</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
+        <div style="font-size:20px;margin-bottom:6px">🔄</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">6. Reconciliation</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">Match donation → declaration → donor. Tag GA-eligible.</div>
+        <div style="font-size:9px;color:var(--text-secondary);margin-top:6px">Mode tagging by campaign:<br>Donation Mode / Activity Mode</div>
+      </div>
+      <div style="flex:1;background:var(--bg-tertiary);border-radius:0 10px 10px 0;padding:14px 12px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">🏛️</div>
+        <div style="font-size:11px;font-weight:700;color:#fff">7. HMRC Export</div>
+        <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">R68 monthly batch → CSV.<br>GASDS separate claim.</div>
+        <div style="font-size:9px;color:var(--danger);margin-top:6px">Collection: hmrcClaimBatches<br>April 6 tax year boundary</div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        function switchTab(e, tabName) {
-            // Hide all tabs
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => {
-                content.classList.remove('active');
-            });
+  <div class="section">Firestore Collections — Data Architecture</div>
+  <div class="card"><table><thead><tr><th>Collection</th><th>Purpose</th><th>Key Fields</th><th>Retention</th><th>Status</th></tr></thead><tbody>
+    <tr><td><strong>donations</strong></td><td>Every payment event from Stripe webhook</td><td>amount, currency, stripePaymentIntentId, campaignId, kioskId, timestamp, donorEmail</td><td>Indefinite</td><td><span class="pill pill-done">Live</span></td></tr>
+    <tr><td><strong>giftAidDeclarations</strong></td><td>Donor Gift Aid declarations (HMRC-critical)</td><td>fullName, homeAddress, postcode, ukTaxpayer, declarationText, declarationTimestamp, captureMethod</td><td>6 years (HMRC)</td><td><span class="pill pill-progress">WIP</span></td></tr>
+    <tr><td><strong>donorProfiles</strong></td><td>Persistent donor identity + consent record</td><td>email, name, consentEvents[], declarationIpAddress, captureMethod</td><td>Until consent withdrawn</td><td><span class="pill pill-pending">Stale #609/#610</span></td></tr>
+    <tr><td><strong>giftAidFollowUpTokens</strong></td><td>Magic link tokens (tokenHash = doc ID)</td><td>tokenHash, donationId, email (masked in API), expiresAt, used</td><td>30 days (auto-expire)</td><td><span class="pill pill-done">Done (PR #668)</span></td></tr>
+    <tr><td><strong>hmrcClaimBatches</strong></td><td>R68 monthly claim batches for HMRC export</td><td>taxYear, batchMonth, declarations[], totalClaimed, status, exportedAt</td><td>6 years</td><td><span class="pill pill-p0">Not built</span></td></tr>
+  </tbody></table></div>
 
-            // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
+  <div class="section">Compliance Matrix</div>
+  <div class="card"><table><thead><tr><th style="min-width:160px">Regulatory Body / Rule</th><th>Requirement</th><th>SwiftCause Implementation</th><th style="min-width:100px">Status</th></tr></thead><tbody>
+    <tr style="border-left:3px solid var(--danger)"><td><strong>HMRC R68</strong><br><span style="font-size:10px;color:var(--text-secondary)">Gift Aid claim form</span></td><td>Monthly batch of GA declarations with April 6 tax year boundary. Donor name, address, postcode, amounts, dates. Charity reg number. 6-year retention.</td><td>GA CSV export exists (sanitised, PR #626). Monthly auto-batching <strong>NOT built</strong>. Tax year boundary logic <strong>NOT built</strong>. hmrcClaimBatches collection designed but empty.</td><td><span class="pill pill-p0">Partial — P0 gaps</span></td></tr>
+    <tr style="border-left:3px solid var(--danger)"><td><strong>HMRC GASDS</strong><br><span style="font-size:10px;color:var(--text-secondary)">Small Donations Scheme</span></td><td>25% on anonymous ≤£30 donations. £8k base cap/yr. Requires 2+ years GA history. Separate claim from R68.</td><td>No GASDS tracking or claim flow built. Base £8k doesn't need community building — <strong>sufficient for pilot</strong>. No GASDS claim export.</td><td><span class="pill pill-p0">Not built — P0</span></td></tr>
+    <tr style="border-left:3px solid var(--warning)"><td><strong>GASDS Community Building</strong><br><span style="font-size:10px;color:var(--text-secondary)">Doubled cap (£16k)</span></td><td>6 events + 10 donors per building/year. Raises cap from £8k → £16k. HMRC 6-event/10-donor threshold.</td><td>Only <code>kiosk_id</code> exists. Building_ID, event counter, donor counter all <strong>unbuilt</strong>. Growth-tier feature — <strong>not a pilot blocker</strong>.</td><td><span class="pill pill-pending">Deferred (growth)</span></td></tr>
+    <tr style="border-left:3px solid var(--danger)"><td><strong>Gift Aid Declarations</strong><br><span style="font-size:10px;color:var(--text-secondary)">HMRC requirements</span></td><td>Full name, HOME address, postcode (primary validation check), UK taxpayer confirmation, declaration text, date, capture method.</td><td>Kiosk capture partially built (phantom fix PR #659). Magic link flow WIP (#663/#664). Email OTP verification before showing donor data. Postcode = main GA validation check.</td><td><span class="pill pill-progress">In Progress</span></td></tr>
+    <tr style="border-left:3px solid var(--danger)"><td><strong>Campaign Compliance Lock</strong><br><span style="font-size:10px;color:var(--text-secondary)">Two-pile logic</span></td><td>Donation Mode: auto-GA eligible, Stripe 1.2%+20p.<br>Activity Mode: GA hard-locked OFF (trading income), Stripe 1.5%+20p.<br>Mode set at campaign creation, immutable.</td><td><strong>NOT built</strong>. No mode field on campaigns. No enforcement. Confirmed P0 must-have (Apr 14). No GitHub issue yet.</td><td><span class="pill pill-p0">Not built — P0</span></td></tr>
+    <tr style="border-left:3px solid var(--success)"><td><strong>PCI DSS</strong><br><span style="font-size:10px;color:var(--text-secondary)">Card data security</span></td><td>No card numbers touch SwiftCause servers. All payment data processed by Stripe.</td><td>Stripe Elements / Payment Intents. No raw card data in Firestore. Webhook-only payment confirmation. <strong>Fully compliant by architecture.</strong></td><td><span class="pill pill-done">Compliant</span></td></tr>
+    <tr style="border-left:3px solid var(--warning)"><td><strong>GDPR / Data Protection</strong><br><span style="font-size:10px;color:var(--text-secondary)">Donor personal data</span></td><td>Consent before storing personal data. Right to erasure. Masked email in APIs. Minimal data collection. OTP verification before revealing donor info.</td><td>30-day token auto-expiry. Masked email in validation API (#587). OTP required before showing donor data. Consent ledger WIP (#609/#610). <strong>Right-to-erasure flow not built.</strong></td><td><span class="pill pill-progress">Partial</span></td></tr>
+    <tr style="border-left:3px solid var(--danger)"><td><strong>KYC / Entity Validation</strong><br><span style="font-size:10px;color:var(--text-secondary)">Charity-only onboarding</span></td><td>Only registered charities (CC/OSCR/CCNI). CICs explicitly excluded. Stripe KYC gate. Super Admin pause/unpause.</td><td><strong>NOT built</strong>. #640 (KYC gate) + #641 (Super Admin) + #634 (CIC validation) all P0, all unassigned.</td><td><span class="pill pill-p0">Not built — P0</span></td></tr>
+    <tr style="border-left:3px solid var(--warning)"><td><strong>Fee Transparency</strong><br><span style="font-size:10px;color:var(--text-secondary)">Fundraising Code of Practice</span></td><td>Donors/charities must know what fees are charged. Clear disclosure before transaction.</td><td><strong>NOT built</strong>. #633 unassigned. P0 for go-live.</td><td><span class="pill pill-p0">Not built — P0</span></td></tr>
+    <tr style="border-left:3px solid var(--success)"><td><strong>Two-Button Front Door</strong><br><span style="font-size:10px;color:var(--text-secondary)">UX principle (locked)</span></td><td>Donor sees only [Payment] / [Donation]. No third button. Compliance routing stays invisible to donor.</td><td>Locked UX principle. Kiosk UI shows two buttons. Campaign mode determines backend compliance path. <strong>No phase-2 third button.</strong></td><td><span class="pill pill-done">Design locked</span></td></tr>
+  </tbody></table></div>
 
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
-            e.target.classList.add('active');
-        }
-    </script>
+  <div class="section">Compliance Gap Summary</div>
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-label">Fully Compliant</div><div class="kpi-value">2</div><div class="kpi-sub">PCI DSS · Two-Button UX</div></div>
+    <div class="kpi amber"><div class="kpi-label">Partial / In Progress</div><div class="kpi-value">3</div><div class="kpi-sub">Gift Aid · GDPR · GASDS Comm. Bldg</div></div>
+    <div class="kpi red"><div class="kpi-label">Not Built — P0</div><div class="kpi-value">5</div><div class="kpi-sub">R68 · GASDS · Compliance Lock · KYC · Fees</div></div>
+  </div>
+  <div class="card" style="border-left:3px solid var(--danger)">
+    <div class="card-title" style="color:var(--danger)">⚠️ Critical Pre-Launch Compliance Gaps</div>
+    <table><thead><tr><th>Gap</th><th>Impact if Missing</th><th>Issue</th><th>Effort Est.</th></tr></thead><tbody>
+      <tr><td>Campaign Compliance Lock (Donation vs Activity mode)</td><td>Cannot segregate GA-eligible from trading income. HMRC risk: claiming GA on activities = penalty.</td><td>No issue yet</td><td>Medium — campaign schema + UI + enforcement</td></tr>
+      <tr><td>R68 monthly auto-batching with Apr 6 boundary</td><td>Cannot submit HMRC claims. Charities lose 25% reclaim on launch donations.</td><td>Part of baseline</td><td>Medium — batch logic + tax year split + export</td></tr>
+      <tr><td>GASDS base claim flow</td><td>Miss 25% on anonymous ≤£30 donations. Major revenue for small charities.</td><td>#629</td><td>Medium — separate from R68, needs own claim path</td></tr>
+      <tr><td>KYC + CIC gate + Super Admin</td><td>Non-charities could onboard. Regulatory exposure. No emergency brake.</td><td>#640 #641 #634</td><td>Large — 3 linked items, all unassigned</td></tr>
+      <tr><td>Fee transparency disclosure</td><td>Breaches Fundraising Code of Practice. Reputational risk at launch.</td><td>#633</td><td>Small — UI disclosure before payment</td></tr>
+    </tbody></table>
+  </div>
+
+</div>
+
+<!-- GTM TIMELINE -->
+<div class="panel" id="p-timeline">
+  <div class="section">GTM Countdown — May 9, 2026 (20 days)</div>
+  <div class="card"><table><thead><tr><th>Week</th><th>Dates</th><th>Focus</th><th>Milestones</th></tr></thead><tbody>
+    <tr><td><strong>This Week</strong></td><td>Apr 19-25</td><td>Merge #669, assign P0s, Gift Aid magic link</td><td>#669 merged, #640/#641 assigned, #663/#664 done</td></tr>
+    <tr><td>Week 2</td><td>Apr 26 - May 2</td><td>KYC gate, consent ledger, compliance lock</td><td>#640 MVP, #609/#610 done, compliance lock spec'd</td></tr>
+    <tr><td>Launch</td><td>May 3-9</td><td>Integration test, pilot onboarding</td><td>First 5 charities. Full e2e flow</td></tr>
+    <tr><td>Post-Launch</td><td>May 10+</td><td>Mass rollout, recurring, donor portal</td><td>Scale to pipeline</td></tr>
+  </tbody></table></div>
+  <div class="section">Go-Live Checklist</div>
+  <div class="card"><table><thead><tr><th>Requirement</th><th>Status</th></tr></thead><tbody>
+    <tr><td>Kiosk displays campaigns + accepts payments</td><td><span class="pill pill-done">Done</span></td></tr>
+    <tr><td>Stripe webhooks process payments</td><td><span class="pill pill-done">Done</span></td></tr>
+    <tr><td>Magic link generated + emailed</td><td><span class="pill pill-done">Done</span></td></tr>
+    <tr><td>Donor opens link → Gift Aid → consent</td><td><span class="pill pill-progress">In Progress</span></td></tr>
+    <tr><td>HMRC R68 export available</td><td><span class="pill pill-progress">Partial</span></td></tr>
+    <tr><td>KYC gate prevents unverified orgs</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>Super Admin pause/unpause</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>CIC validation</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>Charity qualification gates (registration + GA history check) in onboarding</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>Tier-aware dashboard (GASDS hidden for Tier 2 / new-to-GA charities)</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>Fee transparency disclosure</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+    <tr><td>Campaign Compliance Lock</td><td><span class="pill pill-p0">Not Started</span></td></tr>
+  </tbody></table></div>
+</div>
+
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="m-merged"><div class="modal"><button class="modal-x" onclick="hideM('m-merged')">&times;</button><h3>Merged PRs — Apr 2026 (12)</h3><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead><tbody>
+<tr><td>#668</td><td>tokenHash O(1) lookup</td><td>Paras</td><td>Apr 18</td></tr>
+<tr><td>#661</td><td>Export permissions</td><td>Yuvraj</td><td>Apr 17</td></tr>
+<tr><td>#652</td><td>Android payment flow</td><td>Jitesh</td><td>Apr 17</td></tr>
+<tr><td>#660</td><td>Donation export filter</td><td>Yuvraj</td><td>Apr 15</td></tr>
+<tr><td>#659</td><td>Gift Aid phantom fix</td><td>Paras</td><td>Apr 15</td></tr>
+<tr><td>#656</td><td>Operator export perm</td><td>Yuvraj</td><td>Apr 15</td></tr>
+<tr><td>#655</td><td>Subscription export</td><td>Yuvraj</td><td>Apr 15</td></tr>
+<tr><td>#654</td><td>Kiosks export</td><td>Yuvraj</td><td>Apr 15</td></tr>
+<tr><td>#653</td><td>Campaign export</td><td>Yuvraj</td><td>Apr 15</td></tr>
+<tr><td>#651</td><td>Campaign >100%</td><td>Paras</td><td>Apr 15</td></tr>
+<tr><td>#626</td><td>CSV injection fix</td><td>Yuvraj</td><td>Apr 10</td></tr>
+<tr><td>#623</td><td>Donation export</td><td>Yuvraj</td><td>Apr 10</td></tr>
+</tbody></table></div></div>
+
+<div class="modal-bg" id="m-openpr"><div class="modal"><button class="modal-x" onclick="hideM('m-openpr')">&times;</button><h3>Open PRs (1)</h3><table><thead><tr><th>PR</th><th>Title</th><th>Author</th></tr></thead><tbody>
+<tr><td>#669</td><td>Org settings: identity/branding, authz, kiosk branding</td><td>Yuvraj</td></tr>
+</tbody></table></div></div>
+
+<div class="modal-bg" id="m-issues"><div class="modal"><button class="modal-x" onclick="hideM('m-issues')">&times;</button><h3>Open Issues (23)</h3><p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">8 assigned · 15 unassigned</p><table><thead><tr><th>#</th><th>Title</th><th>Assignee</th></tr></thead><tbody>
+<tr><td>667-663</td><td>5x magic link frontend/backend (Paras)</td><td>Paras</td></tr>
+<tr><td>658</td><td>Export docs</td><td>Yuvraj</td></tr>
+<tr><td>649</td><td>Revamp Magic Link</td><td>Paras</td></tr>
+<tr><td>648</td><td>Org Settings</td><td>Jitesh+Yuvraj</td></tr>
+<tr><td>647-629</td><td>13 unassigned items</td><td>—</td></tr>
+<tr><td>610,609</td><td>Consent Ledger</td><td>Paras</td></tr>
+<tr><td>583</td><td>Skeleton loading</td><td>Raaaghav</td></tr>
+</tbody></table></div></div>
+
+<div class="modal-bg" id="m-p0"><div class="modal"><button class="modal-x" onclick="hideM('m-p0')">&times;</button><h3>P0 Must-Haves (7)</h3><table><thead><tr><th>Item</th><th>Issue</th><th>Status</th></tr></thead><tbody>
+<tr><td>KYC gating</td><td>#640</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>Super Admin</td><td>#641</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>CIC validation</td><td>#634</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>Fee transparency</td><td>#633</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>GASDS Location</td><td>#629</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>Compliance Lock</td><td>—</td><td style="color:var(--danger)">No issue</td></tr>
+<tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras (stale)</td></tr>
+</tbody></table></div></div>
+
+<script>
+document.querySelectorAll('.nav-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('p-'+t.dataset.panel).classList.add('active')})});
+function showM(id){document.getElementById(id).classList.add('show')}
+function hideM(id){document.getElementById(id).classList.remove('show')}
+document.querySelectorAll('.modal-bg').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')})});
+</script>
 </body>
 </html>
