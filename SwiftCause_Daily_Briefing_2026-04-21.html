@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause Daily Briefing — 21 April 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:#0f1117; color:#e1e4ea; min-height:100vh; }
+  .header { background:linear-gradient(135deg,#1a1d28 0%,#252836 100%); padding:24px 32px; border-bottom:1px solid #2d3148; display:flex; justify-content:space-between; align-items:center; }
+  .header h1 { font-size:22px; font-weight:700; color:#fff; }
+  .header h1 span { color:#6c63ff; }
+  .header .date { font-size:13px; color:#8b90a0; }
+  .header .badge { background:#6c63ff; color:#fff; font-size:11px; padding:4px 10px; border-radius:12px; font-weight:600; }
+  .tabs { display:flex; background:#1a1d28; padding:0 24px; border-bottom:1px solid #2d3148; overflow-x:auto; }
+  .tab { padding:12px 20px; font-size:13px; font-weight:500; color:#8b90a0; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; transition:all .2s; }
+  .tab:hover { color:#c5c9d6; }
+  .tab.active { color:#6c63ff; border-bottom-color:#6c63ff; }
+  .content { padding:24px 32px; max-width:1400px; margin:0 auto; }
+  .tab-panel { display:none; }
+  .tab-panel.active { display:block; }
+  .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:28px; }
+  .kpi { background:#1a1d28; border:1px solid #2d3148; border-radius:12px; padding:20px; cursor:pointer; transition:all .2s; position:relative; }
+  .kpi:hover { border-color:#6c63ff; transform:translateY(-2px); box-shadow:0 4px 20px rgba(108,99,255,.15); }
+  .kpi .label { font-size:11px; color:#8b90a0; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+  .kpi .value { font-size:28px; font-weight:700; color:#fff; }
+  .kpi .sub { font-size:11px; color:#6b7080; margin-top:4px; }
+  .kpi.green .value { color:#34d399; }
+  .kpi.amber .value { color:#fbbf24; }
+  .kpi.red .value { color:#f87171; }
+  .kpi.purple .value { color:#a78bfa; }
+  .card { background:#1a1d28; border:1px solid #2d3148; border-radius:12px; padding:20px; margin-bottom:16px; }
+  .card h3 { font-size:15px; font-weight:600; color:#fff; margin-bottom:12px; }
+  .pill { display:inline-block; font-size:11px; font-weight:600; padding:3px 10px; border-radius:10px; }
+  .pill.p0 { background:rgba(248,113,113,.2); color:#f87171; }
+  .pill.p1 { background:rgba(251,191,36,.15); color:#fbbf24; }
+  .pill.done { background:rgba(52,211,153,.15); color:#34d399; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; padding:10px 12px; background:#252836; color:#8b90a0; font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+  td { padding:10px 12px; border-bottom:1px solid #1e2130; }
+  .timeline-item { display:flex; gap:12px; padding:12px 0; border-bottom:1px solid #1e2130; }
+  .timeline-date { min-width:70px; font-size:11px; color:#6b7080; font-weight:500; }
+  .timeline-text { font-size:13px; color:#c5c9d6; line-height:1.5; }
+  .section-heading { font-size:16px; font-weight:700; color:#fff; margin:24px 0 16px; padding-bottom:8px; border-bottom:1px solid #2d3148; }
+  .modal-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.7); z-index:100; justify-content:center; align-items:center; }
+  .modal-overlay.show { display:flex; }
+  .modal { background:#1a1d28; border:1px solid #2d3148; border-radius:16px; padding:24px; max-width:700px; width:90%; max-height:80vh; overflow-y:auto; }
+  .modal h3 { font-size:16px; font-weight:700; color:#fff; margin-bottom:16px; }
+  .modal-close { float:right; background:none; border:none; color:#8b90a0; font-size:20px; cursor:pointer; }
+  @media(max-width:768px) { .content { padding:16px; } .kpi-grid { grid-template-columns:repeat(2,1fr); } .header { padding:16px; flex-direction:column; gap:8px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1><span>SwiftCause</span> Daily Briefing</h1>
+    <div class="date">Tuesday 21 April 2026 — Sprint Day 22 — Repo: SwiftCause_Mono — Afternoon refresh 21 Apr 2026 13:00 UTC</div>
+  </div>
+  <div class="badge">LIVE DATA</div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" data-tab="summary">Summary</div>
+  <div class="tab" data-tab="github">GitHub Activity</div>
+  <div class="tab" data-tab="slack">Slack Activity</div>
+  <div class="tab" data-tab="decisions">Decisions</div>
+  <div class="tab" data-tab="blockers">Blockers &amp; Risks</div>
+  <div class="tab" data-tab="actions">Action Items</div>
+</div>
+
+<div class="content">
+
+<div class="tab-panel active" id="tab-summary">
+  <div class="kpi-grid">
+    <div class="kpi amber"><div class="label">Days to GTM</div><div class="value">18</div><div class="sub">May 9 launch</div></div>
+    <div class="kpi amber"><div class="label">Open PRs</div><div class="value">1</div><div class="sub">#675 Gift Aid revamp</div></div>
+    <div class="kpi green"><div class="label">Merged Today</div><div class="value">1</div><div class="sub">#674</div></div>
+    <div class="kpi purple"><div class="label">Open Issues</div><div class="value">30</div><div class="sub">17 unassigned</div></div>
+    <div class="kpi red"><div class="label">P0 Unassigned</div><div class="value">5</div></div>
+    <div class="kpi red"><div class="label">Standup Paused</div><div class="value">24d</div></div>
+  </div>
+
+  <div class="section-heading">Headlines</div>
+  <div class="card">
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>GASDS Three-Entity Architecture Confirmed</strong> — Qamar posted detailed feedback. Three separate entities: Location (building, own Firestore collection) → Kiosk (device, points to location_id) → Campaign (compliance mode). Immutable snapshots: new location_id on kiosk edit, old donations keep old reference. Awaiting Jitesh confirmation.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>PR #674 Merged</strong> — Yuvraj's org-settings section-scoped saves fix merged. Resolves bug #673 where saving identity section wiped branding drafts. Follow-up PR pending.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>PR #675 Opened</strong> — Paras (prsrwt) opened Gift Aid form revamp with atomic lifecycle handling. Branch: feature/gift-aid-form-page. Needs review.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20</div>
+      <div class="timeline-text"><strong>Hosting Rollout Fixed</strong> — Jitesh identified Blaze plan downgrade broke automatic rollout per commit to main. Reconfigured. Test commit pushed.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 18-21</div>
+      <div class="timeline-text"><strong>Android Demo Still Overdue</strong> — Dharmendra has chased Jitesh 3 times (Apr 18, 18, 19). No video shared.</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-github">
+  <div class="section-heading">Recent Commits (Apr 18-21)</div>
+  <div class="card">
+    <table>
+      <tr><th>SHA</th><th>Date</th><th>Author</th><th>Message</th></tr>
+      <tr><td>a3d4548</td><td>Apr 21</td><td>Yuvraj</td><td>Merge PR #674 from YNVSolutions/bug#673</td></tr>
+      <tr><td>ad95a0b</td><td>Apr 20</td><td>Yuvraj</td><td>fix(admin): preserve opposite-section drafts when saving org settings</td></tr>
+      <tr><td>3318c9f</td><td>Apr 20</td><td>Yuvraj</td><td>fix(admin): send section-intent payloads in Organization Settings saves</td></tr>
+      <tr><td>0684177</td><td>Apr 20</td><td>Yuvraj</td><td>test(org-settings): cover mixed-section save payload regressions</td></tr>
+      <tr><td>5e72026</td><td>Apr 20</td><td>Yuvraj</td><td>fix(org-settings): apply identity/branding updates as section-scoped writes</td></tr>
+      <tr><td>1bfdd02</td><td>Apr 20</td><td>Yuvraj</td><td>Merge PR #670 docs</td></tr>
+      <tr><td>0733b07</td><td>Apr 20</td><td>Jitesh</td><td>Test commit to test automatic rollouts</td></tr>
+      <tr><td>acd6ec2</td><td>Apr 20</td><td>Yuvraj</td><td>docs(donation-export): server-side filter-based export</td></tr>
+      <tr><td>b7f9c24</td><td>Apr 20</td><td>Yuvraj</td><td>docs(exports): campaign, kiosk, subscription export flows</td></tr>
+      <tr><td>8ab5177</td><td>Apr 20</td><td>Yuvraj</td><td>organization settings implementation doc</td></tr>
+    </table>
+  </div>
+
+  <div class="section-heading">Open PRs</div>
+  <div class="card">
+    <table>
+      <tr><th>PR</th><th>Title</th><th>Author</th><th>Created</th></tr>
+      <tr><td>#675</td><td>Gift Aid form revamp with atomic lifecycle handling</td><td>prsrwt (Paras)</td><td>Apr 20</td></tr>
+    </table>
+  </div>
+
+  <div class="section-heading">Merged Today</div>
+  <div class="card">
+    <table>
+      <tr><th>PR</th><th>Title</th><th>Author</th><th>Date</th></tr>
+      <tr><td>#674</td><td>fix(admin): org-settings section-scoped saves. Fixes #673</td><td>Yuvraj</td><td>Apr 21</td></tr>
+    </table>
+  </div>
+
+  <div class="section-heading">Commit Summary (Apr 18-21)</div>
+  <div class="card">
+    <table>
+      <tr><th>Contributor</th><th>Commits</th></tr>
+      <tr><td>Yuvraj</td><td>17</td></tr>
+      <tr><td>Jitesh</td><td>3</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-slack">
+  <div class="section-heading">Slack #charity_project — Apr 20-21</div>
+
+  <div class="card">
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21 12:41</div>
+      <div class="timeline-text"><strong>Qamar</strong> — Posted detailed GASDS three-entity feedback. Confirmed Location as first-class entity, GASDS cap per building not campaign, community building tracking deferred to Growth tier.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21 12:41</div>
+      <div class="timeline-text"><strong>Qamar</strong> — Asked Jitesh to confirm three-entity structure (Location, Kiosk, Campaign) as separate Firestore collections.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21 08:48</div>
+      <div class="timeline-text"><strong>Jitesh</strong> — Proposed GASDS location mapping: attach location to kiosks with postcode/name, immutable snapshot on edit.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21 08:30</div>
+      <div class="timeline-text"><strong>Yuvraj</strong> — Asked Jitesh and Paras to review PR #674. Has follow-up PR pending.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20 09:51</div>
+      <div class="timeline-text"><strong>Jitesh</strong> — Identified hosting issue from Blaze downgrade. Reconfiguring auto-rollout.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20 09:38</div>
+      <div class="timeline-text"><strong>Jitesh</strong> — Called Yuvraj for quick call to discuss org settings implementation.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 19 09:34</div>
+      <div class="timeline-text"><strong>Dharmendra</strong> — Third chase for Jitesh's Android demo video.</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-decisions">
+  <div class="section-heading">Decisions Log</div>
+  <div class="card">
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>Three-entity data model confirmed</strong> (Qamar) — Location → Kiosk → Campaign as separate Firestore collections. GASDS cap per building, not campaign.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>Immutable location snapshots approved</strong> (Qamar/Jitesh) — New location_id on kiosk edit, old donations keep old reference.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 21</div>
+      <div class="timeline-text"><strong>PR #674 merged</strong> (Yuvraj) — Org settings section-scoped saves fix. Resolves #673.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20</div>
+      <div class="timeline-text"><strong>PR #669 merged</strong> (Yuvraj) — Org settings identity/branding controls, authz, kiosk branding.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20</div>
+      <div class="timeline-text"><strong>PR #670 merged</strong> (Yuvraj) — Documentation for org settings + export flows.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Apr 20</div>
+      <div class="timeline-text"><strong>Firebase hosting rollout fixed</strong> (Jitesh) — Blaze plan downgrade had broken automatic rollout per commit to main.</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-blockers">
+  <div class="section-heading">Blockers &amp; Risks — Status</div>
+  <div class="card">
+    <table>
+      <tr><th>Risk</th><th>Severity</th><th>Notes</th></tr>
+      <tr><td>5 P0 items unassigned, 18 days to GTM</td><td><span class="pill p0">CRITICAL</span></td><td>#640 KYC, #641 Super Admin, #634 CIC, #633 Fee transparency, #629 GASDS Location</td></tr>
+      <tr><td>17 of 30 open issues unassigned (57%)</td><td><span class="pill p0">HIGH</span></td><td>Backlog growing, many compliance items unassigned</td></tr>
+      <tr><td>Standup paused 24 days</td><td><span class="pill p0">HIGH</span></td><td>No structured check-ins since Mar 28</td></tr>
+      <tr><td>Consent ledger stale 8 days (#609/#610)</td><td><span class="pill p1">HIGH</span></td><td>Assigned to Paras but no movement since Apr 13</td></tr>
+      <tr><td>Jitesh three-entity confirmation pending</td><td><span class="pill p1">MEDIUM</span></td><td>Need confirmation before Location entity can be built</td></tr>
+      <tr><td>Android demo overdue</td><td><span class="pill p1">MEDIUM</span></td><td>Dharmendra chased 3x, no video from Jitesh</td></tr>
+      <tr><td>PR #675 needs review</td><td><span class="pill p1">LOW</span></td><td>Gift Aid form revamp by Paras, just opened</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-actions">
+  <div class="section-heading">Action Items — Priority Order</div>
+  <div class="card">
+    <table>
+      <tr><th>#</th><th>Action</th><th>Owner</th><th>Priority</th></tr>
+      <tr><td>1</td><td>Confirm three-entity structure (Location, Kiosk, Campaign)</td><td>Jitesh</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td>2</td><td>Assign P0 compliance issues (#640, #641, #634, #633, #629)</td><td>Qamar/Jitesh</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td>3</td><td>Create GitHub issue for Campaign Compliance Lock</td><td>Qamar</td><td><span class="pill p0">P0</span></td></tr>
+      <tr><td>4</td><td>Review PR #675 (Gift Aid form revamp)</td><td>Jitesh/Team</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td>5</td><td>Restart daily standup (paused 24 days)</td><td>Qamar</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td>6</td><td>Share Android demo video</td><td>Jitesh</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td>7</td><td>Progress consent ledger #609/#610</td><td>Paras</td><td><span class="pill p1">P1</span></td></tr>
+      <tr><td>8</td><td>Review Yuvraj's follow-up PR (post #674)</td><td>Team</td><td><span class="pill p1">P2</span></td></tr>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
