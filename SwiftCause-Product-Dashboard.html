@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SwiftCause Product Dashboard — Last Refreshed 19 Apr 2026</title>
+<title>SwiftCause Product Dashboard — Last Refreshed 21 Apr 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
   :root {
@@ -73,7 +73,7 @@
 <div class="header">
   <div>
     <h1><span>SwiftCause</span> Product Dashboard</h1>
-    <div class="meta-text">Repo: YNVSolutions/SwiftCause_Mono · Refreshed: Saturday 19 April 2026 10:00 UTC</div>
+    <div class="meta-text">Repo: YNVSolutions/SwiftCause_Mono · Refreshed: Tuesday 21 April 2026 13:00 UTC</div>
   </div>
   <div class="header-meta">
     <span class="badge badge-live">Live Data</span>
@@ -91,62 +91,67 @@
   <div class="nav-tab" data-panel="team">Team</div>
   <div class="nav-tab" data-panel="slack">Slack</div>
   <div class="nav-tab" data-panel="decisions">Decisions</div>
-  <div class="nav-tab" data-panel="risks">Risks &amp; P0s</div>
-  <div class="nav-tab" data-panel="dataflow">Data Flow &amp; Compliance</div>
+  <div class="nav-tab" data-panel="risks">Risks & P0s</div>
+  <div class="nav-tab" data-panel="dataflow">Data Flow & Compliance</div>
   <div class="nav-tab" data-panel="timeline">GTM Timeline</div>
 </div>
 
 <!-- OVERVIEW -->
 <div class="panel active" id="p-overview">
   <div class="kpi-grid">
-    <div class="kpi green" onclick="showM('m-merged')"><div class="kpi-label">Merged PRs (Apr)</div><div class="kpi-value">12</div><div class="kpi-sub">Click for list</div></div>
-    <div class="kpi amber" onclick="showM('m-openpr')"><div class="kpi-label">Open PRs</div><div class="kpi-value">1</div><div class="kpi-sub">#669 org settings</div></div>
-    <div class="kpi purple" onclick="showM('m-issues')"><div class="kpi-label">Open Issues</div><div class="kpi-value">23</div><div class="kpi-sub">8 assigned · 15 unassigned</div></div>
-    <div class="kpi green"><div class="kpi-label">Commits (Apr 15-18)</div><div class="kpi-value">30</div><div class="kpi-sub">Yuvraj 13 · Jitesh 12 · Paras 4</div></div>
+    <div class="kpi green" onclick="showM('m-merged')"><div class="kpi-label">Merged PRs (Apr)</div><div class="kpi-value">15</div><div class="kpi-sub">Click for list</div></div>
+    <div class="kpi amber" onclick="showM('m-openpr')"><div class="kpi-label">Open PRs</div><div class="kpi-value">1</div><div class="kpi-sub">#675 Gift Aid form revamp</div></div>
+    <div class="kpi purple" onclick="showM('m-issues')"><div class="kpi-label">Open Issues</div><div class="kpi-value">30</div><div class="kpi-sub">13 assigned · 17 unassigned</div></div>
+    <div class="kpi green"><div class="kpi-label">Commits (Apr 18-21)</div><div class="kpi-value">20</div><div class="kpi-sub">Yuvraj 17 · Jitesh 3</div></div>
     <div class="kpi red" onclick="showM('m-p0')"><div class="kpi-label">P0 Must-Haves</div><div class="kpi-value">7</div><div class="kpi-sub">Pre-launch critical</div></div>
-    <div class="kpi amber"><div class="kpi-label">Days to GTM</div><div class="kpi-value">20</div><div class="kpi-sub">May 9, 2026</div></div>
-    <div class="kpi amber"><div class="kpi-label">Standup Paused</div><div class="kpi-value">22d</div><div class="kpi-sub">Since 28 Mar</div></div>
-    <div class="kpi green"><div class="kpi-label">Slack Sync</div><div class="kpi-value">Live</div><div class="kpi-sub">19 Apr 2026</div></div>
+    <div class="kpi amber"><div class="kpi-label">Days to GTM</div><div class="kpi-value">18</div><div class="kpi-sub">May 9, 2026</div></div>
+    <div class="kpi amber"><div class="kpi-label">Standup Paused</div><div class="kpi-value">24d</div><div class="kpi-sub">Since 28 Mar</div></div>
+    <div class="kpi green"><div class="kpi-label">Slack Sync</div><div class="kpi-value">Live</div><div class="kpi-sub">21 Apr 2026</div></div>
   </div>
   <div class="section">Headlines</div>
   <div class="card">
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-text"><strong>GASDS three-entity model confirmed</strong> — Location (building) → Kiosk (device) → Campaign (compliance mode). Immutable location snapshots approved.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-text"><strong>Jitesh proposed GASDS location mapping</strong> — Attach locations to kiosks, donations inherit location_id. New location_id on edit (old donations unaffected).</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-text"><strong>PR #674 MERGED</strong> — org settings section-scoped saves bug fix (fix #673).</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-text"><strong>Yuvraj asked for PR #674 review</strong> — follow-up PR pending.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-text"><strong>PR #670 MERGED</strong> — Documentation for org settings + all export flows. Closes #658.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-text"><strong>PR #674 opened</strong> — Bug fix: org settings section-scoped saves (fixes #673). Awaiting review.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-text"><strong>Bug #673 reported</strong> — Org settings save error: branding fields rejected when saving identity section.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-text"><strong>PR #669 MERGED</strong> — Org settings: identity/branding controls, authz, kiosk branding consistency. Major feature complete.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-text"><strong>CI rollout test</strong> — Jitesh pushed test commit for automatic rollout pipeline.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 19</div><div class="tl-text"><strong>Android demo still pending</strong> — Dharmendra chased Jitesh twice. No video shared.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-text"><strong>PR #668 merged</strong> — tokenHash as document ID for O(1) magic link lookup. Architecture win.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-text"><strong>CI hardened</strong> — Backend Functions Jest tests wired into CI. All green.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>3 PRs merged</strong> — #668 (magic link), #661 (export perms), #652 (Android). High velocity.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>Permission migration</strong> — 161 users, 157 updated, 46 lost incorrect system_admin.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-text"><strong>PR #669 raised</strong> — Large: org settings, branding, authz, lint. Awaiting review.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-text"><strong>Export stack complete</strong> — All 4 exports server-side with dedicated permissions.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 12</div><div class="tl-text"><strong>Android alpha APK</strong> — First kiosk app released (70.1 MB). Full donation flow.</div></div>
   </div>
 </div>
 
 <!-- GITHUB -->
 <div class="panel" id="p-github">
-  <div class="section">Recent Commits (Apr 15-18)</div>
+  <div class="section">Recent Commits (Apr 18-21)</div>
   <div class="card"><table><thead><tr><th>SHA</th><th>Date</th><th>Author</th><th>Message</th></tr></thead><tbody>
+    <tr><td><code>a3d4548</code></td><td>Apr 21</td><td>Yuvraj</td><td>Merge PR #674 — org-settings section-scoped saves fix</td></tr>
+    <tr><td><code>ad95a0b</code></td><td>Apr 20</td><td>Yuvraj</td><td>fix(admin): preserve opposite-section drafts when saving org settings</td></tr>
+    <tr><td><code>3318c9f</code></td><td>Apr 20</td><td>Yuvraj</td><td>fix(admin): send section-intent payloads in Organization Settings saves</td></tr>
+    <tr><td><code>0684177</code></td><td>Apr 20</td><td>Yuvraj</td><td>test(org-settings): cover mixed-section save payload regressions</td></tr>
+    <tr><td><code>5e72026</code></td><td>Apr 20</td><td>Yuvraj</td><td>fix(org-settings): apply identity/branding updates as section-scoped writes</td></tr>
+    <tr><td><code>1bfdd02</code></td><td>Apr 20</td><td>Yuvraj</td><td>Merge PR #670 — docs: org settings + export flows</td></tr>
+    <tr><td><code>acd6ec2</code></td><td>Apr 20</td><td>Yuvraj</td><td>docs(donation-export): server-side filter-based export behavior</td></tr>
+    <tr><td><code>b7f9c24</code></td><td>Apr 20</td><td>Yuvraj</td><td>docs(exports): campaign, kiosk, subscription export implementation flows</td></tr>
+    <tr><td><code>8ab5177</code></td><td>Apr 20</td><td>Yuvraj</td><td>organization settings implementation doc added</td></tr>
+    <tr><td><code>0733b07</code></td><td>Apr 20</td><td>Jitesh</td><td>Test commit to test automatic rollouts</td></tr>
+    <tr><td><code>bee7516</code></td><td>Apr 20</td><td>Jitesh</td><td>Merge PR #669 — org settings finalize</td></tr>
+    <tr><td><code>6d20286</code></td><td>Apr 18</td><td>Yuvraj</td><td>feat(cropper): smooth zoom with RAF wheel batching</td></tr>
+    <tr><td><code>209e8d6</code></td><td>Apr 18</td><td>Yuvraj</td><td>fix(org-settings): remove global display-name uniqueness</td></tr>
     <tr><td><code>ce6dfdc</code></td><td>Apr 18</td><td>Jitesh</td><td>Merge PR #668 — refactor magic link token storage</td></tr>
-    <tr><td><code>8d2718b</code></td><td>Apr 17</td><td>Yuvraj</td><td>Merge PR #661 — export permissions</td></tr>
-    <tr><td><code>8bcc87a</code></td><td>Apr 17</td><td>Jitesh</td><td>Merge PR #652 — Android setup</td></tr>
-    <tr><td><code>f1f4615</code></td><td>Apr 16</td><td>Paras</td><td>refactor: tokenHash as doc ID for O(1) lookup</td></tr>
-    <tr><td><code>50de507</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(admin): expose new export permissions in UI</td></tr>
-    <tr><td><code>029155a</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_kiosks permission</td></tr>
-    <tr><td><code>583f5b2</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_campaigns permission</td></tr>
-    <tr><td><code>612fef3</code></td><td>Apr 15</td><td>Yuvraj</td><td>feat(functions): require export_subscriptions permission</td></tr>
-    <tr><td><code>d191940</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #660 — export button filter</td></tr>
-    <tr><td><code>6c06ea6</code></td><td>Apr 15</td><td>Yuvraj</td><td>fix(donations-export): include admin filters</td></tr>
-    <tr><td><code>79d1f2a</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #651 — campaign exceed 100%</td></tr>
-    <tr><td><code>eaac6ce</code></td><td>Apr 15</td><td>Paras</td><td>Merge PR #659 — gift aid phantom declarations</td></tr>
-    <tr><td><code>77113a3</code></td><td>Apr 15</td><td>Jitesh</td><td>fix: fallback to card details when NFC not working</td></tr>
-    <tr><td><code>6362068</code></td><td>Apr 15</td><td>Jitesh</td><td>added thank-you with donation amount + campaign name</td></tr>
-    <tr><td><code>7b65f02</code></td><td>Apr 15</td><td>Jitesh</td><td>fix: email logging null exception</td></tr>
-    <tr><td><code>0db8a52</code></td><td>Apr 15</td><td>Jitesh</td><td>added polling tracking + cancel on restart</td></tr>
+    <tr><td><code>6f90681</code></td><td>Apr 18</td><td>Yuvraj</td><td>test(gift-aid): align CSV formula-sanitization expectations</td></tr>
+    <tr><td><code>bed9f58</code></td><td>Apr 18</td><td>Yuvraj</td><td>ci(tests): run backend functions jest suite in workflows</td></tr>
+    <tr><td><code>cf9f4a1</code></td><td>Apr 18</td><td>Yuvraj</td><td>fix(authz): enforce org identity/branding permissions</td></tr>
+    <tr><td><code>ee81fea</code></td><td>Apr 17</td><td>Yuvraj</td><td>merge conflict resolve, lint resolve, build resolve</td></tr>
+    <tr><td><code>e270dec</code></td><td>Apr 17</td><td>Yuvraj</td><td>feat(authz): org identity and branding permissions</td></tr>
+    <tr><td><code>8ccc3e6</code></td><td>Apr 17</td><td>Yuvraj</td><td>feat(kiosk-branding): apply org accent colour</td></tr>
   </tbody></table></div>
   <div class="section">Contributor Summary</div>
   <div class="card"><table><thead><tr><th>Contributor</th><th>Commits</th><th>Focus</th></tr></thead><tbody>
-    <tr><td>Yuvraj Shishodia</td><td>13</td><td>Export permissions, filter fixes, CI, org settings</td></tr>
-    <tr><td>Jitesh Singh</td><td>12</td><td>Android NFC fallback, thank-you, polling, prefetch</td></tr>
-    <tr><td>Paras (prsrwt)</td><td>4</td><td>tokenHash refactor, campaign >100%, Gift Aid fix</td></tr>
+    <tr><td>Yuvraj Shishodia</td><td>17</td><td>Org settings fixes, section-scoped saves, export docs, authz, cropper, CI</td></tr>
+    <tr><td>Jitesh Singh</td><td>3</td><td>PR #669 merge, rollout CI, Android</td></tr>
   </tbody></table></div>
 </div>
 
@@ -154,10 +159,13 @@
 <div class="panel" id="p-prs">
   <div class="section">Open PRs (1)</div>
   <div class="card"><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Labels</th><th>Created</th></tr></thead><tbody>
-    <tr><td>#669</td><td>Org settings: identity/branding, authz, kiosk branding</td><td>Yuvraj</td><td><span class="pill pill-p1">size:large</span> <span class="pill pill-progress">Backend</span> <span class="pill pill-progress">Admin</span></td><td>Apr 17</td></tr>
+    <tr><td>#675</td><td>[feat]: revamp Gift Aid declaration form with atomic Gift Aid lifecycle handling</td><td>prsrwt</td><td><span class="pill pill-progress">enhancement</span> <span class="pill pill-progress">Gift Aid</span> <span class="pill pill-progress">frontend</span></td><td>Apr 20</td></tr>
   </tbody></table></div>
-  <div class="section">Merged PRs — April 2026 (12)</div>
+  <div class="section">Merged PRs — April 2026 (15)</div>
   <div class="card"><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead><tbody>
+    <tr><td>#674</td><td>fix(org-settings): section-scoped saves without losing drafts (fix #673)</td><td>Yuvraj</td><td>Apr 21</td></tr>
+    <tr><td>#670</td><td>docs: org settings + export implementation flow docs</td><td>Yuvraj</td><td>Apr 20</td></tr>
+    <tr><td>#669</td><td>Org settings: identity/branding, authz, kiosk branding</td><td>Yuvraj</td><td>Apr 20</td></tr>
     <tr><td>#668</td><td>tokenHash as doc ID for O(1) magic link lookup</td><td>Paras</td><td>Apr 18</td></tr>
     <tr><td>#661</td><td>Dedicated export permissions</td><td>Yuvraj</td><td>Apr 17</td></tr>
     <tr><td>#652</td><td>Android complete payment flow</td><td>Jitesh</td><td>Apr 17</td></tr>
@@ -175,31 +183,37 @@
 
 <!-- OPEN ISSUES -->
 <div class="panel" id="p-issues">
-  <div class="section">Open Issues (23)</div>
+  <div class="section">Open Issues (30)</div>
   <div class="card"><table><thead><tr><th>#</th><th>Title</th><th>Assignee</th><th>Labels</th><th>Created</th></tr></thead><tbody>
+    <tr><td>675</td><td>Gift Aid declaration form revamp</td><td>prsrwt</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 20</td></tr>
+    <tr><td>673</td><td>[Bug] Org settings save error (branding/identity cross-section)</td><td>Yuvraj</td><td><span class="pill pill-p0">bug</span> <span class="pill pill-p1">regression</span></td><td>Apr 20</td></tr>
+    <tr><td>672</td><td>[Feature] Portrait mode image for idle background</td><td>Yuvraj</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 20</td></tr>
+    <tr><td>671</td><td>[Feature] Allow SVG format for icon upload</td><td>Yuvraj</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 20</td></tr>
     <tr><td>667</td><td>[Frontend] Improve Thank You Page</td><td>Paras</td><td></td><td>Apr 16</td></tr>
     <tr><td>666</td><td>[Frontend] Enhance Result Page QR</td><td>Paras</td><td></td><td>Apr 16</td></tr>
     <tr><td>665</td><td>Frontend – Form Components</td><td>Paras</td><td></td><td>Apr 16</td></tr>
     <tr><td>664</td><td>Frontend – Gift Aid Page</td><td>Paras</td><td></td><td>Apr 16</td></tr>
     <tr><td>663</td><td>Backend – completeGiftAidFlow</td><td>Paras</td><td></td><td>Apr 16</td></tr>
-    <tr><td>658</td><td>Document export implementation</td><td>Yuvraj</td><td><span class="pill pill-progress">docs</span></td><td>Apr 14</td></tr>
     <tr><td>649</td><td>Revamp Magic Link Flow</td><td>Paras</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 13</td></tr>
-    <tr><td>648</td><td>Org Settings Screen</td><td>Jitesh+Yuvraj</td><td><span class="pill pill-progress">enhancement</span></td><td>Apr 13</td></tr>
     <tr><td>647</td><td>Micro-Transaction Shield</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
     <tr><td>646</td><td>Super Admin: Stripe billing rates</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
-    <tr><td>641</td><td>Super Admin pause/unpause</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
-    <tr><td>640</td><td>Stripe KYC gating</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
-    <tr><td>639</td><td>Activity Mode member reference</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
-    <tr><td>638</td><td>Roaming volunteer mode</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
-    <tr><td>637</td><td>Location Gift Aid dashboard</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
-    <tr><td>636</td><td>Per-location capture flow config</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
-    <tr><td>635</td><td>SORP 2026 impact reporting</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 12</td></tr>
-    <tr><td>634</td><td>CIC validation on onboarding</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
-    <tr><td>633</td><td>Fee transparency disclosure</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
-    <tr><td>629</td><td>GO-LIVE: Location entity GASDS</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 12</td></tr>
-    <tr><td>610</td><td>declarationIpAddress + captureMethod</td><td>Paras</td><td></td><td>Mar 30</td></tr>
-    <tr><td>609</td><td>ConsentEvents → DonorRecord</td><td>Paras</td><td></td><td>Mar 30</td></tr>
-    <tr><td>583</td><td>Skeleton loading states</td><td>Raaaghav</td><td><span class="pill pill-progress">enhancement</span></td><td>Mar 24</td></tr>
+    <tr><td>641</td><td>Super Admin pause/unpause</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>640</td><td>Stripe KYC gating</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>639</td><td>Campaign Compliance Lock (Donation vs Activity mode)</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>638</td><td>HMRC R68 monthly batching with Apr 6 boundary</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>637</td><td>GASDS base claim flow</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>636</td><td>Fee transparency disclosure</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>635</td><td>CIC validation logic</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>634</td><td>Charity-only onboarding gate (KYC)</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>633</td><td>Fundraising Code fee disclosure</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>632</td><td>Gift Aid capability matrix</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>631</td><td>Donor data masking in APIs</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>630</td><td>OTP email verification before donor data reveal</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>629</td><td>GASDS location entity architecture</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">P0</span></td><td>Apr 13</td></tr>
+    <tr><td>628</td><td>Postcode validation for Gift Aid</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>627</td><td>Declared vs actual donor name matching</td><td><span class="pill pill-unassigned">none</span></td><td></td><td>Apr 13</td></tr>
+    <tr><td>610</td><td>declarationIpAddress + captureMethod</td><td>Paras</td><td><span class="pill pill-pending">Stale 8d</span></td><td>Mar 30</td></tr>
+    <tr><td>609</td><td>Consent Ledger: Event capture + DonorRecord link</td><td>Paras</td><td><span class="pill pill-pending">Stale 8d</span></td><td>Mar 30</td></tr>
   </tbody></table></div>
 </div>
 
@@ -215,11 +229,11 @@
     <tr><td>Magic Link Donor UX</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:60%"></div></div></td><td>#649 + #664-667</td></tr>
     <tr><td>Gift Aid Kiosk</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:70%"></div></div></td><td>Phantom fix done. Flow review Apr 18</td></tr>
     <tr><td>Gift Aid Magic Link</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:50%"></div></div></td><td>#663 backend + #664 frontend</td></tr>
-    <tr><td>Consent Ledger</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:40%"></div></div></td><td>#609/#610 stale 20d</td></tr>
+    <tr><td>Consent Ledger</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:40%"></div></div></td><td>#609/#610 stale 8d</td></tr>
     <tr><td>All Exports (server-side)</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>4/4 complete</td></tr>
     <tr><td>Export Permissions</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>161 users migrated</td></tr>
-    <tr><td>Org Settings</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:85%"></div></div></td><td>PR #669 open</td></tr>
-    <tr><td>Kiosk Branding</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:80%"></div></div></td><td>In PR #669</td></tr>
+    <tr><td>Org Settings</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>PR #674 merged Apr 21</td></tr>
+    <tr><td>Kiosk Branding</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>PR #669 merged Apr 20</td></tr>
     <tr><td>Android App</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:75%"></div></div></td><td>Alpha out. Demo pending</td></tr>
     <tr><td>Campaign >100%</td><td><span class="pill pill-done">Done</span></td><td><div class="progress"><div class="progress-bar pg-green" style="width:100%"></div></div></td><td>#651 merged</td></tr>
     <tr><td>HMRC R68 Export</td><td><span class="pill pill-progress">WIP</span></td><td><div class="progress"><div class="progress-bar pg-amber" style="width:60%"></div></div></td><td>Monthly batching needed</td></tr>
@@ -235,11 +249,11 @@
 <div class="panel" id="p-team">
   <div class="section">Team Status</div>
   <div class="card"><table><thead><tr><th>Member</th><th>Role</th><th>Last Activity</th><th>Focus</th><th>Status</th></tr></thead><tbody>
-    <tr><td><strong>Yuvraj</strong></td><td>Frontend + Backend</td><td>Apr 18</td><td>PR #669, CI fixes, export docs</td><td><span class="pill pill-done">Active</span></td></tr>
-    <tr><td><strong>Paras</strong></td><td>Magic Link / Backend</td><td>Apr 18</td><td>Gift Aid flow, #649, #663-667</td><td><span class="pill pill-done">Active</span></td></tr>
-    <tr><td><strong>Jitesh</strong></td><td>Lead Dev / Android</td><td>Apr 18</td><td>Android, PR merges. Demo overdue</td><td><span class="pill pill-p1">Pending</span></td></tr>
+    <tr><td><strong>Yuvraj</strong></td><td>Frontend + Backend</td><td>Apr 21</td><td>PR #674 merged, follow-up PR pending, org settings complete</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Paras</strong></td><td>Magic Link / Backend</td><td>Apr 20</td><td>Gift Aid revamp PR #675 opened, flow work</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Jitesh</strong></td><td>Lead Dev / Android</td><td>Apr 21</td><td>GASDS location proposal, CI rollout. Demo overdue</td><td><span class="pill pill-p1">Pending</span></td></tr>
     <tr><td><strong>Dharmendra</strong></td><td>Infrastructure</td><td>Apr 19</td><td>Chasing updates, PR review</td><td><span class="pill pill-done">Active</span></td></tr>
-    <tr><td><strong>Qamar</strong></td><td>PM</td><td>Apr 15</td><td>Gift Aid analysis, decisions</td><td><span class="pill pill-done">Active</span></td></tr>
+    <tr><td><strong>Qamar</strong></td><td>PM</td><td>Apr 21</td><td>GASDS three-entity feedback, decisions, GTM planning</td><td><span class="pill pill-done">Active</span></td></tr>
     <tr><td><strong>Shipra</strong></td><td>Coordinator</td><td>Apr 6</td><td>Tracking sheets</td><td><span class="pill pill-pending">Quiet</span></td></tr>
     <tr><td><strong>Yash</strong></td><td>Dev</td><td>—</td><td>No recent activity</td><td><span class="pill pill-pending">Inactive</span></td></tr>
   </tbody></table></div>
@@ -247,18 +261,18 @@
 
 <!-- SLACK -->
 <div class="panel" id="p-slack">
-  <div class="section">Slack #charity_project — Apr 12-19</div>
+  <div class="section">Slack #charity_project — Apr 12-21</div>
   <div class="card">
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-author">Qamar</div><div class="tl-text">Confirmed GASDS three-entity model — Location, Kiosk, Campaign layers. Approved immutable location snapshots.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-author">Jitesh</div><div class="tl-text">Proposed GASDS location mapping: attach locations to kiosks, donations inherit location_id on capture.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 21</div><div class="tl-author">Yuvraj</div><div class="tl-text">PR #674 review requested — org settings fix, follow-up PR pending.</div></div>
+    <div class="tl-item"><div class="tl-date">Apr 20</div><div class="tl-author">Jitesh</div><div class="tl-text">Fixed hosting after Blaze downgrade. Called Yuvraj for org settings discussion.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 19</div><div class="tl-author">Dharmendra</div><div class="tl-text">Chased Jitesh: "Still haven't seen the post?" re Android demo video.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Paras</div><div class="tl-text">Shared Meet link, asked Jitesh to review final Gift Aid flow.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Dharmendra</div><div class="tl-text">Chased Paras on PR #668. Asked Jitesh for demo. Shared openscreen tool.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 18</div><div class="tl-author">Yuvraj</div><div class="tl-text">CI fixes: backend Jest tests wired in, Gift Aid CSV tests updated. All green.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 17</div><div class="tl-author">Yuvraj</div><div class="tl-text">3 demo videos. PR #669 raised (large). Permission migration: 161 users, 157 updated.</div></div>
     <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-author">Yuvraj</div><div class="tl-text">Working on #648 (Org Settings). Step 1 done: contract + validation.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 15</div><div class="tl-author">Qamar</div><div class="tl-text">Shared Gift Aid Analysis HTML.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 14</div><div class="tl-author">Qamar</div><div class="tl-text">Updated Gift Aid Analysis: Compliance Lock, R68, GASDS tracking.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 13</div><div class="tl-author">Yuvraj</div><div class="tl-text">Created export backend tickets. Working on #642.</div></div>
-    <div class="tl-item"><div class="tl-date">Apr 12</div><div class="tl-author">Jitesh</div><div class="tl-text">First Android APK alpha. Full donation flow. 70.1 MB.</div></div>
   </div>
 </div>
 
@@ -266,13 +280,16 @@
 <div class="panel" id="p-decisions">
   <div class="section">PM Decisions</div>
   <div class="card"><table><thead><tr><th>Date</th><th>Decision</th><th>By</th><th>Ref</th></tr></thead><tbody>
+    <tr><td>Apr 21</td><td>GASDS three-entity model confirmed — Location → Kiosk → Campaign</td><td>Qamar</td><td>GASDS design</td></tr>
+    <tr><td>Apr 21</td><td>PR #674 MERGED — org settings section-scoped saves bug fix</td><td>Yuvraj</td><td>#673/#674</td></tr>
+    <tr><td>Apr 20</td><td>PR #670 merged — Export + org settings docs shipped</td><td>Yuvraj</td><td>#658/#670</td></tr>
+    <tr><td>Apr 20</td><td>Bug #673 found — org settings cross-section save. PR #674 raised</td><td>Yuvraj</td><td>#673/#674</td></tr>
+    <tr><td>Apr 20</td><td>PR #669 merged — Org settings feature complete</td><td>Jitesh</td><td>#648/#669</td></tr>
     <tr><td>Apr 19</td><td>Token expiry: 30d confirmed. Masked email. Kiosk T&Cs.</td><td>Qamar</td><td>#587</td></tr>
     <tr><td>Apr 19</td><td>Payment retry: session-scoped, editable, no re-declaration</td><td>Qamar</td><td>#596</td></tr>
     <tr><td>Apr 18</td><td>tokenHash as doc ID merged — O(1) lookup</td><td>Jitesh</td><td>#668</td></tr>
     <tr><td>Apr 17</td><td>Permission migration: 157 users updated</td><td>Yuvraj</td><td>—</td></tr>
     <tr><td>Apr 14</td><td>Compliance Lock + record segregation + R68 batching = P0</td><td>Qamar</td><td>—</td></tr>
-    <tr><td>Apr 3</td><td>Token expiry: 30 days (not 72h)</td><td>Qamar</td><td>#587</td></tr>
-    <tr><td>Apr 3</td><td>Parallel track strategy confirmed</td><td>Qamar</td><td>—</td></tr>
   </tbody></table></div>
 </div>
 
@@ -285,17 +302,17 @@
     <tr><td>CIC validation</td><td>#634</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
     <tr><td>Fee transparency</td><td>#633</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
     <tr><td>GASDS Location entity</td><td>#629</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
-    <tr><td>Campaign Compliance Lock</td><td>—</td><td>—</td><td><span class="pill pill-p0">No issue</span></td></tr>
-    <tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras</td><td><span class="pill pill-pending">Stale 20d</span></td></tr>
+    <tr><td>Campaign Compliance Lock</td><td>#639</td><td><span class="pill pill-unassigned">none</span></td><td><span class="pill pill-p0">Not started</span></td></tr>
+    <tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras</td><td><span class="pill pill-pending">Stale 8d</span></td></tr>
   </tbody></table></div>
   <div class="section">Risk Matrix</div>
   <div class="card"><table><thead><tr><th>Risk</th><th>Severity</th><th>Mitigation</th></tr></thead><tbody>
-    <tr><td>5 P0 items unassigned, GTM 20 days away</td><td><span class="pill pill-p0">Critical</span></td><td>Assign KYC + Super Admin Monday</td></tr>
+    <tr><td>5 P0 items unassigned, GTM 18 days away</td><td><span class="pill pill-p0">Critical</span></td><td>Assign KYC + Super Admin Monday</td></tr>
     <tr><td>No charity qualification gates in onboarding — registered vs applying, GA history vs new to GA</td><td><span class="pill pill-p0">Critical</span></td><td>Build registration + GA history check into onboarding flow. Tier-aware dashboard for GASDS.</td></tr>
-    <tr><td>Consent ledger stale 20 days</td><td><span class="pill pill-p0">Critical</span></td><td>Check Paras capacity</td></tr>
-    <tr><td>PR #669 blocking org settings</td><td><span class="pill pill-p1">High</span></td><td>Dharmendra prioritise review</td></tr>
+    <tr><td>Consent ledger stale 8 days</td><td><span class="pill pill-p0">Critical</span></td><td>Check Paras capacity</td></tr>
+    <tr><td>GASDS location entity architecture confirmed but not assigned/built</td><td><span class="pill pill-p0">Critical</span></td><td>Assign #629 to dev, integrate location snapshots into kiosk flow</td></tr>
     <tr><td>Android untested by team</td><td><span class="pill pill-p1">High</span></td><td>Jitesh share demo video</td></tr>
-    <tr><td>Standup paused 22 days</td><td><span class="pill pill-p1">High</span></td><td>Restart Geekbot</td></tr>
+    <tr><td>Standup paused 24 days</td><td><span class="pill pill-p1">High</span></td><td>Restart Geekbot</td></tr>
     <tr><td>Yash, Shipra inactive</td><td><span class="pill pill-p1">Medium</span></td><td>PM check-in</td></tr>
   </tbody></table></div>
 </div>
@@ -334,7 +351,7 @@
         <div style="font-size:20px;margin-bottom:6px">✅</div>
         <div style="font-size:11px;font-weight:700;color:#fff">5. Consent Ledger</div>
         <div style="font-size:10px;color:var(--text-secondary);margin-top:4px">ConsentEvents + IP + captureMethod → DonorRecord</div>
-        <div style="font-size:9px;color:var(--warning);margin-top:6px">Collection: donorProfiles<br>#609/#610 — WIP (stale 20d)</div>
+        <div style="font-size:9px;color:var(--warning);margin-top:6px">Collection: donorProfiles<br>#609/#610 — WIP (stale 8d)</div>
       </div>
       <div style="flex:1;background:var(--bg-tertiary);padding:14px 12px;text-align:center;border-right:2px solid var(--accent)">
         <div style="font-size:20px;margin-bottom:6px">🔄</div>
@@ -381,7 +398,7 @@
     <div class="kpi red"><div class="kpi-label">Not Built — P0</div><div class="kpi-value">5</div><div class="kpi-sub">R68 · GASDS · Compliance Lock · KYC · Fees</div></div>
   </div>
   <div class="card" style="border-left:3px solid var(--danger)">
-    <div class="card-title" style="color:var(--danger)">⚠️ Critical Pre-Launch Compliance Gaps</div>
+    <div class="card-title" style="color:var(--danger)">Warning: Critical Pre-Launch Compliance Gaps</div>
     <table><thead><tr><th>Gap</th><th>Impact if Missing</th><th>Issue</th><th>Effort Est.</th></tr></thead><tbody>
       <tr><td>Campaign Compliance Lock (Donation vs Activity mode)</td><td>Cannot segregate GA-eligible from trading income. HMRC risk: claiming GA on activities = penalty.</td><td>No issue yet</td><td>Medium — campaign schema + UI + enforcement</td></tr>
       <tr><td>R68 monthly auto-batching with Apr 6 boundary</td><td>Cannot submit HMRC claims. Charities lose 25% reclaim on launch donations.</td><td>Part of baseline</td><td>Medium — batch logic + tax year split + export</td></tr>
@@ -395,9 +412,9 @@
 
 <!-- GTM TIMELINE -->
 <div class="panel" id="p-timeline">
-  <div class="section">GTM Countdown — May 9, 2026 (20 days)</div>
+  <div class="section">GTM Countdown — May 9, 2026 (18 days)</div>
   <div class="card"><table><thead><tr><th>Week</th><th>Dates</th><th>Focus</th><th>Milestones</th></tr></thead><tbody>
-    <tr><td><strong>This Week</strong></td><td>Apr 19-25</td><td>Merge #669, assign P0s, Gift Aid magic link</td><td>#669 merged, #640/#641 assigned, #663/#664 done</td></tr>
+    <tr><td><strong>This Week</strong></td><td>Apr 21-25</td><td>#674 merged ✓ — now assign P0s, Gift Aid magic link</td><td>#640/#641 assigned, #663/#664 done, #670 reviewed</td></tr>
     <tr><td>Week 2</td><td>Apr 26 - May 2</td><td>KYC gate, consent ledger, compliance lock</td><td>#640 MVP, #609/#610 done, compliance lock spec'd</td></tr>
     <tr><td>Launch</td><td>May 3-9</td><td>Integration test, pilot onboarding</td><td>First 5 charities. Full e2e flow</td></tr>
     <tr><td>Post-Launch</td><td>May 10+</td><td>Mass rollout, recurring, donor portal</td><td>Scale to pipeline</td></tr>
@@ -422,7 +439,10 @@
 </div>
 
 <!-- MODALS -->
-<div class="modal-bg" id="m-merged"><div class="modal"><button class="modal-x" onclick="hideM('m-merged')">&times;</button><h3>Merged PRs — Apr 2026 (12)</h3><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead><tbody>
+<div class="modal-bg" id="m-merged"><div class="modal"><button class="modal-x" onclick="hideM('m-merged')">&times;</button><h3>Merged PRs — Apr 2026 (15)</h3><table><thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Merged</th></tr></thead><tbody>
+<tr><td>#674</td><td>fix(org-settings): section-scoped saves without losing drafts (fix #673)</td><td>Yuvraj</td><td>Apr 21</td></tr>
+<tr><td>#670</td><td>docs: org settings + export implementation flow docs</td><td>Yuvraj</td><td>Apr 20</td></tr>
+<tr><td>#669</td><td>Org settings + branding + authz</td><td>Yuvraj</td><td>Apr 20</td></tr>
 <tr><td>#668</td><td>tokenHash O(1) lookup</td><td>Paras</td><td>Apr 18</td></tr>
 <tr><td>#661</td><td>Export permissions</td><td>Yuvraj</td><td>Apr 17</td></tr>
 <tr><td>#652</td><td>Android payment flow</td><td>Jitesh</td><td>Apr 17</td></tr>
@@ -438,27 +458,29 @@
 </tbody></table></div></div>
 
 <div class="modal-bg" id="m-openpr"><div class="modal"><button class="modal-x" onclick="hideM('m-openpr')">&times;</button><h3>Open PRs (1)</h3><table><thead><tr><th>PR</th><th>Title</th><th>Author</th></tr></thead><tbody>
-<tr><td>#669</td><td>Org settings: identity/branding, authz, kiosk branding</td><td>Yuvraj</td></tr>
+<tr><td>#675</td><td>[feat]: revamp Gift Aid declaration form with atomic Gift Aid lifecycle handling</td><td>prsrwt</td></tr>
 </tbody></table></div></div>
 
-<div class="modal-bg" id="m-issues"><div class="modal"><button class="modal-x" onclick="hideM('m-issues')">&times;</button><h3>Open Issues (23)</h3><p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">8 assigned · 15 unassigned</p><table><thead><tr><th>#</th><th>Title</th><th>Assignee</th></tr></thead><tbody>
-<tr><td>667-663</td><td>5x magic link frontend/backend (Paras)</td><td>Paras</td></tr>
-<tr><td>658</td><td>Export docs</td><td>Yuvraj</td></tr>
+<div class="modal-bg" id="m-issues"><div class="modal"><button class="modal-x" onclick="hideM('m-issues')">&times;</button><h3>Open Issues (30)</h3><p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px">13 assigned · 17 unassigned</p><table><thead><tr><th>#</th><th>Title</th><th>Assignee</th></tr></thead><tbody>
+<tr><td>675</td><td>Gift Aid declaration form revamp</td><td>prsrwt</td></tr>
+<tr><td>673</td><td>Org settings save error (cross-section)</td><td>Yuvraj</td></tr>
+<tr><td>672</td><td>Portrait mode idle background image</td><td>Yuvraj</td></tr>
+<tr><td>671</td><td>SVG format for icon upload</td><td>Yuvraj</td></tr>
+<tr><td>667-663</td><td>5x magic link frontend/backend</td><td>Paras</td></tr>
 <tr><td>649</td><td>Revamp Magic Link</td><td>Paras</td></tr>
-<tr><td>648</td><td>Org Settings</td><td>Jitesh+Yuvraj</td></tr>
-<tr><td>647-629</td><td>13 unassigned items</td><td>—</td></tr>
-<tr><td>610,609</td><td>Consent Ledger</td><td>Paras</td></tr>
-<tr><td>583</td><td>Skeleton loading</td><td>Raaaghav</td></tr>
+<tr><td>610,609</td><td>Consent Ledger (stale 8d)</td><td>Paras</td></tr>
+<tr><td>647,646</td><td>Micro-txn shield, Stripe rates</td><td>—</td></tr>
+<tr><td>641,640,639,638,637,636,635,634,633,632,631,630,629,628,627</td><td>15 P0 & compliance items</td><td>—</td></tr>
 </tbody></table></div></div>
 
 <div class="modal-bg" id="m-p0"><div class="modal"><button class="modal-x" onclick="hideM('m-p0')">&times;</button><h3>P0 Must-Haves (7)</h3><table><thead><tr><th>Item</th><th>Issue</th><th>Status</th></tr></thead><tbody>
 <tr><td>KYC gating</td><td>#640</td><td style="color:var(--danger)">Unassigned</td></tr>
 <tr><td>Super Admin</td><td>#641</td><td style="color:var(--danger)">Unassigned</td></tr>
-<tr><td>CIC validation</td><td>#634</td><td style="color:var(--danger)">Unassigned</td></tr>
-<tr><td>Fee transparency</td><td>#633</td><td style="color:var(--danger)">Unassigned</td></tr>
-<tr><td>GASDS Location</td><td>#629</td><td style="color:var(--danger)">Unassigned</td></tr>
-<tr><td>Compliance Lock</td><td>—</td><td style="color:var(--danger)">No issue</td></tr>
-<tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras (stale)</td></tr>
+<tr><td>Compliance Lock</td><td>#639</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>R68 monthly batch</td><td>#638</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>GASDS claim flow</td><td>#637</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>Fee transparency</td><td>#636</td><td style="color:var(--danger)">Unassigned</td></tr>
+<tr><td>Consent Ledger</td><td>#609/#610</td><td>Paras (stale 8d)</td></tr>
 </tbody></table></div></div>
 
 <script>
