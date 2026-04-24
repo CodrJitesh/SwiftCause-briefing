@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Entity — User Flow Review</title>
+    <style>
+        :root {
+            --green: #0E8F5A;
+            --red: #DC2626;
+            --amber: #D97706;
+            --blue: #2563EB;
+            --purple: #7C3AED;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--green) 0%, #0a6d47 100%);
+            color: white;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--gray-200);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--gray-700);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-button:hover {
+            color: var(--green);
+        }
+
+        .tab-button.active {
+            color: var(--green);
+            border-bottom-color: var(--green);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            color: var(--green);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .card h4 {
+            color: var(--gray-900);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .status-item {
+            padding: 1rem;
+            background: var(--gray-50);
+            border-left: 4px solid var(--green);
+            border-radius: 4px;
+        }
+
+        .status-item.warning {
+            border-left-color: var(--amber);
+            background: #FFFBEB;
+        }
+
+        .status-item.missing {
+            border-left-color: var(--red);
+            background: #FEF2F2;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        .badge-yes {
+            background-color: #DCFCE7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background-color: #FEF3C7;
+            color: #92400E;
+        }
+
+        .badge-no {
+            background-color: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .test-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .test-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-100);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .test-list li:last-child {
+            border-bottom: none;
+        }
+
+        .test-number {
+            font-weight: 600;
+            color: var(--gray-700);
+            min-width: 2.5rem;
+        }
+
+        .flow-step {
+            background: var(--gray-50);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--blue);
+            border-radius: 4px;
+        }
+
+        .flow-step.location-touch {
+            border-left-color: var(--green);
+            background: #F0FDF4;
+        }
+
+        .flow-step strong {
+            color: var(--green);
+        }
+
+        .code-block {
+            background: var(--gray-900);
+            color: #E5E7EB;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .code-block code {
+            display: block;
+        }
+
+        .brief-point {
+            background: white;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--purple);
+            border-radius: 4px;
+        }
+
+        .brief-point h5 {
+            color: var(--purple);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .brief-point p {
+            margin: 0.5rem 0;
+        }
+
+        .link-box {
+            background: var(--blue);
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .link-box a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .action-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .action-list li {
+            padding: 0.75rem 0 0.75rem 2rem;
+            position: relative;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .action-list li:last-child {
+            border-bottom: none;
+        }
+
+        .action-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        .action-list li.ask:before {
+            content: "❓";
+        }
+
+        .action-list li.tell:before {
+            content: "📢";
+        }
+
+        .action-list li.blocked:before {
+            content: "🚫";
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        table th {
+            background: var(--gray-100);
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--gray-300);
+        }
+
+        table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        table tr:hover {
+            background: var(--gray-50);
+        }
+
+        .comparison-matrix {
+            overflow-x: auto;
+        }
+
+        .comparison-matrix table {
+            min-width: 100%;
+        }
+
+        .comparison-matrix th, .comparison-matrix td {
+            text-align: left;
+            padding: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .comparison-matrix tr:hover td {
+            background: var(--gray-50);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray-200);
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: nowrap;
+            }
+
+            .tab-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Location Entity — User Flow Review</h1>
+        <p>Assessing Yuvraj's #678 testing scope against user flows and briefing Paras for #679 integration work</p>
+        <div class="meta">
+            <span>Date: 24 April 2026</span>
+            <span>Prepared for: Qamar (PM)</span>
+            <span>Yuvraj Test Report: 09:05 BST</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('yuvraj')">Yuvraj's Coverage</button>
+            <button class="tab-button" onclick="switchTab('flows')">User Flow Touchpoints</button>
+            <button class="tab-button" onclick="switchTab('paras')">Paras's #679 Brief</button>
+            <button class="tab-button" onclick="switchTab('actions')">Actions & Gaps</button>
+            <button class="tab-button" onclick="switchTab('compliance')" style="background: #FEF3C7; color: #92400E; border: 2px solid #D97706;">🗣️ Team Discussion</button>
+        </div>
+
+        <!-- TAB 1: YUVRAJ'S COVERAGE -->
+        <div id="yuvraj" class="tab-content active">
+            <div class="card">
+                <h3>Test Summary</h3>
+                <p>Yuvraj has completed 17 test cases + 5 screen recordings covering the Location Entity feature (#678: Kiosk Management with Location Assignment).</p>
+                <p style="margin-top: 0.5rem; color: var(--gray-700);">Test Report Timestamp: 24 Apr 2026, 09:05 BST</p>
+            </div>
+
+            <div class="card">
+                <h3>✅ Well Covered (9/17 tests)</h3>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 3</span>
+                        <strong>Kiosk Creation with New Location</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Create location on-the-fly during kiosk creation. Covers form flow and data persistence.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 5</span>
+                        <strong>Kiosk Reuses Existing Location</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Verify same location can be assigned to multiple kiosks. Critical for GASDS aggregation.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Tests 7–9</span>
+                        <strong>Location Immutability</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Edit creates new location doc; old kiosks point to original. Essential for HMRC audit trail.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 10</span>
+                        <strong>Required Field Validation</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Create button blocked until name and location selected. Form validation working.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Tests 11–12</span>
+                        <strong>Geo Validation Edge Cases</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Latitude 0, Longitude 0 allowed. Invalid ranges (lat 91, lng 181) rejected with inline errors.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Tests 13–14</span>
+                        <strong>Error Handling – Network Failures</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Location API failure shows inline error; kiosk save failure shows toast. Graceful degradation.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 15</span>
+                        <strong>Stale Data Recovery</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Editing kiosk with missing/invalid location mapping triggers warning and blocks save.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 16</span>
+                        <strong>Role-Based Access Control</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Non-admin accounts cannot create/edit kiosks or locations. RBAC enforced.</p>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-badge badge-yes">✓ Test 17</span>
+                        <strong>Firestore Indexing</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Post-deployment verification: no "missing index" error when loading locations list.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>⚠️ Partially Covered or Unclear (2 items)</h3>
+                <div class="status-grid">
+                    <div class="status-item warning">
+                        <span class="status-badge badge-warning">? Spec Field</span>
+                        <strong><code>isCommunityBuilding</code> Toggle</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Spec requires boolean toggle for GASDS community building rules. Tests mention "fill required fields" but no explicit mention of testing this toggle. <strong>Needs confirmation from Yuvraj:</strong> Is this included in test 10 (required field validation)?</p>
+                    </div>
+                    <div class="status-item warning">
+                        <span class="status-badge badge-warning">? Edge Case</span>
+                        <strong>Postcode Format Validation</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Test 10 checks "required" but no explicit test for UK postcode regex or edge cases (outward/inward code split, spaces). HMRC-critical field for GASDS eligibility.</p>
+                    </div>
+                    <div class="status-item warning">
+                        <span class="status-badge badge-warning">? Default</span>
+                        <strong>Country Field Default</strong>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem;">Spec says default is "UK". No explicit test for this. Confirm in test 3 (create location) that country defaults to UK.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>❌ Out of Scope for #678 (Not Yuvraj's Job)</h3>
+                <ul class="test-list">
+                    <li>
+                        <span class="test-number">✗</span>
+                        <strong>Two-Button Front Door [Donation]/[Payment]</strong> — P0 priority but separate workstream. This UI gate determines campaign compliance mode. Not part of Location Entity creation.
+                    </li>
+                    <li>
+                        <span class="test-number">✗</span>
+                        <strong>Campaign Compliance Lock</strong> — P0, separate. Sets campaign to Donation Mode or Activity Mode. Needed for GASDS eligibility logic.
+                    </li>
+                    <li>
+                        <span class="test-number">✗</span>
+                        <strong>Donation Flow Integration</strong> — This is #679 (Paras's work). At payment time, donation must inherit location_id and location_snapshot from kiosk.
+                    </li>
+                    <li>
+                        <span class="test-number">✗</span>
+                        <strong>Magic Link Page Location Context</strong> — Future enhancement. Magic link page could show location context but not required for launch.
+                    </li>
+                    <li>
+                        <span class="test-number">✗</span>
+                        <strong>GASDS Cap Tracking & Admin Dashboard</strong> — Growth-tier feature. Requires donation aggregation logic to be working first.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Question for Yuvraj</h3>
+                <p><strong>Before marking #678 as ready for merge, please confirm:</strong></p>
+                <ul class="test-list">
+                    <li>
+                        <span class="test-number">1</span>
+                        Is <code>isCommunityBuilding</code> toggle tested? (Test 10: required field validation)
+                    </li>
+                    <li>
+                        <span class="test-number">2</span>
+                        Are postcode format validations (UK regex) included in the error handling tests?
+                    </li>
+                    <li>
+                        <span class="test-number">3</span>
+                        Can you confirm country field defaults to "UK" in test 3?
+                    </li>
+                    <li>
+                        <span class="test-number">4</span>
+                        Are the 5 screen recordings linked in the PR description for audit trail?
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 2: USER FLOW TOUCHPOINTS -->
+        <div id="flows" class="tab-content">
+            <div class="card">
+                <h3>Location Entity in User Flows</h3>
+                <p>The Location Entity (#678) is the foundation. It doesn't appear directly in donor-facing flows but is critical infrastructure for GASDS compliance and reporting.</p>
+            </div>
+
+            <div class="card">
+                <h4>Flow 1: Kiosk Tap-to-Pay (Donation Entry Point)</h4>
+                <div class="flow-step">
+                    <strong>Step 0 (TO-BE): Two-Button Front Door</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Donor sees [Payment] | [Donation]. Determines campaign compliance mode.</span><br>
+                    <span style="color: var(--amber); font-size: 0.9rem; margin-top: 0.5rem; display: block;">⚠️ P0, NOT BUILT. Location doesn't interact directly here.</span>
+                </div>
+                <div class="flow-step location-touch">
+                    <strong>Step 1–2: Campaign List & Amount</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Donor selects campaign and amount at a physical kiosk.</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">🔗 Location Touch: The kiosk has <code>location_id</code> stored in the kiosk document.</span>
+                </div>
+                <div class="flow-step location-touch">
+                    <strong>Step 3: Gift Aid Eligibility Check</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">System asks: "Is this a UK domicile donation?" (postcode check).</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">🔗 Location Touch: Kiosk's location.postcode helps pre-populate or validate donation origin.</span>
+                </div>
+                <div class="flow-step location-touch">
+                    <strong>Step 4–5: Payment & Webhook</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Stripe payment succeeds. Webhook creates donation record.</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">🔗 Location Touch: <strong>Donation must inherit location_id and location_snapshot from kiosk. This is #679's job (Paras).</strong></span>
+                </div>
+                <div class="flow-step location-touch">
+                    <strong>Step 6: Thank You + QR Magic Link</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Kiosk displays "Thank you for £X donation to [Campaign]" and shows QR code.</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">🔗 Future: Magic link page could show "Donated at [Location Name]" but not required for MVP.</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Flow 2: Magic Link – Gift Aid Capture</h4>
+                <div class="flow-step location-touch">
+                    <strong>Step 1: Donor Scans QR → /link/[token]</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">QR code from kiosk screen links to magic link page.</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">🔗 Location Context: The magic link page could reference the kiosk's location (optional enhancement).</span>
+                </div>
+                <div class="flow-step">
+                    <strong>Step 2: Gift Aid Form & Home Address</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Donor enters home address postcode and Gift Aid declaration.</span><br>
+                    <span style="color: var(--red); font-size: 0.9rem; margin-top: 0.5rem; display: block;">⚠️ Important: Donor's HOME postcode ≠ Kiosk location postcode. Different purposes. Not stored as location_snapshot.</span>
+                </div>
+                <div class="flow-step">
+                    <strong>Step 3: Declaration Saved</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Gift Aid eligibility verified. Declaration saved to donation record.</span><br>
+                    <span style="color: var(--gray-700); font-size: 0.9rem; margin-top: 0.5rem; display: block;">The kiosk's location_id on the donation enables GASDS aggregation at report time.</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h4>Admin Flows</h4>
+                <div class="flow-step location-touch">
+                    <strong>Kiosk Management: Create/Edit Kiosks with Location</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Admin → Kiosks → Add/Edit Kiosk. Assign location (new or existing).</span><br>
+                    <span style="color: var(--green); font-size: 0.9rem; margin-top: 0.5rem; display: block;">✅ This is what Yuvraj is testing in #678.</span>
+                </div>
+                <div class="flow-step">
+                    <strong>Location Management: (Future)</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Admin screen to view/edit/delete location records across the org. Not in MVP.</span>
+                </div>
+                <div class="flow-step">
+                    <strong>Campaign Management: Run Campaigns at Locations</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Campaign → select kiosk → kiosk carries campaign's location and compliance mode.</span>
+                </div>
+                <div class="flow-step location-touch">
+                    <strong>GASDS Dashboard: (Growth Tier)</strong><br>
+                    <span style="font-size: 0.95rem; color: var(--gray-700);">Queries: "How much GASDS has building X used this tax year?" Uses location_id as grouping key.</span><br>
+                    <span style="color: var(--amber); font-size: 0.9rem; margin-top: 0.5rem; display: block;">⚠️ Depends on donations having location_id and location_snapshot (Paras's #679).</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>GASDS 3-Entity Architecture</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>Represents</th>
+                            <th>Key Fields</th>
+                            <th>Governance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Location</strong></td>
+                            <td>Physical building</td>
+                            <td><code>name</code>, <code>postcode</code>, <code>city</code>, <code>lat</code>, <code>lng</code>, <code>isCommunityBuilding</code></td>
+                            <td>First-class Firestore collection (immutable, new doc on edit)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kiosk</strong></td>
+                            <td>Device at location</td>
+                            <td><code>name</code>, <code>location_id</code> (reference)</td>
+                            <td>Points to Location. Can be reused across kiosks.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Campaign</strong></td>
+                            <td>Fundraising initiative</td>
+                            <td><code>name</code>, <code>complianceMode</code> (Donation|Activity), kiosk assignments</td>
+                            <td>Carries compliance mode. Only Donation Mode is GASDS-eligible.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Donation</strong></td>
+                            <td>Transaction record</td>
+                            <td><code>amount</code>, <code>location_id</code>, <code>location_snapshot</code>, <code>campaignMode</code>, <code>taxYear</code></td>
+                            <td>Inherits location_id and snapshot from kiosk at payment time. Immutable after creation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Data Capture Matrix: Location Fields</h3>
+                <p>Where location data is captured or used across flows:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Flow Step</th>
+                            <th>Data Captured</th>
+                            <th>Source</th>
+                            <th>Field Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Admin: Kiosk Creation</td>
+                            <td><code>kiosk.location_id</code></td>
+                            <td>Admin selects location</td>
+                            <td>Reference (FK to locations/)</td>
+                        </tr>
+                        <tr>
+                            <td>Flow 1: Payment Webhook</td>
+                            <td><code>donation.location_id</code></td>
+                            <td>Read from kiosk document</td>
+                            <td>Reference (FK)</td>
+                        </tr>
+                        <tr>
+                            <td>Flow 1: Payment Webhook</td>
+                            <td><code>donation.location_snapshot</code> { name, postcode, city }</td>
+                            <td>Fetch locations/{location_id} at payment time</td>
+                            <td>Embedded document (denormalized)</td>
+                        </tr>
+                        <tr>
+                            <td>Flow 1: Gift Aid Check</td>
+                            <td>Kiosk location's postcode (context only)</td>
+                            <td>Kiosk document</td>
+                            <td>For pre-population, not validation</td>
+                        </tr>
+                        <tr>
+                            <td>GASDS Reporting</td>
+                            <td>Sum by location_id, tax year, compliance mode</td>
+                            <td>Donation queries</td>
+                            <td>Aggregation key</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: PARAS'S #679 BRIEF -->
+        <div id="paras" class="tab-content">
+            <div class="card">
+                <h3>Issue #679: Donation Location Handling</h3>
+                <p>Once Yuvraj's #678 is merged, your job (#679) is to make donations actually use the Location entity. This is the "connecting piece" between admin setup and GASDS compliance.</p>
+                <div class="link-box">
+                    <strong>Start coding only after #678 is merged to main.</strong> Donations depend on locations existing in Firestore.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>The 8 Critical Points You Must Know</h3>
+
+                <div class="brief-point">
+                    <h5>1. Hybrid Approach: location_id + location_snapshot</h5>
+                    <p><strong>Each donation must store both:</strong></p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li><code>location_id</code> — Reference to the Location document (FK). Used for GASDS aggregation queries. Enables "which building?"</li>
+                        <li><code>location_snapshot</code> — Embedded snapshot { name, postcode, city }. Immutable copy taken at payment time. Resilient to future location edits.</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;"><strong>Why both?</strong> location_id enables efficient queries; location_snapshot ensures audit trail (if location is later edited, the donation still shows what it was at payment time).</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>2. Fetch-Before-Write Pattern</h5>
+                    <p>At donation creation time, your payment webhook must:</p>
+                    <p style="margin-top: 0.75rem;"><strong>Order of operations:</strong></p>
+                    <ol style="margin: 0.75rem 0 0 1.5rem; list-style: decimal;">
+                        <li>Read kiosk document → get <code>kiosk.location_id</code></li>
+                        <li>Fetch <code>locations/{location_id}</code> from Firestore</li>
+                        <li>Extract { name, postcode, city } into location_snapshot object</li>
+                        <li>Create donation with both <code>location_id</code> and <code>location_snapshot</code></li>
+                    </ol>
+                    <p style="margin-top: 0.75rem;"><strong>Do NOT skip the fetch.</strong> If you try to guess or defer, you risk stale or missing data.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>3. Snapshot Immutability</h5>
+                    <p><strong>Once a donation is created, its location_snapshot must NEVER be updated.</strong></p>
+                    <p style="margin-top: 0.75rem;">Example: If an admin later edits the location (which creates a new location document), old donations keep their original snapshot. New donations at that location get the new snapshot.</p>
+                    <p style="margin-top: 0.75rem;"><strong>Code rule:</strong> location_snapshot is write-once. No update operations on it.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>4. Postcode is HMRC-Critical</h5>
+                    <p><code>location_snapshot.postcode</code> must ALWAYS be present. This field is needed for:</p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li><strong>GASDS Eligibility:</strong> HMRC checks building location postcodes against GASDS list</li>
+                        <li><strong>R68 CSV Export:</strong> The tax report to HMRC includes building postcode</li>
+                        <li><strong>Audit Trail:</strong> Postcode is the primary identifier of a building</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;"><strong>Validation:</strong> When writing a donation, check that <code>location_snapshot.postcode</code> is not null/empty. If missing, reject donation creation.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>5. GASDS Aggregation Depends on location_id</h5>
+                    <p>To calculate "How much GASDS has this building used this tax year?", the system queries:</p>
+                    <div class="code-block">
+db.collection('donations')
+  .where('location_id', '==', 'locations/abc123')
+  .where('taxYear', '==', 2026)
+  .where('campaignMode', '==', 'donation')
+  .get()
+  .then(snap => {
+    const total = snap.docs.reduce((sum, doc) => sum + doc.data().amount, 0);
+    console.log(`Building used £${total} GASDS`);
+  });
+                    </div>
+                    <p><strong>The location_id is the grouping key.</strong> Without it, GASDS reporting is impossible. Do not allow donations without a location_id.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>6. Campaign Mode Matters for GASDS</h5>
+                    <p><strong>Only Donation Mode campaigns are GASDS-eligible.</strong> Activity Mode (madrasah fees, event registrations) can NEVER be claimed under GASDS, even at the same location.</p>
+                    <p style="margin-top: 0.75rem;">Your donation record needs both fields:</p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li><code>location_id</code> — "At which building?"</li>
+                        <li><code>campaignMode</code> — "Is this a Donation or Activity?"</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">GASDS calculations filter by <code>campaignMode == 'donation'</code>. This ensures Activity Mode donations don't count toward the £8k cap.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>7. Timing: Depends on #678</h5>
+                    <p>You can prepare your test plan and architecture now, but <strong>you cannot start coding until #678 is merged.</strong></p>
+                    <p style="margin-top: 0.75rem;"><strong>Ready-to-code checklist:</strong></p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li>✓ #678 merged to main</li>
+                        <li>✓ Locations collection exists in Firestore</li>
+                        <li>✓ At least one test location created by admin</li>
+                        <li>✓ At least one test kiosk with location_id assigned</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">Once those boxes are ticked, you have everything you need.</p>
+                </div>
+
+                <div class="brief-point">
+                    <h5>8. Validation Rules for Donation Creation</h5>
+                    <p>Before writing a donation, validate:</p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li>✓ <code>location_id</code> must exist and reference a valid location document</li>
+                        <li>✓ <code>location_snapshot.name</code> must be non-empty</li>
+                        <li>✓ <code>location_snapshot.postcode</code> must be non-empty and match UK postcode regex</li>
+                        <li>✓ <code>location_snapshot.city</code> must be non-empty</li>
+                        <li>✓ <code>campaignMode</code> must be 'donation' or 'activity'</li>
+                        <li>✓ <code>taxYear</code> must be set (derived from donation date)</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;">If any validation fails, reject the donation and log an error. Do not write partial records.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Firestore Schema You'll Write To</h3>
+                <p><strong>donations/ collection document structure (relevant fields):</strong></p>
+                <div class="code-block">
+{
+  "id": "donations/abc123",
+  "amount": 25.00,
+  "currency": "GBP",
+  "location_id": "locations/xyz789",
+  "location_snapshot": {
+    "name": "1st Bristol Muslim Scouts",
+    "postcode": "BS1 5NA",
+    "city": "Bristol"
+  },
+  "campaignMode": "donation",
+  "campaignId": "campaigns/def456",
+  "taxYear": 2026,
+  "giftAidEligible": true,
+  "donorHomePostcode": "M1 1AE",
+  "createdAt": "2026-04-24T09:30:00Z",
+  "webhook_source": "stripe_payment_intent.succeeded"
+}
+                </div>
+                <p style="margin-top: 1rem;"><strong>Note:</strong> <code>location_snapshot</code> is embedded (denormalized). <code>donorHomePostcode</code> is separate (donor's home, not kiosk location).</p>
+            </div>
+
+            <div class="card">
+                <h3>Test Plan Skeleton (for you to flesh out)</h3>
+                <ul class="test-list">
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Payment webhook receives donation_created event with location_id from kiosk</strong> — Happy path
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Webhook fetches location document and embeds snapshot into donation</strong> — Verify fetch succeeds
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>location_snapshot is immutable after creation</strong> — Try updating it; confirm it fails or is ignored
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Donation with missing location_id is rejected</strong> — Error handling
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Donation with missing postcode in location_snapshot is rejected</strong> — HMRC validation
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>GASDS aggregation query correctly sums by location_id + tax year + campaign mode</strong> — Reporting
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Activity Mode donations do NOT count in GASDS sum</strong> — Compliance gate
+                    </li>
+                    <li>
+                        <span class="test-number">✓</span>
+                        <strong>Webhook handles location fetch timeout gracefully (circuit breaker)</strong> — Resilience
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Questions to Ask Qamar Before You Start</h3>
+                <ul class="test-list">
+                    <li>
+                        <span class="test-number">1</span>
+                        Should the donation webhook retry failed location fetches, or fail the entire donation?
+                    </li>
+                    <li>
+                        <span class="test-number">2</span>
+                        Is there a circuit breaker timeout for the location fetch? (e.g., if Firestore is slow)
+                    </li>
+                    <li>
+                        <span class="test-number">3</span>
+                        Should location_snapshot be logged separately for audit, or just in the donation record?
+                    </li>
+                    <li>
+                        <span class="test-number">4</span>
+                        When does taxYear get set? (Date of donation, or end of calendar year?)
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TAB 4: ACTIONS & GAPS -->
+        <div id="actions" class="tab-content">
+            <div class="card">
+                <h3>For Qamar: Action Items</h3>
+                <p style="margin-bottom: 1rem; color: var(--gray-700);">Before closing out #678 and starting #679, execute these actions.</p>
+
+                <h4 style="color: var(--blue); margin-top: 1.5rem;">❓ Ask Yuvraj (before merge)</h4>
+                <ul class="action-list ask">
+                    <li>Is <code>isCommunityBuilding</code> toggle tested in test 10 (required field validation)?</li>
+                    <li>Are postcode format validations (UK regex) included in your error handling tests (tests 13–14)?</li>
+                    <li>Can you confirm country field defaults to "UK" when creating a new location (test 3)?</li>
+                    <li>Are the 5 screen recordings linked in PR #678 description? (Audit trail)</li>
+                    <li>Have you verified Firestore indexing is correct post-deployment (test 17)?</li>
+                </ul>
+
+                <h4 style="color: var(--blue); margin-top: 1.5rem;">📢 Tell Paras (before he starts #679)</h4>
+                <ul class="action-list tell">
+                    <li>Share this review document with him. Point him to the "Paras's #679 Brief" tab.</li>
+                    <li>Emphasize: #679 depends on #678 being merged first. He can prepare now; code only after merge.</li>
+                    <li>Highlight the 8 critical points: hybrid approach (location_id + snapshot), fetch-before-write, immutability, postcode validation, GASDS aggregation, campaign mode gating.</li>
+                    <li>Confirm with him that his test plan covers the 8 scenarios in the skeleton (happy path, validation, error handling, reporting, compliance).</li>
+                    <li>Make sure he knows: donation webhook must be idempotent (Stripe can retry). Snapshot must not be updated after creation.</li>
+                </ul>
+
+                <h4 style="color: var(--blue); margin-top: 1.5rem;">🚫 Blocked / Out of Scope (Do NOT Start Yet)</h4>
+                <ul class="action-list blocked">
+                    <li><strong>Campaign-Level Compliance Mode</strong> — P0, but separate workstream. Proposed architecture ready for team review → <a href="#" onclick="switchTab('compliance'); return false;" style="color: var(--blue); font-weight: bold;">see Team Discussion tab</a>.</li>
+                    <li><strong>Two-Button Front Door [Donation]/[Payment]</strong> — Now part of Campaign Compliance Mode proposal. Conditional: only appears for mixed-mode kiosks.</li>
+                    <li><strong>GASDS Admin Dashboard</strong> — Growth-tier feature. Depends on #679 (donations with location_id). Prioritize after launch.</li>
+                    <li><strong>Location Management UI</strong> — Future admin screen to view/edit locations. Not in MVP. Kiosk creation is the entry point for now.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Critical Path: #678 → #679</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Issue</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Blocker</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Phase 1</strong></td>
+                            <td>#678: Location Entity + Kiosk Management</td>
+                            <td>Yuvraj</td>
+                            <td>Testing (17 tests + 5 videos)</td>
+                            <td>None — ready to merge?</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phase 1→2</strong></td>
+                            <td>#678 Merged to main</td>
+                            <td>Yuvraj + Qamar</td>
+                            <td>Pending</td>
+                            <td>Yuvraj confirmations above</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phase 2</strong></td>
+                            <td>#679: Donation Location Handling</td>
+                            <td>Paras</td>
+                            <td>Ready to prepare</td>
+                            <td>#678 merged</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phase 3</strong></td>
+                            <td>GASDS Reporting (future)</td>
+                            <td>TBD</td>
+                            <td>Blocked</td>
+                            <td>#679 complete + Campaign Compliance Lock</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Summary: What's Working, What Needs Confirmation, What's Waiting</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: #F0FDF4; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--green);">
+                        <h5 style="color: var(--green); margin-bottom: 0.5rem;">✅ What's Working</h5>
+                        <ul style="list-style: none; font-size: 0.95rem;">
+                            <li>• Yuvraj's 17 tests cover core scenarios well</li>
+                            <li>• Location immutability logic tested (HMRC audit trail)</li>
+                            <li>• Geo validation, error handling, RBAC all covered</li>
+                            <li>• Firestore indexing verification included</li>
+                        </ul>
+                    </div>
+                    <div style="background: #FFFBEB; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--amber);">
+                        <h5 style="color: var(--amber); margin-bottom: 0.5rem;">⚠️ Needs Confirmation</h5>
+                        <ul style="list-style: none; font-size: 0.95rem;">
+                            <li>• isCommunityBuilding toggle tested?</li>
+                            <li>• Postcode format validation (UK regex)?</li>
+                            <li>• Country field defaults to UK?</li>
+                            <li>• Screen recordings linked in PR?</li>
+                        </ul>
+                    </div>
+                    <div style="background: #FEF2F2; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--red);">
+                        <h5 style="color: var(--red); margin-bottom: 0.5rem;">❌ Out of Scope (Waiting)</h5>
+                        <ul style="list-style: none; font-size: 0.95rem;">
+                            <li>• Campaign Compliance Mode (<a href="#" onclick="switchTab('compliance'); return false;" style="color: var(--red);">Team Discussion</a>)</li>
+                            <li>• Donation integration (Paras #679)</li>
+                            <li>• GASDS Dashboard (growth tier)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>GitHub Issues Referenced</h3>
+                <div class="link-box">
+                    <p style="margin: 0;">
+                        <strong>#678:</strong> <a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/678" target="_blank">Location Entity: Kiosk Management with Location Assignment</a>
+                    </p>
+                    <p style="margin-top: 0.5rem;">
+                        <strong>#679:</strong> <a href="https://github.com/YNVSolutions/SwiftCause_Web/issues/679" target="_blank">Donation Location Handling: Inherit location_id and location_snapshot from kiosk</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Next Steps</h3>
+                <ol style="margin: 1rem 0; margin-left: 1.5rem;">
+                    <li><strong>Today (24 Apr):</strong> Share this review with Yuvraj and Paras</li>
+                    <li><strong>Before merge:</strong> Get Yuvraj's answers to the 4 confirmation questions</li>
+                    <li><strong>On merge:</strong> Mark #678 complete; unblock #679 for Paras</li>
+                    <li><strong>Parallel track:</strong> Paras prepares test plan and architecture while Yuvraj finalizes #678</li>
+                    <li><strong>After merge:</strong> Paras starts coding #679 (donation webhook integration)</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+        <!-- TEAM DISCUSSION TAB -->
+        <div id="compliance" class="tab-content">
+            <div class="card" style="border: 2px solid #D97706; background: #FFFBEB;">
+                <h3 style="color: #92400E;">🗣️ Proposed Architecture: Campaign-Level Compliance Mode</h3>
+                <p style="margin: 0.5rem 0 1rem; color: var(--gray-700); font-style: italic;">
+                    This is a proposed product architecture decision for team review. Qamar wants input from the dev team before finalising.
+                    <strong>Date raised: 24 April 2026.</strong>
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>The Proposal</h3>
+                <p style="margin-bottom: 1rem;">
+                    Instead of routing compliance at the kiosk level or through a separate config screen, <strong>compliance mode is set per campaign at creation time</strong>.
+                    Each campaign has a field: <code>campaignMode: 'donation' | 'activity'</code>. This single field drives all downstream compliance behaviour.
+                </p>
+
+                <h4 style="margin-top: 1.5rem; color: var(--blue);">Two Modes, Two Compliance Paths</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Donation Mode</th>
+                            <th>Activity / Payment Mode</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Stripe Rate</strong></td>
+                            <td>1.2% + 20p (charity rate)</td>
+                            <td>1.5% + 20p (standard rate)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gift Aid</strong></td>
+                            <td>Eligible — magic link offered</td>
+                            <td>Hard-locked OFF — never offered</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GASDS</strong></td>
+                            <td>Eligible (if ≤£30 and contactless)</td>
+                            <td>Excluded</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accounting Ledger</strong></td>
+                            <td>Charitable income</td>
+                            <td>Trading income</td>
+                        </tr>
+                        <tr>
+                            <td><strong>R68 Export</strong></td>
+                            <td>Included</td>
+                            <td>Excluded</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Record Type</strong></td>
+                            <td><code>type: 'donation'</code></td>
+                            <td><code>type: 'payment'</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Conditional Front Door Logic</h3>
+                <p style="margin-bottom: 1rem;">The donor-facing [Donation] / [Payment] pathway screen is <strong>conditional</strong> — it only appears when needed.</p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+                    <div style="background: #F0FDF4; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--green);">
+                        <h5 style="color: var(--green); margin-bottom: 0.5rem;">Kiosk has ONLY Donation campaigns</h5>
+                        <p style="font-size: 0.95rem;">No front door shown. Donor goes straight to campaign list. All records automatically <code>type: 'donation'</code>.</p>
+                    </div>
+                    <div style="background: #F0FDF4; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--green);">
+                        <h5 style="color: var(--green); margin-bottom: 0.5rem;">Kiosk has ONLY Activity campaigns</h5>
+                        <p style="font-size: 0.95rem;">No front door shown. Donor goes straight to campaign list. All records automatically <code>type: 'payment'</code>.</p>
+                    </div>
+                    <div style="background: #FFFBEB; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--amber);">
+                        <h5 style="color: var(--amber); margin-bottom: 0.5rem;">Kiosk has BOTH types</h5>
+                        <p style="font-size: 0.95rem;">Two-pathway filter appears: <strong>[Donation]</strong> / <strong>[Payment]</strong>. Filters the campaign list by mode. Donor picks pathway, then sees only campaigns of that type.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #EFF6FF; border-radius: 6px; border-left: 4px solid var(--blue);">
+                    <h5 style="color: var(--blue); margin-bottom: 0.5rem;">Key Insight</h5>
+                    <p style="font-size: 0.95rem;">The record's compliance flag comes from the <strong>campaign mode</strong>, not from the donor's button press. The front door is just a conditional UI filter — not a data-capture step. Admin controls the experience by simply assigning or unassigning campaign types to the kiosk.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Why This Design?</h3>
+                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                    <li style="margin-bottom: 0.5rem;"><strong>Zero extra taps for simple charities.</strong> Most charities are donation-only — their donors never see a mode picker. No friction added.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Mixed-mode only when needed.</strong> A mosque with both a General Fund (donation) and Madrasah fees (activity/payment) naturally gets the two-pathway filter just by having both campaign types assigned.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Admin controls it, not a config screen.</strong> Adding or removing a campaign type from a kiosk is the config. No separate "compliance settings" needed.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Single source of truth.</strong> Campaign <code>mode</code> field drives everything: Stripe rate, Gift Aid eligibility, GASDS, R68 export, accounting ledger. No ambiguity.</li>
+                    <li style="margin-bottom: 0.5rem;"><strong>Permanent, not hacky.</strong> This can stay in the product forever. Not a workaround that needs replacing.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Firestore Impact</h3>
+                <p style="margin-bottom: 1rem;">This requires adding a <code>mode</code> field to the campaign document.</p>
+                <div class="link-box" style="background: var(--gray-100);">
+                    <pre style="margin: 0; font-size: 0.9rem; white-space: pre-wrap; color: var(--gray-900);">// campaigns/{campaignId}
+{
+  ...existingFields,
+  mode: 'donation' | 'activity',   // NEW — set at campaign creation
+  // Everything downstream derives from this:
+  // → Stripe rate selection
+  // → Gift Aid magic link eligibility
+  // → GASDS eligibility check
+  // → R68 export inclusion/exclusion
+  // → Accounting ledger classification
+}
+
+// Kiosk front-door logic (pseudo-code):
+const campaigns = await getCampaignsForKiosk(kioskId);
+const modes = [...new Set(campaigns.map(c => c.mode))];
+
+if (modes.length === 1) {
+  // Single mode — skip front door, show campaign list directly
+  showCampaignList(campaigns);
+} else {
+  // Mixed mode — show [Donation] / [Payment] filter
+  showFrontDoor(modes);
+}</pre>
+                </div>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--purple); background: #F5F3FF;">
+                <h3 style="color: var(--purple);">Discussion Questions for the Team</h3>
+                <ol style="margin: 1rem 0 0 1.5rem;">
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Does campaign-level mode cover all use cases?</strong>
+                        <br><span style="color: var(--gray-700); font-size: 0.9rem;">Can anyone think of a scenario where the same campaign needs to accept both donations and payments? (We don't think so — if a charity has both, they'd create two campaigns.)</span>
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Should <code>mode</code> be editable after creation?</strong>
+                        <br><span style="color: var(--gray-700); font-size: 0.9rem;">Changing mode mid-campaign would mix compliance paths on existing records. Proposed: immutable after first transaction. Editable if zero transactions.</span>
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Front-door button labels — "Donation" / "Payment" or something friendlier?</strong>
+                        <br><span style="color: var(--gray-700); font-size: 0.9rem;">For a mosque: "Sadaqah / Zakat" vs "Madrasah Fees" is clearer than generic labels. Should mode have a <code>displayLabel</code> override?</span>
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>Admin UX: How visible should mode be at campaign creation?</strong>
+                        <br><span style="color: var(--gray-700); font-size: 0.9rem;">Dropdown? Radio buttons? Default to 'donation' with a toggle? We need this to be obvious and not easy to get wrong.</span>
+                    </li>
+                    <li style="margin-bottom: 1rem;">
+                        <strong>When should we build this?</strong>
+                        <br><span style="color: var(--gray-700); font-size: 0.9rem;">This is P0 for compliance but not blocking pilot (pilot charities are donation-only). Target: pre-full-launch (end of June)?</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="card">
+                <h3>Locked UX Principle (Still Applies)</h3>
+                <div style="padding: 1rem; background: #FEF2F2; border-radius: 6px; border-left: 4px solid var(--red);">
+                    <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>No third button. No picker lists. No phase-2 complexity on the front door.</strong></p>
+                    <p style="font-size: 0.9rem; color: var(--gray-700);">If future requirements introduce donor IDs, member categories, or restricted fund codes, those route via back-office rules — never the front door. The front door is either invisible (single mode) or exactly two choices (mixed mode). This is a permanent constraint.</p>
+                </div>
+            </div>
+        </div>
+
+    <div class="footer">
+        <p>This review document was prepared for Qamar, Product Manager at SwiftCause.</p>
+        <p style="margin-top: 0.5rem; color: var(--gray-700); font-size: 0.85rem;">Generated: 24 April 2026 | Campaign Compliance Mode discussion added: 24 April 2026</p>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Scroll to top of content
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
