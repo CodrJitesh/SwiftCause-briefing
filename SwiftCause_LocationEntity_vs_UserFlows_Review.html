@@ -1074,7 +1074,7 @@ db.collection('donations')
                         <tr>
                             <td><strong>Record Type</strong></td>
                             <td><code>type: 'donation'</code></td>
-                            <td><code>type: 'payment'</code></td>
+                            <td><code>type: 'activity'</code></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1091,7 +1091,7 @@ db.collection('donations')
                     </div>
                     <div style="background: #F0FDF4; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--green);">
                         <h5 style="color: var(--green); margin-bottom: 0.5rem;">Kiosk has ONLY Activity campaigns</h5>
-                        <p style="font-size: 0.95rem;">No front door shown. Donor goes straight to campaign list. All records automatically <code>type: 'payment'</code>.</p>
+                        <p style="font-size: 0.95rem;">No front door shown. Donor goes straight to campaign list. All records automatically <code>type: 'activity'</code>.</p>
                     </div>
                     <div style="background: #FFFBEB; padding: 1rem; border-radius: 6px; border-left: 4px solid var(--amber);">
                         <h5 style="color: var(--amber); margin-bottom: 0.5rem;">Kiosk has BOTH types</h5>
@@ -1170,6 +1170,51 @@ if (modes.length === 1) {
                         <br><span style="color: var(--gray-700); font-size: 0.9rem;">This is P0 for compliance but not blocking pilot (pilot charities are donation-only). Target: pre-full-launch (end of June)?</span>
                     </li>
                 </ol>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--green); background: #F0FDF4;">
+                <h3 style="color: var(--green);">Three Ways to Achieve Compliance Separation</h3>
+                <p style="margin-bottom: 1rem; color: var(--gray-700);">
+                    Campaign-level mode is the compliance engine — it must exist. But there are multiple ways to route donors to the right campaign without them thinking about compliance. These approaches <strong>work together, not as alternatives</strong>.
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem;">
+
+                    <div style="background: white; padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--green);">
+                        <h5 style="color: var(--green); margin-bottom: 0.5rem;">1. Campaign-Level Mode (Foundation)</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Each campaign has <code>mode: 'donation' | 'activity'</code>. This drives Stripe rate, Gift Aid, GASDS, R68, ledger classification. <strong>This is the compliance engine — non-negotiable.</strong></p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>When a kiosk has both types:</strong> the conditional front door [Donation] / [Payment] appears and filters the campaign list by mode.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Covers every scenario. Single source of truth.</p>
+                        <p style="font-size: 0.85rem; color: var(--amber);">⚠️ Mixed-mode kiosks require a front door step — one extra tap.</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--blue);">
+                        <h5 style="color: var(--blue); margin-bottom: 0.5rem;">2. Kiosk-Level Mode Filter (Speed Layer)</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Optional <code>modeFilter</code> on the kiosk document. A kiosk marked "Donation" only shows donation-mode campaigns. A kiosk marked "Payment" only shows activity-mode campaigns. <strong>No front door needed — the device is single-purpose.</strong></p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Use case:</strong> A mosque puts one tablet at the entrance (donations) and one at the madrasah desk (fees). Volunteers don't need training. Donors tap and go.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Fastest donor experience. Zero confusion. Same dashboard, full compliance on both devices.</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--gray-700);">Architecture: just an optional <code>modeFilter: 'donation' | 'activity' | null</code> on the kiosk document. Campaign <code>mode</code> is still the compliance engine.</p>
+                    </div>
+
+                    <div style="background: white; padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--purple);">
+                        <h5 style="color: var(--purple); margin-bottom: 0.5rem;">3. QR Code Per Campaign (Already Planned)</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Each campaign already gets its own QR code as a default deliverable. The QR links directly to that specific campaign — the donor never sees a campaign list or a front door. <strong>Compliance is inherited automatically from the campaign's mode.</strong></p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Use case:</strong> Print QR codes on collection boxes, posters, or leaflets. "Scan here for Sadaqah" next to "Scan here for Madrasah Fees." Physical separation without multiple devices. No kiosk hardware needed.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Zero hardware cost. Works anywhere. Already in the build plan.</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--gray-700);">This means every printed QR code is inherently compliant — it points to a campaign that already knows whether it's donation or activity mode.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 1.5rem; padding: 1rem; background: #EFF6FF; border-radius: 6px; border-left: 4px solid var(--blue);">
+                    <h5 style="color: var(--blue); margin-bottom: 0.5rem;">The Combined Pitch</h5>
+                    <p style="font-size: 0.95rem;"><strong>"SwiftCause gives you three ways to collect — kiosk with smart routing, dedicated devices, or printed QR codes — and every single one is HMRC-compliant out of the box."</strong></p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--gray-700);">No competitor offers this. Dona and GoodBox are donation-only. CollecTin charges for two separate hardware units. HibaBox doesn't distinguish at all. SwiftCause does it in software, at the campaign level, across any collection method.</p>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 1rem; background: #FFFBEB; border-radius: 6px; border-left: 4px solid var(--amber);">
+                    <h5 style="color: var(--amber); margin-bottom: 0.5rem;">Discussion: Kiosk Mode Filter — Build Priority?</h5>
+                    <p style="font-size: 0.9rem;">Approach 1 (campaign mode) is P0 and must be built pre-launch. Approach 3 (QR per campaign) is already planned. <strong>Approach 2 (kiosk mode filter) is a simple addition</strong> — one optional field on the kiosk document + a filter in the campaign list query. Should we include it in the campaign compliance mode sprint, or park it as a fast-follow?</p>
+                </div>
             </div>
 
             <div class="card">
