@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SwiftCause — Team Hub</title>
 <style>
-  :root{--bg:#0f1117;--card:#1a1d27;--card-hover:#22263a;--accent:#6c63ff;--accent-glow:rgba(108,99,255,.25);--green:#22c55e;--amber:#f59e0b;--text:#e4e4e7;--muted:#9ca3af;--border:#2a2d3a}
+  :root{--bg:#0f1117;--card:#1a1d27;--card-hover:#22263a;--accent:#6c63ff;--accent-glow:rgba(108,99,255,.25);--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--text:#e4e4e7;--muted:#9ca3af;--border:#2a2d3a}
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
   .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
@@ -25,6 +25,8 @@
   .badge-analysis{background:rgba(108,99,255,.15);color:var(--accent)}
   .badge-guide{background:rgba(245,158,11,.15);color:var(--amber)}
   .badge-strategy{background:rgba(236,72,153,.15);color:#ec4899}
+  .badge-new{background:rgba(239,68,68,.15);color:var(--red);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
   footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
 </style>
 </head>
@@ -33,7 +35,7 @@
   <header>
     <h1>SwiftCause Team Hub</h1>
     <p>Product, architecture &amp; operations reports for the dev team</p>
-    <span class="updated">Last updated: 18 Apr 2026</span>
+    <span class="updated">Last updated: 24 Apr 2026</span>
   </header>
   <div class="section">
     <h2>Product &amp; Sprint Tracking</h2>
@@ -48,9 +50,9 @@
         <h3>Project Portal</h3>
         <p>Master index linking to all SwiftCause HTML assets across product, sales, and operations.</p>
       </a>
-      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html">
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-21.html">
         <span class="badge badge-live">Latest Briefing</span>
-        <h3>Daily Briefing — 17 Apr 2026</h3>
+        <h3>Daily Briefing — 21 Apr 2026</h3>
         <p>5-tab briefing: daily summary, decisions log, GitHub activity, Slack digest, risks and blockers.</p>
       </a>
     </div>
@@ -58,6 +60,11 @@
   <div class="section">
     <h2>Architecture &amp; User Flows</h2>
     <div class="grid">
+      <a class="card" href="SwiftCause_LocationEntity_vs_UserFlows_Review.html">
+        <span class="badge badge-new">NEW — Team Discussion</span>
+        <h3>Location Entity — User Flow Review</h3>
+        <p>Yuvraj's #678 test coverage, Paras's #679 brief, and Campaign Compliance Mode proposal for team discussion. 5 tabs.</p>
+      </a>
       <a class="card" href="SwiftCause_GiftAid_Analysis_2026-04-13.html">
         <span class="badge badge-analysis">Analysis</span>
         <h3>Gift Aid &amp; GASDS Analysis</h3>
