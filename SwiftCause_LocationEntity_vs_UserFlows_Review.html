@@ -389,6 +389,7 @@
             <button class="tab-button" onclick="switchTab('paras')">Paras's #679 Brief</button>
             <button class="tab-button" onclick="switchTab('actions')">Actions & Gaps</button>
             <button class="tab-button" onclick="switchTab('compliance')" style="background: #FEF3C7; color: #92400E; border: 2px solid #D97706;">🗣️ Team Discussion</button>
+            <button class="tab-button" onclick="switchTab('competitors')" style="background: #EFF6FF; color: #1e40af; border: 2px solid #2563EB;">🔍 Competitor Analysis</button>
         </div>
 
         <!-- TAB 1: YUVRAJ'S COVERAGE -->
@@ -1119,7 +1120,7 @@ db.collection('donations')
                 <h3>Firestore Impact</h3>
                 <p style="margin-bottom: 1rem;">This requires adding a <code>mode</code> field to the campaign document.</p>
                 <div class="link-box" style="background: var(--gray-100);">
-                    <pre style="margin: 0; font-size: 0.9rem; white-space: pre-wrap; color: var(--gray-900);">// campaigns/{campaignId}
+                    <pre style="margin: 0; font-size: 0.9rem; white-space: pre-wrap;">// campaigns/{campaignId}
 {
   ...existingFields,
   mode: 'donation' | 'activity',   // NEW — set at campaign creation
@@ -1180,9 +1181,209 @@ if (modes.length === 1) {
             </div>
         </div>
 
+        <!-- COMPETITOR ANALYSIS TAB -->
+        <div id="competitors" class="tab-content">
+            <div class="card" style="border: 2px solid var(--blue); background: #EFF6FF;">
+                <h3 style="color: #1e40af;">🔍 Competitor Analysis: How Others Handle Donation vs Payment Compliance</h3>
+                <p style="margin: 0.5rem 0 1rem; color: var(--gray-700); font-style: italic;">
+                    Research into how UK charity donation platforms handle the split between charitable income (donations) and trading income (payments/fees).
+                    <strong>None of them solve this problem properly.</strong> SwiftCause's campaign-level compliance mode would be a genuine differentiator.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>The Market Landscape</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Platform</th>
+                            <th>Approach</th>
+                            <th>Donation/Payment Split?</th>
+                            <th>Gift Aid Handling</th>
+                            <th>GASDS</th>
+                            <th>Mixed-Use Support</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Dona</strong></td>
+                            <td>Donation-only terminals</td>
+                            <td style="color: var(--red);">❌ No — everything is a donation</td>
+                            <td>Card-linked (register once, auto-applies)</td>
+                            <td>✅ Supported</td>
+                            <td style="color: var(--red);">❌ Can't collect fees</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GoodBox</strong></td>
+                            <td>Donation-only devices</td>
+                            <td style="color: var(--red);">❌ No — donation only</td>
+                            <td>Via Swiftaid partnership</td>
+                            <td>✅ Supported</td>
+                            <td style="color: var(--red);">❌ Can't collect fees</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CollecTin</strong></td>
+                            <td>Two separate hardware SKUs</td>
+                            <td style="color: var(--amber);">⚠️ Yes — but at device level (buy 2 units)</td>
+                            <td>Via Give A Little integration</td>
+                            <td>✅ Supported</td>
+                            <td style="color: var(--amber);">⚠️ Need 2 devices</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Give A Little</strong></td>
+                            <td>Software platform, Gift Aid optional per campaign</td>
+                            <td style="color: var(--amber);">⚠️ Partial — GA toggleable per campaign</td>
+                            <td>Optional per campaign</td>
+                            <td>✅ Supported</td>
+                            <td style="color: var(--amber);">⚠️ Closest to our approach</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HibaBox</strong></td>
+                            <td>Mosque-specific kiosks</td>
+                            <td style="color: var(--red);">❌ No visible compliance split</td>
+                            <td>HMRC export from dashboard</td>
+                            <td>Unclear</td>
+                            <td style="color: var(--amber);">⚠️ Handles both but may not distinguish</td>
+                        </tr>
+                        <tr style="background: #F0FDF4;">
+                            <td><strong>SwiftCause (proposed)</strong></td>
+                            <td><strong>Campaign-level compliance mode</strong></td>
+                            <td style="color: var(--green);"><strong>✅ Yes — full software routing</strong></td>
+                            <td>Auto-routed by campaign mode</td>
+                            <td>✅ Mode-gated</td>
+                            <td style="color: var(--green);"><strong>✅ One device, full separation</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>The Four Approaches in the Market</h3>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="background: var(--gray-50); padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--gray-300);">
+                        <h5 style="color: var(--gray-700); margin-bottom: 0.5rem;">Approach A: "Donation-Only"</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Used by:</strong> Dona, GoodBox, CollecTin (charity SKU)</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sidestep the problem. Only accept donations. If a charity needs to collect fees, tell them to use a separate system.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Clean and compliant</p>
+                        <p style="font-size: 0.85rem; color: var(--red);">❌ Loses mixed-use charities (mosques, churches with nurseries, event charities)</p>
+                    </div>
+
+                    <div style="background: var(--gray-50); padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--amber);">
+                        <h5 style="color: var(--gray-700); margin-bottom: 0.5rem;">Approach B: "Two Devices"</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Used by:</strong> CollecTin (separate SKUs)</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Sell separate hardware for each purpose. Compliance guaranteed because the device itself is single-purpose.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Compliance guaranteed</p>
+                        <p style="font-size: 0.85rem; color: var(--red);">❌ Terrible UX — two devices, two dashboards, double the cost</p>
+                    </div>
+
+                    <div style="background: #FEF2F2; padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--red);">
+                        <h5 style="color: var(--red); margin-bottom: 0.5rem;">Approach C: "Ignore the Problem"</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Used by:</strong> HibaBox (arguably)</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Accept all payments and label them donations. The platform doesn't distinguish. This works until HMRC audits.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Simple to build</p>
+                        <p style="font-size: 0.85rem; color: var(--red);">❌ HMRC risk — trading income classified as charitable income with Gift Aid claimed on it</p>
+                    </div>
+
+                    <div style="background: #F0FDF4; padding: 1.25rem; border-radius: 6px; border-left: 4px solid var(--green); border: 2px solid var(--green);">
+                        <h5 style="color: var(--green); margin-bottom: 0.5rem;">Approach D: Campaign-Level Compliance (SwiftCause)</h5>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong>Used by:</strong> No one yet — this is novel</p>
+                        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Campaign mode drives Stripe rate, Gift Aid, GASDS, R68, and ledger classification. One device, one dashboard, full separation.</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Full compliance + one device + mixed-use support</p>
+                        <p style="font-size: 0.85rem; color: var(--green);">✅ Enables the market nobody else serves</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Deep Dive: Each Competitor</h3>
+
+                <div class="brief-point" style="border-left-color: #6366f1;">
+                    <h5 style="color: #6366f1;">Dona — Pure Donation Terminal</h5>
+                    <p>Founded 2019 by Regium Consulting (London). Self-service terminals with contactless, Apple/Google Pay, Chip & PIN. Processing fee: <strong>1.58% via Stripe</strong>.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Gift Aid:</strong> Card-linked — donor registers once, Gift Aid auto-applies to all future donations from that card. Clever UX but only works for donations.</p>
+                    <p style="margin-top: 0.5rem;"><strong>The gap:</strong> If a mosque wants to collect Madrasah fees on the same device, Dona can't do it. The charity needs a completely separate payment system for trading income. Two systems, two reconciliation workflows.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);"><em>Source: <a href="https://donadonations.com/" target="_blank">donadonations.com</a></em></p>
+                </div>
+
+                <div class="brief-point" style="border-left-color: #06b6d4;">
+                    <h5 style="color: #06b6d4;">GoodBox — FCA-Regulated Donation Devices</h5>
+                    <p>FCA regulated, PCI & GDPR compliant. Offers GoodPlate (church collection plate form factor) and GBx Flex. Partners with <strong>Swiftaid</strong> for automated Gift Aid claims.</p>
+                    <p style="margin-top: 0.5rem;"><strong>GASDS:</strong> Explicitly supported — their reporting provides when/where evidence for HMRC claims. All contactless donations under £30 qualify.</p>
+                    <p style="margin-top: 0.5rem;"><strong>The gap:</strong> Same as Dona — donation-only. No concept of trading income. A church running a café or nursery can't collect those payments through GoodBox without creating a compliance risk.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);"><em>Source: <a href="https://www.goodbox.com/" target="_blank">goodbox.com</a></em></p>
+                </div>
+
+                <div class="brief-point" style="border-left-color: #f59e0b;">
+                    <h5 style="color: #f59e0b;">CollecTin — Hardware-Level Compliance Split</h5>
+                    <p>UK-designed and assembled. Interesting approach: they sell <strong>two separate product SKUs</strong>:</p>
+                    <ul style="margin: 0.5rem 0 0.5rem 1.5rem; list-style: disc;">
+                        <li><strong>"CollecTin Solo for UK Charities"</strong> — zero-rated for VAT, designed for fundraising donations</li>
+                        <li><strong>"CollecTin Solo for UK VAT Applicable Uses"</strong> — standard VAT, for trading/commercial payments</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;"><strong>The insight:</strong> CollecTin recognised the problem exists but solved it at the hardware level. If you need both types, you buy two devices. Compliant but expensive and operationally clunky.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Fees:</strong> 1.49% for contactless (via SumUp), 2.5% for online/QR.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);"><em>Source: <a href="https://collectin.com/" target="_blank">collectin.com</a></em></p>
+                </div>
+
+                <div class="brief-point" style="border-left-color: #22c55e;">
+                    <h5 style="color: #22c55e;">Give A Little — Closest to Our Approach</h5>
+                    <p>World's only dedicated "point of donation" software platform. ISO 27001 + 9001 certified. Integrates with SumUp and Stripe hardware.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Key similarity:</strong> Gift Aid is <strong>"optional on campaigns"</strong> — this is conceptually similar to setting compliance mode at the campaign level.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Where we go further:</strong> Give A Little's campaign-level Gift Aid toggle is just an on/off switch. SwiftCause's campaign mode drives <em>six downstream systems</em>: Stripe rate, Gift Aid eligibility, GASDS eligibility, R68 export inclusion, ledger classification, and conditional front door. That's a much deeper compliance integration.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);"><em>Source: <a href="https://givealittle.co/" target="_blank">givealittle.co</a></em></p>
+                </div>
+
+                <div class="brief-point" style="border-left-color: #ec4899;">
+                    <h5 style="color: #ec4899;">HibaBox — Mosque-Specific, Compliance Gap</h5>
+                    <p>Cloud-based donation management built for mosques and Islamic centres. Handles donations (zakat, sadaqah) AND program administration (Quran classes, fee collection).</p>
+                    <p style="margin-top: 0.5rem;"><strong>The problem:</strong> They handle both donation and trading income but don't appear to distinguish between them at the compliance level. Gift Aid summaries are exportable from the dashboard, but there's no visible mechanism to prevent Gift Aid claims on trading income (madrasah fees).</p>
+                    <p style="margin-top: 0.5rem;"><strong>The risk:</strong> If a mosque claims Gift Aid on madrasah fees collected through HibaBox, that's an HMRC compliance violation. The platform doesn't protect them from this.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--gray-700);"><em>Source: <a href="https://hibabox.com/" target="_blank">hibabox.com</a></em></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>HMRC Rules: Why This Matters</h3>
+                <div style="padding: 1rem; background: #FEF2F2; border-radius: 6px; border-left: 4px solid var(--red); margin-bottom: 1rem;">
+                    <p style="font-size: 0.95rem;"><strong>The core HMRC principle:</strong> If the charity does not provide goods or services in return for payment, the payment has the character of a <strong>charitable donation</strong>. If goods or services are provided, it's <strong>trading income</strong>.</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--gray-700);">Gift Aid and GASDS can ONLY be claimed on charitable donations — never on trading income. Claiming Gift Aid on trading income is a compliance violation that can result in penalties and clawback.</p>
+                </div>
+                <p>The 2025 Code of Fundraising Practice (effective 1 November 2025) adds new requirements for contactless and "convenience giving" — charities must ensure donors can identify the charity, understand how donations are used, and see any processing fees. Unstaffed collection devices have additional transparency rules.</p>
+                <p style="margin-top: 0.5rem;">Records must be kept for <strong>at least 6 years</strong> from the end of the tax year they relate to.</p>
+            </div>
+
+            <div class="card" style="border: 2px solid var(--green); background: #F0FDF4;">
+                <h3 style="color: var(--green);">Recommendation: Three Sharpening Points</h3>
+
+                <div style="background: white; padding: 1.25rem; border-radius: 6px; margin-top: 1rem; border-left: 4px solid var(--green);">
+                    <h5 style="color: var(--green); margin-bottom: 0.5rem;">1. Default to Donation Mode</h5>
+                    <p style="font-size: 0.95rem;">Most charities are donation-only. Don't make them actively choose "donation" — default to it. Only surface the activity option when the admin creates a campaign involving goods/services. Consider a helper prompt: <em>"Will donors receive goods or services in exchange for this payment?"</em> — Yes → activity mode, No → donation mode.</p>
+                </div>
+
+                <div style="background: white; padding: 1.25rem; border-radius: 6px; margin-top: 1rem; border-left: 4px solid var(--amber);">
+                    <h5 style="color: var(--amber); margin-bottom: 0.5rem;">2. Safety Net for Wrong Mode Selection</h5>
+                    <p style="font-size: 0.95rem;">The "immutable after first transaction" rule is correct. But what if an admin sets the wrong mode and processes 50 transactions before realising? For pilot: make the mode selection very prominent with a clear warning — <em>"This cannot be changed after the first transaction is processed."</em> Post-launch: consider a dispute/correction workflow.</p>
+                </div>
+
+                <div style="background: white; padding: 1.25rem; border-radius: 6px; margin-top: 1rem; border-left: 4px solid var(--blue);">
+                    <h5 style="color: var(--blue); margin-bottom: 0.5rem;">3. Admin-Configurable Front Door Labels</h5>
+                    <p style="font-size: 0.95rem;">"Donation" / "Payment" is generic. For a mosque: <strong>"Sadaqah"</strong> / <strong>"Madrasah Fees"</strong> is far clearer. For a church: <strong>"Offering"</strong> / <strong>"Hall Hire"</strong>. A <code>displayLabel</code> field on campaign mode would make the UX feel purpose-built for the religious sector — your pilot market. Quick win, big impact.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Competitive Positioning Summary</h3>
+                <div style="padding: 1rem; background: #F5F3FF; border-radius: 6px; border-left: 4px solid var(--purple);">
+                    <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>The market has a gap.</strong> Competitors either dodge the donation-vs-payment problem (Dona, GoodBox), solve it with hardware (CollecTin), or ignore it (HibaBox). Nobody does software-level compliance routing at the campaign level.</p>
+                    <p style="font-size: 0.95rem;"><strong>SwiftCause's campaign-level compliance mode directly enables the mixed-use charity market</strong> — mosques, churches with trading arms, charities running events — that none of the competitors serve well. This is a defensible differentiator, not a catch-up feature.</p>
+                </div>
+            </div>
+        </div>
+
     <div class="footer">
         <p>This review document was prepared for Qamar, Product Manager at SwiftCause.</p>
-        <p style="margin-top: 0.5rem; color: var(--gray-700); font-size: 0.85rem;">Generated: 24 April 2026 | Campaign Compliance Mode discussion added: 24 April 2026</p>
+        <p style="margin-top: 0.5rem; color: var(--gray-700); font-size: 0.85rem;">Generated: 24 April 2026 | Campaign Compliance Mode + Competitor Analysis added: 24 April 2026</p>
     </div>
 
     <script>
