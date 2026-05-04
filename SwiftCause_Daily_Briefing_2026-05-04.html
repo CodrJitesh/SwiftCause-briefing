@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftCause Daily Briefing — May 4, 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #1a1a2e;
+            border-right: 1px solid #2d2d44;
+            padding: 24px 16px;
+            overflow-y: auto;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2ecc71;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-header::before {
+            content: '⚡';
+            font-size: 16px;
+        }
+
+        .tab-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tab-btn {
+            padding: 12px 14px;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #b0b0b0;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: #252540;
+            color: #e0e0e0;
+            border-color: #2ecc71;
+        }
+
+        .tab-btn.active {
+            background: #2ecc71;
+            color: #1a1a2e;
+            border-color: #2ecc71;
+            font-weight: 600;
+        }
+
+        .main {
+            margin-left: 220px;
+            flex: 1;
+            padding: 32px 40px;
+            overflow-y: auto;
+            max-width: 1400px;
+        }
+
+        .header {
+            margin-bottom: 32px;
+            border-bottom: 1px solid #2d2d44;
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .header-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .headline-card {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 28px;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(46, 204, 113, 0.15);
+        }
+
+        .headline-card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .headline-card p {
+            font-size: 14px;
+            opacity: 0.95;
+            line-height: 1.5;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 8px;
+            padding: 18px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .metric-card:hover {
+            border-color: #2ecc71;
+            background: #232339;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .metric-card.green .metric-value {
+            color: #2ecc71;
+        }
+
+        .metric-card.orange .metric-value {
+            color: #f39c12;
+        }
+
+        .metric-card.red .metric-value {
+            color: #e74c3c;
+        }
+
+        .metric-card.yellow .metric-value {
+            color: #f1c40f;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title-icon {
+            font-size: 20px;
+        }
+
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            border-color: #2ecc71;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.1);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .card-content {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .badge.p0 {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .badge.p1 {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .badge.merged {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        .badge.new {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .badge.assigned {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .priority-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .priority-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #252540;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        .priority-list li:last-child {
+            border-bottom: none;
+        }
+
+        .priority-list .num {
+            font-weight: 700;
+            color: #2ecc71;
+            margin-right: 8px;
+        }
+
+        .checkbox {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .traffic-light {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .light.critical {
+            background: #e74c3c;
+            box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+        }
+
+        .light.high {
+            background: #f39c12;
+            box-shadow: 0 0 8px rgba(243, 156, 18, 0.5);
+        }
+
+        .light.positive {
+            background: #2ecc71;
+            box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+        }
+
+        .blocker-section {
+            margin-bottom: 20px;
+        }
+
+        .blocker-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .blocker-title.critical {
+            color: #e74c3c;
+        }
+
+        .blocker-title.high {
+            color: #f39c12;
+        }
+
+        .blocker-title.positive {
+            color: #2ecc71;
+        }
+
+        .blocker-item {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b0b0b0;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .blocker-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #555;
+        }
+
+        .blocker-section.critical .blocker-item::before {
+            color: #e74c3c;
+        }
+
+        .blocker-section.high .blocker-item::before {
+            color: #f39c12;
+        }
+
+        .blocker-section.positive .blocker-item::before {
+            color: #2ecc71;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid #252540;
+            font-size: 13px;
+            color: #b0b0b0;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .action-item:last-child {
+            border-bottom: none;
+        }
+
+        .action-item input[type="checkbox"] {
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .action-item-text {
+            flex: 1;
+        }
+
+        .action-label {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #252540;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #888;
+            margin-left: 8px;
+            text-transform: uppercase;
+        }
+
+        .action-label.immediate {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .action-label.week {
+            background: #f39c12;
+            color: #fff;
+        }
+
+        .action-label.future {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .footer {
+            margin-top: 48px;
+            padding-top: 20px;
+            border-top: 1px solid #2d2d44;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        .github-activity {
+            display: grid;
+            gap: 16px;
+        }
+
+        .date-group {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 8px;
+        }
+
+        .date-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2ecc71;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .activity-list li {
+            padding: 10px 0;
+            font-size: 13px;
+            color: #b0b0b0;
+            border-bottom: 1px solid #252540;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .activity-list li:last-child {
+            border-bottom: none;
+        }
+
+        .activity-bullet {
+            color: #2ecc71;
+            flex-shrink: 0;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .activity-content {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .pr-tag {
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .author-tag {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .slack-activity-item {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .slack-date {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2ecc71;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .slack-message {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #b0b0b0;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .main {
+                margin-left: 180px;
+                padding: 24px 28px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 140px;
+                padding: 16px 8px;
+            }
+
+            .sidebar-header {
+                font-size: 11px;
+                margin-bottom: 16px;
+            }
+
+            .tab-btn {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+
+            .main {
+                margin-left: 140px;
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">Briefing Tabs</div>
+            <div class="tab-list">
+                <button class="tab-btn active" onclick="switchTab('summary')">Summary</button>
+                <button class="tab-btn" onclick="switchTab('github')">GitHub Activity</button>
+                <button class="tab-btn" onclick="switchTab('slack')">Slack Activity</button>
+                <button class="tab-btn" onclick="switchTab('decisions')">Decisions</button>
+                <button class="tab-btn" onclick="switchTab('blockers')">Blockers & Risks</button>
+                <button class="tab-btn" onclick="switchTab('actions')">Action Items</button>
+            </div>
+        </div>
+
+        <div class="main">
+            <!-- SUMMARY TAB -->
+            <div id="summary" class="tab-content active">
+                <div class="header">
+                    <h1>SwiftCause Daily Briefing</h1>
+                    <div class="header-meta">
+                        <span>📅 Sunday, May 4, 2026</span>
+                        <span>🎯 Pilot: June 22 (49 days)</span>
+                        <span>🚀 Marketing Launch: May 9 (5 days)</span>
+                    </div>
+                </div>
+
+                <div class="headline-card">
+                    <h2>Executive Headline</h2>
+                    <p>Board Clear | 30 PRs Merged Since Apr 6 | 0 Open PRs | URGENT: Repo Security #694 | Bug #691 Active | Pilot in 49 Days</p>
+                </div>
+
+                <div>
+                    <div class="section-title">
+                        <span class="section-title-icon">📊</span>
+                        Key Metrics
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card green">
+                            <div class="metric-value">0</div>
+                            <div class="metric-label">Open PRs</div>
+                        </div>
+                        <div class="metric-card orange">
+                            <div class="metric-value">50</div>
+                            <div class="metric-label">Open Issues</div>
+                        </div>
+                        <div class="metric-card orange">
+                            <div class="metric-value">13</div>
+                            <div class="metric-label">P0 Issues</div>
+                        </div>
+                        <div class="metric-card green">
+                            <div class="metric-value">30</div>
+                            <div class="metric-label">Merged (Apr-May)</div>
+                        </div>
+                        <div class="metric-card yellow">
+                            <div class="metric-value">49</div>
+                            <div class="metric-label">Days to Pilot</div>
+                        </div>
+                        <div class="metric-card red">
+                            <div class="metric-value">5</div>
+                            <div class="metric-label">Days to Launch</div>
+                        </div>
+                        <div class="metric-card red">
+                            <div class="metric-value">37</div>
+                            <div class="metric-label">Days Without Standups</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">⚡</span>
+                        Top 3 Priorities Today
+                    </div>
+                    <ul class="priority-list">
+                        <li>
+                            <span class="num">1.</span>
+                            <strong style="color: #e74c3c;">URGENT #694:</strong> Make repo PRIVATE immediately + secrets audit + key rotation. Public repo exposes sensitive data.
+                        </li>
+                        <li>
+                            <span class="num">2.</span>
+                            <strong style="color: #f39c12;">Bug #691:</strong> Donor email not returned from validateMagicLinkToken — blocks Gift Aid flow completely. Critical for launch.
+                        </li>
+                        <li>
+                            <span class="num">3.</span>
+                            <strong style="color: #f39c12;">Marketing Launch (5 days):</strong> Demo readiness check — verify all kiosk flows, Gift Aid declaration, compliance screens.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GITHUB TAB -->
+            <div id="github" class="tab-content">
+                <div class="header">
+                    <h1>GitHub Activity</h1>
+                    <div class="header-meta">
+                        <span>📅 Last 7 days (Apr 28 - May 4, 2026)</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">✅</span>
+                        Merged PRs — May 1
+                    </div>
+                    <div class="github-activity">
+                        <div class="date-group">
+                            <ul class="activity-list">
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#693</span> Admin refresh/loading UX — closes <span class="pr-tag">#686</span> <span class="pr-tag">#687</span>
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#692</span> Android org theming + idle state + permission gating
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Jitesh</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#683</span> Donation location handling with snapshots — closes <span class="pr-tag">#679</span>
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Paras</span></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">✅</span>
+                        Merged PRs — Apr 27-29
+                    </div>
+                    <div class="github-activity">
+                        <div class="date-group">
+                            <ul class="activity-list">
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#690</span> Admin UI shells + backend queries — closes <span class="pr-tag">#685</span> <span class="pr-tag">#689</span>
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#688</span> Kiosks page background fix — closes <span class="pr-tag">#684</span>
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#682</span> Disable stale workflow
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag">#680</span> Location Entity + Kiosk Mapping for GASDS — closes <span class="pr-tag">#678</span>
+                                        <br><span style="color: #888; font-size: 12px;">Author: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">🆕</span>
+                        New Issues
+                    </div>
+                    <div class="github-activity">
+                        <div class="date-group">
+                            <ul class="activity-list">
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag" style="background: #f39c12;">#696</span> GASDS CSV Export
+                                        <br><span style="color: #888; font-size: 12px;">May 3 | Assigned: <span class="author-tag">Yuvraj</span></span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <span class="activity-bullet">•</span>
+                                    <div class="activity-content">
+                                        <span class="pr-tag" style="background: #f39c12;">#695</span> Subscription listing + editing
+                                        <br><span style="color: #888; font-size: 12px;">May 1 | Assigned: <span class="author-tag">Paras</span></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">💻</span>
+                        Commit Activity
+                    </div>
+                    <div class="card">
+                        <div class="card-title">May 1</div>
+                        <div class="card-content">3 merge commits + location gating feature deployment</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Apr 29-30</div>
+                        <div class="card-content">8 commits — location fixes, admin refactoring, Android Enterprise mode integration</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLACK TAB -->
+            <div id="slack" class="tab-content">
+                <div class="header">
+                    <h1>Slack Activity</h1>
+                    <div class="header-meta">
+                        <span>📅 Through Apr 28, 2026 (cached data)</span>
+                        <span style="color: #f39c12;">⚠️ Live connector unavailable this session</span>
+                    </div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 28</div>
+                    <div class="slack-message"><strong>Yuvraj:</strong> PR #690 ready for review — major admin centralisation. Closes #685, #689. Please review when you can.</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 27</div>
+                    <div class="slack-message"><strong>Dharmendra:</strong> Android Enterprise mode APPROVED. Device Owner mode confirmed. Yuvraj can proceed with PR #692 kiosk lockdown strategy.</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 27</div>
+                    <div class="slack-message"><strong>Yuvraj:</strong> Just disabled stale PR workflow per team feedback. PR #682 merged. Stale issues will now be handled manually.</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 27</div>
+                    <div class="slack-message"><strong>Team Meeting:</strong> Discussed roadmap priorities for next sprint. Location Entity (#680) merged. Android theming next. Pilot timeline confirmed: Jun 22.</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 24</div>
+                    <div class="slack-message"><strong>Yuvraj:</strong> Location Entity testing in progress. 5 screen recordings attached showing Firestore schema, kiosk mapping, GASDS snapshot logic. Ready for merge approval.</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 24</div>
+                    <div class="slack-message"><strong>Dharmendra:</strong> Suggestion for demos: try OpenScreen for live presentation. Much cleaner than current setup. Who wants to test?</div>
+                </div>
+
+                <div class="slack-activity-item">
+                    <div class="slack-date">Apr 22</div>
+                    <div class="slack-message"><strong>Paras:</strong> Pushed location snapshot + HMRC audit trail fixes. PR ready for review. Closes #679 + related GASDS reconciliation issues.</div>
+                </div>
+            </div>
+
+            <!-- DECISIONS TAB -->
+            <div id="decisions" class="tab-content">
+                <div class="header">
+                    <h1>Recent Decisions</h1>
+                    <div class="header-meta">
+                        <span>📅 Last 2 weeks (Apr 18 - May 4)</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">✓</span>
+                        Approved Decisions
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Apr 27 — Android Enterprise (Device Owner Mode)</div>
+                        <div class="card-meta">Decision Owner: Dharmendra</div>
+                        <div class="card-content">
+                            Device Owner mode approved for kiosk lockdown strategy. Drives PR #692 implementation. Enables full control over Android device state, permissions, and app restrictions for GiftAid/GASDS compliance.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 27 — GitHub Stale Workflow Disabled</div>
+                        <div class="card-meta">Decision Owner: Yuvraj</div>
+                        <div class="card-content">
+                            Automated stale PR/issue closure disabled. Manual triage now owned by team. Reduces false-positive closures on critical features that require extended review cycles.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 21 — Three-Entity Data Model Confirmed</div>
+                        <div class="card-meta">Decision Owner: Architecture Team</div>
+                        <div class="card-content">
+                            Location → Kiosk → Campaign hierarchy locked in. Supports GASDS schema, HMRC audit trails, and multi-site charity deployments. PR #680 implements Location Entity.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 21 — Immutable Location Snapshots</div>
+                        <div class="card-meta">HMRC Requirement</div>
+                        <div class="card-content">
+                            Donation location captured server-side at action-time, never a live reference. Required for HMRC GASDS audit trail. Implemented in PR #683.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 21 — Base £8k GASDS OK Without Community Tracking</div>
+                        <div class="card-meta">Pilot Scope Gate</div>
+                        <div class="card-content">
+                            HMRC 6/10 community building rule doesn't block pilot. Base £8k threshold acceptable for Day 1. Full community tracking feature moved to Growth tier post-launch.
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 20 — Org Settings/Branding Shipped</div>
+                        <div class="card-meta">PR #669 Merged</div>
+                        <div class="card-content">
+                            Charities can now customize org name, colours, and branding. Deployed and tested. Admin UI consolidation in progress (PR #690).
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">Apr 18 — CI Pipeline Enhanced</div>
+                        <div class="card-meta">Test Coverage</div>
+                        <div class="card-content">
+                            Backend Jest tests now included in CI pipeline. Catches regressions earlier. Supports faster merge velocity and confidence pre-pilot.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOCKERS TAB -->
+            <div id="blockers" class="tab-content">
+                <div class="header">
+                    <h1>Blockers & Risks</h1>
+                    <div class="header-meta">
+                        <span>📅 As of May 4, 2026</span>
+                    </div>
+                </div>
+
+                <div class="traffic-light">
+                    <div class="light critical"></div>
+                    <div class="light high"></div>
+                    <div class="light positive"></div>
+                </div>
+
+                <div class="blocker-section critical">
+                    <div class="blocker-title critical">🔴 CRITICAL</div>
+                    <div class="blocker-item"><strong>#694 URGENT:</strong> Repo is PUBLIC — secrets potentially exposed. Need key rotation NOW. Make private immediately.</div>
+                    <div class="blocker-item"><strong>Bug #691:</strong> Donor email missing from validateMagicLinkToken response. Gift Aid declarations fail without email. Blocks launch.</div>
+                    <div class="blocker-item"><strong>37 days without standups:</strong> Last standup Mar 28. No structured team sync since. Coordination risk pre-pilot.</div>
+                    <div class="blocker-item"><strong>Marketing launch in 5 days:</strong> Demo readiness unverified. Need full end-to-end kiosk test: card-tap → magic link → Gift Aid → success screen.</div>
+                </div>
+
+                <div class="blocker-section high">
+                    <div class="blocker-title high">🟡 HIGH</div>
+                    <div class="blocker-item"><strong>#681 FCA Legal Opinion:</strong> Solicitor needed by May 6 (2 days). Must have opinion before pilot briefing.</div>
+                    <div class="blocker-item"><strong>Sprint 04 Stale (35 days):</strong> Tasks #609-612 (consent ledger Magic Link follow-up). No movement since Mar 30. Unblocks post-launch features.</div>
+                    <div class="blocker-item"><strong>13 P0 Issues Unassigned:</strong> No owners for critical pre-pilot work. Need triage + assignment this week.</div>
+                    <div class="blocker-item"><strong>Android Demo Video Missing:</strong> Jitesh 15+ days overdue. Required for marketing May 9 launch demo.</div>
+                </div>
+
+                <div class="blocker-section positive">
+                    <div class="blocker-title positive">🟢 POSITIVE</div>
+                    <div class="blocker-item">Board is clear — 0 open PRs. Excellent shipping velocity.</div>
+                    <div class="blocker-item">30 PRs merged Apr-May (avg 1/day). Strong engineering execution.</div>
+                    <div class="blocker-item">Location Entity built + merged. GASDS/HMRC schema complete.</div>
+                    <div class="blocker-item">Android Enterprise approved. Device Owner mode theming complete.</div>
+                    <div class="blocker-item">Admin UI consolidation done. PR #690 closes #685 + #689.</div>
+                </div>
+            </div>
+
+            <!-- ACTION ITEMS TAB -->
+            <div id="actions" class="tab-content">
+                <div class="header">
+                    <h1>Action Items</h1>
+                    <div class="header-meta">
+                        <span>📅 Week of May 4-10, 2026</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">⚡</span>
+                        IMMEDIATE (Today/Tomorrow)
+                    </div>
+                    <div class="card">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Make repo PRIVATE (#694) — needs org admin access
+                                    <span class="action-label immediate">DO TODAY</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Secrets audit + key rotation post-#694
+                                    <span class="action-label immediate">DO TODAY</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Triage bug #691 with Paras — donor email critical for Gift Aid
+                                    <span class="action-label immediate">DO TODAY</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">📋</span>
+                        THIS WEEK (May 4-10)
+                    </div>
+                    <div class="card">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    FCA solicitor engagement by May 6 (#681)
+                                    <span class="action-label week">MAY 6</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Marketing launch readiness check (May 9) — demo flows + compliance screens
+                                    <span class="action-label week">MAY 9</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Assign 13 unassigned P0 issues (triage + prioritize)
+                                    <span class="action-label week">MAY 8</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Restart daily standups (37 days paused since Mar 28)
+                                    <span class="action-label week">MAY 5</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Review GASDS CSV export spec (#696, Yuvraj owner)
+                                    <span class="action-label week">MAY 7</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Chase Jitesh for Android demo video (15+ days overdue)
+                                    <span class="action-label week">MAY 5</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">
+                        <span class="section-title-icon">🗓️</span>
+                        NEXT 2 WEEKS (May 11-24)
+                    </div>
+                    <div class="card">
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Sprint 04 consent ledger un-stale (#609-612)
+                                    <span class="action-label future">MAY 11+</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    GDPR/DPIA completion + ICO privacy notice finalization
+                                    <span class="action-label future">MAY 20</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Pilot preparation checklist: kiosk test, HMRC upload, Bristol Scouts briefing
+                                    <span class="action-label future">MAY 24</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <input type="checkbox">
+                                <div class="action-item-text">
+                                    Complete location evidence workstream (NFC HMAC, GPS, WiFi)
+                                    <span class="action-label future">MAY 15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Generated: May 4, 2026 12:00 UTC | SwiftCause Daily Briefing v1 | Internal Use Only</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Smooth scroll to top
+            document.querySelector('.main').scrollTop = 0;
+        }
+    </script>
+</body>
+</html>
