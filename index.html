@@ -26,6 +26,7 @@
   .badge-guide{background:rgba(245,158,11,.15);color:var(--amber)}
   .badge-strategy{background:rgba(236,72,153,.15);color:#ec4899}
   .badge-new{background:rgba(239,68,68,.15);color:var(--red);animation:pulse 2s infinite}
+  .badge-briefing{background:rgba(108,99,255,.1);color:var(--muted)}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
   footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
 </style>
@@ -35,7 +36,7 @@
   <header>
     <h1>SwiftCause Team Hub</h1>
     <p>Product, architecture &amp; operations reports for the dev team</p>
-    <span class="updated">Last updated: 24 Apr 2026</span>
+    <span class="updated">Last updated: 4 May 2026</span>
   </header>
   <div class="section">
     <h2>Product &amp; Sprint Tracking</h2>
@@ -43,17 +44,27 @@
       <a class="card" href="SwiftCause-Product-Dashboard.html">
         <span class="badge badge-live">Live Dashboard</span>
         <h3>Product Dashboard</h3>
-        <p>WAY_FORWARD_TICKETS, GitHub live data, sprint tracking, feature status. The permanent product overview.</p>
+        <p>11-tab dashboard: 50 open issues, 30 merged PRs, 0 open PRs. URGENT #694 repo security. Pilot 22 Jun (49 days).</p>
       </a>
       <a class="card" href="SwiftCause_Project_Portal.html">
         <span class="badge badge-live">Live Dashboard</span>
         <h3>Project Portal</h3>
         <p>Master index linking to all SwiftCause HTML assets across product, sales, and operations.</p>
       </a>
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-05-04.html">
+        <span class="badge badge-new">Latest Briefing</span>
+        <h3>Daily Briefing — 4 May 2026</h3>
+        <p>6-tab briefing: board clear, 30 PRs merged, URGENT #694, bug #691, marketing launch in 5 days, pilot in 49 days.</p>
+      </a>
       <a class="card" href="SwiftCause_Daily_Briefing_2026-04-21.html">
-        <span class="badge badge-live">Latest Briefing</span>
+        <span class="badge badge-briefing">Previous Briefing</span>
         <h3>Daily Briefing — 21 Apr 2026</h3>
         <p>5-tab briefing: daily summary, decisions log, GitHub activity, Slack digest, risks and blockers.</p>
+      </a>
+      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html">
+        <span class="badge badge-briefing">Previous Briefing</span>
+        <h3>Daily Briefing — 17 Apr 2026</h3>
+        <p>Earlier briefing covering org settings sprint, CI pipeline updates, and permission migration.</p>
       </a>
     </div>
   </div>
@@ -61,7 +72,7 @@
     <h2>Architecture &amp; User Flows</h2>
     <div class="grid">
       <a class="card" href="SwiftCause_LocationEntity_vs_UserFlows_Review.html">
-        <span class="badge badge-new">NEW — Team Discussion</span>
+        <span class="badge badge-analysis">Team Discussion</span>
         <h3>Location Entity — User Flow Review</h3>
         <p>Yuvraj's #678 test coverage, Paras's #679 brief, and Campaign Compliance Mode proposal for team discussion. 5 tabs.</p>
       </a>
