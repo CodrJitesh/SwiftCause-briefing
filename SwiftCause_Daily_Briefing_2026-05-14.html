@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwiftCause Daily Briefing — May 14, 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f1117;--card:#1a1d27;--card-border:#2a2d3a;--text:#e4e4e7;--text-muted:#8b8d97;--accent:#00d4aa;--accent-dim:rgba(0,212,170,0.12);--warn:#ff9f43;--warn-dim:rgba(255,159,67,0.12);--danger:#ff6b6b;--danger-dim:rgba(255,107,107,0.12);--blue:#5b9aff;--blue-dim:rgba(91,154,255,0.12);--purple:#a78bfa;--purple-dim:rgba(167,139,250,0.12)}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;min-height:100vh}
+.header{padding:24px 24px 0;max-width:1200px;margin:0 auto}
+.header h1{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.header .subtitle{color:var(--text-muted);font-size:.875rem;margin-top:4px}
+.tabs-wrap{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--card-border);margin-top:16px}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;max-width:1200px;margin:0 auto;padding:0 24px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 18px;font-size:.8125rem;font-weight:600;color:var(--text-muted);cursor:pointer;border:none;background:none;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.content{max-width:1200px;margin:0 auto;padding:20px 24px 80px}
+.panel{display:none;animation:fadeIn .25s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card h2{font-size:1.125rem;font-weight:700;margin-bottom:12px}
+.card h3{font-size:.9375rem;font-weight:600;margin:16px 0 8px;color:var(--text)}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600}
+.badge-amber{background:var(--warn-dim);color:var(--warn)}
+.badge-red{background:var(--danger-dim);color:var(--danger)}
+.badge-green{background:var(--accent-dim);color:var(--accent)}
+.badge-blue{background:var(--blue-dim);color:var(--blue)}
+.badge-purple{background:var(--purple-dim);color:var(--purple)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:16px;text-align:center}
+.kpi .value{font-size:1.75rem;font-weight:800;color:var(--accent)}
+.kpi .value.warn{color:var(--warn)}
+.kpi .value.danger{color:var(--danger)}
+.kpi .label{font-size:.75rem;color:var(--text-muted);margin-top:4px}
+ul{list-style:none;padding:0}
+ul li{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.875rem}
+ul li:last-child{border-bottom:none}
+table{width:100%;border-collapse:collapse;font-size:.8125rem;margin-top:8px}
+th{text-align:left;padding:8px 12px;color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--card-border);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px}
+td{padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+tr:last-child td{border-bottom:none}
+.pr-num{color:var(--blue);font-weight:600}
+.alert-box{background:var(--danger-dim);border:1px solid rgba(255,107,107,.25);border-radius:10px;padding:16px;margin-top:12px}
+.alert-box .title{color:var(--danger);font-weight:700;font-size:.875rem;margin-bottom:4px}
+.alert-box p{font-size:.8125rem;color:var(--text)}
+.warn-box{background:var(--warn-dim);border:1px solid rgba(255,159,67,.25);border-radius:10px;padding:16px;margin-top:12px}
+.warn-box .title{color:var(--warn);font-weight:700;font-size:.875rem;margin-bottom:4px}
+.warn-box p{font-size:.8125rem;color:var(--text)}
+.section-label{font-size:.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px}
+.team-card{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.team-card:last-child{border-bottom:none}
+.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8125rem;color:#fff;flex-shrink:0}
+.team-card .name{font-weight:600;font-size:.875rem}
+.team-card .activity{font-size:.8125rem;color:var(--text-muted);margin-top:2px}
+.priority-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.875rem}
+.priority-item:last-child{border-bottom:none}
+.priority-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.priority-num.must{background:var(--danger-dim);color:var(--danger)}
+.priority-num.should{background:var(--warn-dim);color:var(--warn)}
+.priority-num.watch{background:var(--blue-dim);color:var(--blue)}
+.bar-chart{margin-top:12px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.8125rem}
+.bar-row .bar-label{width:80px;text-align:right;color:var(--text-muted);flex-shrink:0}
+.bar-row .bar-track{flex:1;height:22px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;position:relative}
+.bar-row .bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.bar-row .bar-val{width:40px;font-weight:600;flex-shrink:0}
+.decision-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.decision-item:last-child{border-bottom:none}
+.decision-item .date{font-size:.6875rem;color:var(--text-muted);margin-bottom:2px}
+.decision-item .text{font-size:.8125rem}
+.footer{text-align:center;padding:24px;color:var(--text-muted);font-size:.6875rem;border-top:1px solid var(--card-border);max-width:1200px;margin:0 auto}
+@media(max-width:640px){.header{padding:16px 16px 0}.tabs{padding:0 16px}.content{padding:16px 16px 60px}.kpi-row{grid-template-columns:repeat(2,1fr)}.tab{padding:8px 12px;font-size:.75rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>SwiftCause Daily Briefing</h1>
+<div class="subtitle">Wednesday, May 14, 2026 &middot; Pilot in <strong style="color:var(--warn)">39 days</strong> (June 22, 2026)</div>
+</div>
+<div class="tabs-wrap">
+<div class="tabs" id="tabs">
+<button class="tab active" data-tab="summary">Today's Summary</button>
+<button class="tab" data-tab="blockers">Blockers &amp; Actions</button>
+<button class="tab" data-tab="team">Team Activity</button>
+<button class="tab" data-tab="velocity">Velocity &amp; Metrics</button>
+<button class="tab" data-tab="decisions">Decisions Log</button>
+<button class="tab" data-tab="tomorrow">Tomorrow's Priorities</button>
+</div>
+</div>
+<div class="content">
+
+<!-- TAB 1: TODAY'S SUMMARY -->
+<div class="panel active" id="panel-summary">
+<div class="kpi-row">
+<div class="kpi"><div class="value warn">AMBER</div><div class="label">Overall Status</div></div>
+<div class="kpi"><div class="value warn">39</div><div class="label">Days to Pilot</div></div>
+<div class="kpi"><div class="value">2</div><div class="label">Open PRs</div></div>
+<div class="kpi"><div class="value">76</div><div class="label">Open Issues</div></div>
+</div>
+<div class="card">
+<h2>What happened today</h2>
+<ul>
+<li>&#9989; <strong>PR #710 MERGED</strong> &mdash; Add managed device provisioning and portal controls <span class="badge badge-green">dp-singh</span> &mdash; dp-singh's first merged PR. New team member contributing!</li>
+<li>&#128260; <strong>PR #712 reviewed by Yuvraj</strong> &mdash; changes requested on Paras's landing page refactor</li>
+<li>&#128203; <strong>New issues created:</strong> #713 (Super Admin Approvals &mdash; prsrwt) and #714 (Signup Flow fields &mdash; yuvraj)</li>
+<li>&#128276; <strong>Dharmendra</strong> actively coordinating PR reviews and merges</li>
+</ul>
+</div>
+<div class="card">
+<h2>Open Pull Requests (2)</h2>
+<table>
+<thead><tr><th>PR</th><th>Title</th><th>Author</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td class="pr-num">#712</td><td>[refactor] Landing Page for Pre-Launch Pilot Phase</td><td>prsrwt</td><td><span class="badge badge-amber">Changes Requested</span></td></tr>
+<tr><td class="pr-num">#711</td><td>fix(payments): harden createPaymentIntent against missing metadata</td><td>CodrJitesh</td><td><span class="badge badge-blue">Open</span></td></tr>
+</tbody>
+</table>
+</div>
+<div class="alert-box">
+<div class="title">&#128680; CRITICAL — Issue #694: Repo still PUBLIC</div>
+<p>Day 15. Secrets audit and key rotation needed. <strong>UNASSIGNED.</strong> This must be actioned immediately.</p>
+</div>
+</div>
+
+<!-- TAB 2: BLOCKERS & ACTIONS -->
+<div class="panel" id="panel-blockers">
+<div class="card">
+<h2 style="color:var(--danger)">&#128680; URGENT</h2>
+<ul>
+<li><strong>#694: Make repo PRIVATE + secrets audit</strong> &mdash; UNASSIGNED, Day 15. Someone must own this TODAY. Every day public increases exposure risk exponentially.</li>
+</ul>
+</div>
+<div class="card">
+<h2 style="color:var(--warn)">Needs Your Response (Qamar)</h2>
+<ul>
+<li><strong>1.</strong> Jitesh asked about super admin signup data requirements (May 13) &mdash; what charity/contact/consent fields are needed for onboarding approval</li>
+<li><strong>2.</strong> PR #712 changes &mdash; Paras needs guidance on Yuvraj's review feedback for the landing page refactor</li>
+</ul>
+</div>
+<div class="card">
+<h2>Awaiting Review</h2>
+<ul>
+<li><strong>PR #711</strong> (payment hardening by CodrJitesh) &mdash; needs reviewer assignment</li>
+</ul>
+</div>
+<div class="card">
+<h2>Stale P0s (needs triage)</h2>
+<ul>
+<li><strong>#524:</strong> Abuse protection on public payment endpoints <span class="badge badge-red">Stale</span></li>
+<li><strong>#522 / #521:</strong> AuthN/AuthZ on subscription endpoints <span class="badge badge-red">Stale / Duplicate</span></li>
+</ul>
+</div>
+<div class="warn-box">
+<div class="title">&#9888;&#65039; FCA Legal Opinion (#681)</div>
+<p>Status unknown. Fintech solicitor was due to be engaged by May 6. This is a <strong>single point of failure</strong> for pilot. Qamar to chase immediately.</p>
+</div>
+</div>
+
+<!-- TAB 3: TEAM ACTIVITY -->
+<div class="panel" id="panel-team">
+<div class="card">
+<h2>Who did what today (May 14)</h2>
+<div class="team-card">
+<div class="avatar" style="background:#00d4aa">DS</div>
+<div><div class="name">dp-singh <span class="badge badge-green">First PR Merged!</span></div><div class="activity">PR #710 merged &mdash; device management + portal controls. Active and shipping (2 PRs merged since joining May 12).</div></div>
+</div>
+<div class="team-card">
+<div class="avatar" style="background:#5b9aff">YV</div>
+<div><div class="name">Yuvraj</div><div class="activity">Reviewed PR #712, requested changes. Active coordination across the board.</div></div>
+</div>
+<div class="team-card">
+<div class="avatar" style="background:#a78bfa">JT</div>
+<div><div class="name">Jitesh (CodrJitesh)</div><div class="activity">Created issues #713 and #714. Planning super admin and signup flows. PR #711 awaiting review.</div></div>
+</div>
+<div class="team-card">
+<div class="avatar" style="background:#ff9f43">DH</div>
+<div><div class="name">Dharmendra</div><div class="activity">PR review coordination, asking for test accounts. Orchestrating team velocity.</div></div>
+</div>
+<div class="team-card">
+<div class="avatar" style="background:#ff6b6b">PR</div>
+<div><div class="name">Paras (prsrwt)</div><div class="activity">PR #712 awaiting fixes after Yuvraj's review feedback on landing page refactor.</div></div>
+</div>
+</div>
+<div class="card">
+<h2>Standups</h2>
+<p style="font-size:.875rem"><span class="badge badge-green">RESTARTED</span> &nbsp;Daily standups restarted May 13 (Jitesh set up Slackbot). First structured check-in in <strong>46 days</strong>.</p>
+</div>
+<div class="card">
+<h2>Team Expansion Update</h2>
+<table>
+<thead><tr><th>Member</th><th>Joined</th><th>Status</th><th>Days</th></tr></thead>
+<tbody>
+<tr><td><strong>dp-singh</strong></td><td>May 12</td><td><span class="badge badge-green">Active &amp; Shipping</span></td><td>2</td></tr>
+<tr><td><strong>Yajur Sapra</strong></td><td>May 6</td><td><span class="badge badge-amber">KT done, awaiting first PR</span></td><td>7 since KT</td></tr>
+<tr><td><strong>Sumit Khatri</strong></td><td>May 6</td><td><span class="badge badge-red">Unassigned</span></td><td>8 days</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- TAB 4: VELOCITY & METRICS -->
+<div class="panel" id="panel-velocity">
+<div class="kpi-row">
+<div class="kpi"><div class="value">1</div><div class="label">PRs Merged Today</div></div>
+<div class="kpi"><div class="value">2</div><div class="label">PRs Open</div></div>
+<div class="kpi"><div class="value">2</div><div class="label">Issues Created Today</div></div>
+<div class="kpi"><div class="value warn">76</div><div class="label">Open Issues</div></div>
+</div>
+<div class="card">
+<h2>Issue Breakdown</h2>
+<div class="kpi-row" style="margin-top:12px">
+<div class="kpi"><div class="value danger">1</div><div class="label">URGENT</div></div>
+<div class="kpi"><div class="value" style="color:var(--warn)">5</div><div class="label">P0</div></div>
+<div class="kpi"><div class="value" style="color:var(--blue)">25</div><div class="label">P1</div></div>
+<div class="kpi"><div class="value" style="color:var(--text-muted)">15</div><div class="label">P2</div></div>
+<div class="kpi"><div class="value" style="color:var(--purple)">30</div><div class="label">Unlabelled</div></div>
+</div>
+</div>
+<div class="card">
+<h2>Rolling Velocity (Apr 6 &ndash; May 14)</h2>
+<p style="font-size:.875rem;color:var(--text-muted);margin-bottom:12px">36 PRs merged in 39 days = <strong style="color:var(--accent)">0.92 PRs/day</strong></p>
+<div class="bar-chart">
+<div class="bar-row"><span class="bar-label">Yuvraj</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent)"></div></div><span class="bar-val">20 (55%)</span></div>
+<div class="bar-row"><span class="bar-label">Paras</span><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--blue)"></div></div><span class="bar-val">9 (25%)</span></div>
+<div class="bar-row"><span class="bar-label">Jitesh</span><div class="bar-track"><div class="bar-fill" style="width:30%;background:var(--purple)"></div></div><span class="bar-val">6 (17%)</span></div>
+<div class="bar-row"><span class="bar-label">dp-singh</span><div class="bar-track"><div class="bar-fill" style="width:10%;background:var(--warn)"></div></div><span class="bar-val">2 (6%)</span></div>
+<div class="bar-row"><span class="bar-label">Raghav</span><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--danger)"></div></div><span class="bar-val">1 (3%)</span></div>
+</div>
+</div>
+<div class="card">
+<h2>Trend</h2>
+<p style="font-size:.875rem">Velocity recovering after May 4&ndash;11 drought. dp-singh adding capacity with 2 PRs merged in 2 days. 3 more devs onboarding (Yajur, Sumit, and dp-singh now shipping). If all ramp up, target throughput of 1.5+ PRs/day is achievable by end of May.</p>
+</div>
+</div>
+
+<!-- TAB 5: DECISIONS LOG -->
+<div class="panel" id="panel-decisions">
+<div class="card">
+<h2>Today's Decisions (May 14)</h2>
+<div class="decision-item"><div class="date">May 14</div><div class="text">PR #712 landing page needs rework after Yuvraj's code review identified issues</div></div>
+<div class="decision-item"><div class="date">May 14</div><div class="text">New super admin (#713) and signup flow (#714) architecture being scoped by Jitesh</div></div>
+</div>
+<div class="card">
+<h2>This Week (May 11&ndash;14)</h2>
+<div class="decision-item"><div class="date">May 13</div><div class="text">Daily standups restarted via Slackbot (Jitesh). First structured check-in in 46 days.</div></div>
+<div class="decision-item"><div class="date">May 12</div><div class="text">PR #706 merged &mdash; landing nav resilience (closes 3 issues)</div></div>
+<div class="decision-item"><div class="date">May 11</div><div class="text">Website ownership split &mdash; Jitesh = legal pages, Paras = UI/distribution, Yuvraj = brand copy</div></div>
+<div class="decision-item"><div class="date">May 11</div><div class="text">Board cleared &mdash; 3 PRs merged in 2h15m after Dharmendra nudge</div></div>
+<div class="decision-item"><div class="date">May 11</div><div class="text">GASDS CSV export shipped (PR #698) &mdash; but 5 compliance gaps identified for follow-up</div></div>
+</div>
+<div class="card">
+<h2 style="color:var(--warn)">Outstanding Decisions Needed</h2>
+<ul>
+<li><strong>1.</strong> Super admin signup fields &mdash; Jitesh waiting on Qamar's response</li>
+<li><strong>2.</strong> FCA solicitor engagement status &mdash; single point of failure, no update</li>
+<li><strong>3.</strong> Repo privacy (#694) ownership &mdash; unassigned for 15 days</li>
+<li><strong>4.</strong> GASDS 10:1 matching enforcement approach &mdash; P0 compliance gap</li>
+<li><strong>5.</strong> Yajur / Sumit task assignments &mdash; 8 days into onboarding, no work assigned</li>
+</ul>
+</div>
+</div>
+
+<!-- TAB 6: TOMORROW'S PRIORITIES -->
+<div class="panel" id="panel-tomorrow">
+<div class="card">
+<h2 style="color:var(--danger)">Must-Do (May 15)</h2>
+<div class="priority-item"><div class="priority-num must">1</div><div>&#128680; <strong>Assign + action #694</strong> (repo PRIVATE + secrets audit) &mdash; URGENT, Day 15. Every day increases risk.</div></div>
+<div class="priority-item"><div class="priority-num must">2</div><div>&#128221; <strong>Reply to Jitesh</strong> on super admin signup data requirements &mdash; blocking #713/#714 scoping.</div></div>
+<div class="priority-item"><div class="priority-num must">3</div><div>&#128269; <strong>Review PR #711</strong> (payment hardening) or assign a reviewer &mdash; security-critical code.</div></div>
+<div class="priority-item"><div class="priority-num must">4</div><div>&#128203; <strong>Chase FCA legal opinion</strong> status (#681) &mdash; single point of failure for pilot timeline.</div></div>
+</div>
+<div class="card">
+<h2 style="color:var(--warn)">Should-Do</h2>
+<div class="priority-item"><div class="priority-num should">5</div><div>Triage unlabelled issues (30 of 76 have no priority label)</div></div>
+<div class="priority-item"><div class="priority-num should">6</div><div>Assign tasks to <strong>Yajur Sapra</strong> &mdash; 7 days post-KT, no PR yet</div></div>
+<div class="priority-item"><div class="priority-num should">7</div><div>Assign tasks to <strong>Sumit Khatri</strong> &mdash; 8 days, no assignment</div></div>
+<div class="priority-item"><div class="priority-num should">8</div><div>Follow up on <strong>GASDS 10:1 matching</strong> enforcement gap &mdash; P0 compliance risk</div></div>
+</div>
+<div class="card">
+<h2 style="color:var(--blue)">Watch</h2>
+<div class="priority-item"><div class="priority-num watch">9</div><div>PR #712 &mdash; Paras addressing Yuvraj's review feedback on landing page</div></div>
+<div class="priority-item"><div class="priority-num watch">10</div><div>dp-singh's next task after device management merge &mdash; keep momentum going</div></div>
+</div>
+</div>
+
+</div>
+<div class="footer">SwiftCause Daily Briefing &mdash; May 14, 2026 &mdash; Data: GitHub MCP + Slack MCP (live)</div>
+<script>
+(function(){
+var tabs=document.querySelectorAll('.tab');
+var panels=document.querySelectorAll('.panel');
+tabs.forEach(function(t){
+t.addEventListener('click',function(){
+tabs.forEach(function(x){x.classList.remove('active')});
+panels.forEach(function(x){x.classList.remove('active')});
+t.classList.add('active');
+document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+});
+});
+})();
+</script>
+</body>
+</html>
