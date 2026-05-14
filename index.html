@@ -3,124 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SwiftCause — Team Hub</title>
+<title>SwiftCause — Team Portal</title>
 <style>
-  :root{--bg:#0f1117;--card:#1a1d27;--card-hover:#22263a;--accent:#6c63ff;--accent-glow:rgba(108,99,255,.25);--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--text:#e4e4e7;--muted:#9ca3af;--border:#2a2d3a}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}
-  .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
-  header{text-align:center;margin-bottom:3rem}
-  header h1{font-size:2.2rem;font-weight:700;background:linear-gradient(135deg,#6c63ff,#22c55e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.5rem}
-  header p{color:var(--muted);font-size:1rem}
-  .updated{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--green);margin-top:.75rem}
-  .section{margin-bottom:2.5rem}
-  .section h2{font-size:1.1rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-decoration:none;color:var(--text);transition:all .2s ease;position:relative;overflow:hidden}
-  .card:hover{background:var(--card-hover);border-color:var(--accent);box-shadow:0 0 20px var(--accent-glow);transform:translateY(-2px)}
-  .card h3{font-size:1rem;font-weight:600;margin-bottom:.4rem}
-  .card p{font-size:.85rem;color:var(--muted)}
-  .badge{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:4px;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px}
-  .badge-live{background:rgba(34,197,94,.15);color:var(--green)}
-  .badge-analysis{background:rgba(108,99,255,.15);color:var(--accent)}
-  .badge-guide{background:rgba(245,158,11,.15);color:var(--amber)}
-  .badge-strategy{background:rgba(236,72,153,.15);color:#ec4899}
-  .badge-new{background:rgba(239,68,68,.15);color:var(--red);animation:pulse 2s infinite}
-  .badge-briefing{background:rgba(108,99,255,.1);color:var(--muted)}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-  footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #00d4aa; }
+  .subtitle { color: #94a3b8; margin-bottom: 2rem; font-size: 0.95rem; }
+  .section { margin-bottom: 2.5rem; }
+  .section h2 { font-size: 1.2rem; color: #ff9f43; margin-bottom: 1rem; border-bottom: 1px solid #2a2d3a; padding-bottom: 0.5rem; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .card { background: #1a1d27; border: 1px solid #2a2d3a; border-radius: 12px; padding: 1.25rem; transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: #00d4aa; transform: translateY(-2px); }
+  .card a { color: #00d4aa; text-decoration: none; font-weight: 600; font-size: 1.05rem; display: block; margin-bottom: 0.5rem; }
+  .card a:hover { text-decoration: underline; }
+  .card .meta { color: #94a3b8; font-size: 0.85rem; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem; }
+  .badge-latest { background: #00d4aa22; color: #00d4aa; }
+  .badge-permanent { background: #3b82f622; color: #60a5fa; }
+  .badge-archive { background: #64748b22; color: #94a3b8; }
+  .footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #2a2d3a; color: #64748b; font-size: 0.8rem; text-align: center; }
 </style>
 </head>
 <body>
 <div class="container">
-  <header>
-    <h1>SwiftCause Team Hub</h1>
-    <p>Product, architecture &amp; operations reports for the dev team</p>
-    <span class="updated">Last updated: 4 May 2026</span>
-  </header>
+  <h1>SwiftCause Team Portal</h1>
+  <p class="subtitle">Reports, dashboards, and briefings for the SwiftCause team — auto-deployed via Vercel</p>
+
   <div class="section">
-    <h2>Product &amp; Sprint Tracking</h2>
-    <div class="grid">
-      <a class="card" href="SwiftCause-Product-Dashboard.html">
-        <span class="badge badge-live">Live Dashboard</span>
-        <h3>Product Dashboard</h3>
-        <p>11-tab dashboard: 50 open issues, 30 merged PRs, 0 open PRs. URGENT #694 repo security. Pilot 22 Jun (49 days).</p>
-      </a>
-      <a class="card" href="SwiftCause_Project_Portal.html">
-        <span class="badge badge-live">Live Dashboard</span>
-        <h3>Project Portal</h3>
-        <p>Master index linking to all SwiftCause HTML assets across product, sales, and operations.</p>
-      </a>
-      <a class="card" href="SwiftCause_Daily_Briefing_2026-05-04.html">
-        <span class="badge badge-new">Latest Briefing</span>
-        <h3>Daily Briefing — 4 May 2026</h3>
-        <p>6-tab briefing: board clear, 30 PRs merged, URGENT #694, bug #691, marketing launch in 5 days, pilot in 49 days.</p>
-      </a>
-      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-21.html">
-        <span class="badge badge-briefing">Previous Briefing</span>
-        <h3>Daily Briefing — 21 Apr 2026</h3>
-        <p>5-tab briefing: daily summary, decisions log, GitHub activity, Slack digest, risks and blockers.</p>
-      </a>
-      <a class="card" href="SwiftCause_Daily_Briefing_2026-04-17.html">
-        <span class="badge badge-briefing">Previous Briefing</span>
-        <h3>Daily Briefing — 17 Apr 2026</h3>
-        <p>Earlier briefing covering org settings sprint, CI pipeline updates, and permission migration.</p>
-      </a>
+    <h2>Live Dashboards</h2>
+    <div class="card-grid">
+      <div class="card">
+        <a href="SwiftCause-Product-Dashboard.html">Product Dashboard <span class="badge badge-permanent">Permanent</span></a>
+        <div class="meta">11 tabs — Overview, Sprint Board, Issues, Dev Stats, Team, Compliance, Slack, GTM, Architecture, Risks, Milestones<br>Updated: May 14, 2026</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Project_Portal.html">Project Portal <span class="badge badge-permanent">Permanent</span></a>
+        <div class="meta">Full project portal with navigation hub</div>
+      </div>
     </div>
   </div>
+
   <div class="section">
-    <h2>Architecture &amp; User Flows</h2>
-    <div class="grid">
-      <a class="card" href="SwiftCause_LocationEntity_vs_UserFlows_Review.html">
-        <span class="badge badge-analysis">Team Discussion</span>
-        <h3>Location Entity — User Flow Review</h3>
-        <p>Yuvraj's #678 test coverage, Paras's #679 brief, and Campaign Compliance Mode proposal for team discussion. 5 tabs.</p>
-      </a>
-      <a class="card" href="SwiftCause_GiftAid_Analysis_2026-04-13.html">
-        <span class="badge badge-analysis">Analysis</span>
-        <h3>Gift Aid &amp; GASDS Analysis</h3>
-        <p>Problem analysis, capture flows, compliance blockers, and proposed solutions for Gift Aid automation.</p>
-      </a>
-      <a class="card" href="SwiftCause_UserFlows_AsIs_ToBe.html">
-        <span class="badge badge-analysis">Analysis</span>
-        <h3>User Flows — As-Is vs To-Be</h3>
-        <p>Current state vs target state user journey comparison. Gap analysis for go-live readiness.</p>
-      </a>
-      <a class="card" href="SwiftCause_UserFlows_v2_MagicLink.html">
-        <span class="badge badge-analysis">Analysis</span>
-        <h3>User Flows — Magic Link Model</h3>
-        <p>Post-donation magic link architecture for Gift Aid capture. Core to the Option B+ flow.</p>
-      </a>
+    <h2>Daily Briefings</h2>
+    <div class="card-grid">
+      <div class="card">
+        <a href="SwiftCause_Daily_Briefing_2026-05-14.html">Daily Briefing — May 14 <span class="badge badge-latest">Latest</span></a>
+        <div class="meta">6 tabs — Summary, Blockers, Team Activity, Velocity, Decisions, Tomorrow's Priorities<br>PR #710 merged (dp-singh first PR). Standups restarted. 39 days to pilot.</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Daily_Briefing_2026-05-04.html">Daily Briefing — May 4 <span class="badge badge-archive">Archive</span></a>
+        <div class="meta">6 tabs — Board clear, 50 issues, FCA deadline, 44 days to pilot.</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Daily_Briefing_2026-04-21.html">Daily Briefing — Apr 21 <span class="badge badge-archive">Archive</span></a>
+        <div class="meta">Three-entity model confirmed. GASDS architecture decided.</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Daily_Briefing_2026-04-17.html">Daily Briefing — Apr 17 <span class="badge badge-archive">Archive</span></a>
+        <div class="meta">Permission migration. Org settings PR. CI pipeline update.</div>
+      </div>
     </div>
   </div>
+
   <div class="section">
-    <h2>Strategy &amp; Planning</h2>
-    <div class="grid">
-      <a class="card" href="licensing_playbook_2026-04-18.html">
-        <span class="badge badge-strategy">Strategy</span>
-        <h3>Licensing Playbook</h3>
-        <p>Licensing model strategy and decision framework. Updated 18 Apr 2026.</p>
-      </a>
+    <h2>Analysis & Reference</h2>
+    <div class="card-grid">
+      <div class="card">
+        <a href="SwiftCause_GiftAid_Analysis_2026-04-13.html">Gift Aid Analysis</a>
+        <div class="meta">Campaign Compliance Lock, R68 requirements, GASDS community building tracking</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_LocationEntity_vs_UserFlows_Review.html">Location Entity Review</a>
+        <div class="meta">Location Entity vs User Flows gap analysis</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_UserFlows_v2_MagicLink.html">User Flows v2 — Magic Link</a>
+        <div class="meta">Updated user flows with magic link authentication</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_UserFlows_AsIs_ToBe.html">User Flows — As-Is / To-Be</a>
+        <div class="meta">Current vs target state user flow comparison</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Collection_Point_Setup_Guide.html">Collection Point Setup Guide</a>
+        <div class="meta">Step-by-step guide for setting up collection points</div>
+      </div>
+      <div class="card">
+        <a href="SwiftCause_Tablet_Sourcing_Plan.html">Tablet Sourcing Plan</a>
+        <div class="meta">Hardware sourcing and procurement plan</div>
+      </div>
+      <div class="card">
+        <a href="licensing_playbook_2026-04-18.html">Licensing Playbook</a>
+        <div class="meta">FCA, PSR, and regulatory licensing analysis</div>
+      </div>
     </div>
   </div>
-  <div class="section">
-    <h2>Operations &amp; Guides</h2>
-    <div class="grid">
-      <a class="card" href="SwiftCause_Tablet_Sourcing_Plan.html">
-        <span class="badge badge-guide">Guide</span>
-        <h3>Tablet Sourcing Plan</h3>
-        <p>Ruggedised tablet and floor stand sourcing — specs, suppliers, pricing for collection point hardware.</p>
-      </a>
-      <a class="card" href="SwiftCause_Collection_Point_Setup_Guide.html">
-        <span class="badge badge-guide">Guide</span>
-        <h3>Collection Point Setup Guide</h3>
-        <p>Customer-facing guide for setting up a SwiftCause collection point at a venue.</p>
-      </a>
-    </div>
+
+  <div class="footer">
+    SwiftCause Team Portal — Last updated May 14, 2026 — Auto-deployed via Vercel from CodrJitesh/SwiftCause-briefing
   </div>
-  <footer>
-    SwiftCause — Auto-deployed from <a href="https://github.com/CodrJitesh/SwiftCause-briefing" style="color:var(--accent);text-decoration:none;">GitHub</a> via Vercel
-  </footer>
 </div>
 </body>
 </html>
